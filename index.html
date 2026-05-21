@@ -1366,6 +1366,58 @@
       color: rgba(240,237,230,0.38);
       letter-spacing: 0.02em;
     }
+
+    /* TESTIMONIAL CAROUSEL */
+    .testimonial-carousel { position: relative; }
+    .testimonial-track-wrap { overflow: hidden; }
+    .testimonial-track {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      transition: transform 0.5s ease;
+    }
+    .testimonial-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+    }
+    .testimonial-nav-btns { display: flex; gap: 8px; }
+    .testimonial-nav-btn {
+      width: 36px; height: 36px;
+      border: 0.5px solid var(--border-hover);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; line-height: 1;
+    }
+    .testimonial-nav-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .testimonial-nav-btn:disabled {
+      opacity: 0.25; cursor: default;
+      border-color: var(--border);
+      color: var(--text-dim);
+    }
+    .testimonial-counter {
+      font-size: 11px; color: var(--text-dim);
+      font-family: 'DM Sans', sans-serif; letter-spacing: 0.08em;
+    }
+    .testimonial-dots {
+      display: flex; gap: 6px; align-items: center;
+    }
+    .t-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--border-hover); cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .t-dot.active { background: var(--gold); transform: scale(1.3); }
+    @media (max-width: 640px) {
+      .testimonial-track { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -2158,24 +2210,85 @@
       <div class="section-label">Client Reviews</div>
       <h2>What Atlanta's realtors say.</h2>
     </div>
-    <div class="testimonials-grid">
-      <div class="testimonial reveal">
+    <div class="testimonial-carousel reveal reveal-delay-1">
+      <div class="testimonial-track-wrap">
+        <div class="testimonial-track">
+      <div class="testimonial">
+        <div class="testimonial-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+        <p class="testimonial-text">"Jeff is AMAZING! I fully believe his amazing photos and video sold our loft. We were under contract within days! He was so professional and has a real gift for this craft. He showed off all of the amazing features of our home. 100% recommend — actually 10000% recommend!"</p>
+        <div class="testimonial-author">Eleanor S. B.</div>
+        <div class="testimonial-role">Google Review</div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+        <p class="testimonial-text">"The quality of his photos and videos is exquisite and definitely highlights all the best features of each home. My clients said he made their home look so beautiful that they almost wanted to keep it for themselves! You are my Go To for all my photography needs!"</p>
+        <div class="testimonial-author">Michelle M.</div>
+        <div class="testimonial-role">Google Review</div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+        <p class="testimonial-text">"Want to win more listings? Use iCapture Homes. Jeff's photography has impressed clients, their neighbors and friends and ultimately won me more business. He's gone above and beyond for us. He's part of our team."</p>
+        <div class="testimonial-author">W.D. Al-Khatib</div>
+        <div class="testimonial-role">Local Guide · Google Review</div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+        <p class="testimonial-text">"As a professional real estate agent, I invest in the best photography, and that is Jeff. Photos are critical to selling a home. Jeff goes above and beyond to deliver the absolute best photos. When looking for a real estate photographer in Atlanta, there isn't anyone better."</p>
+        <div class="testimonial-author">Amanda S.</div>
+        <div class="testimonial-role">Google Review</div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+        <p class="testimonial-text">"Jeff is reliable and personable along with being one of the best real estate photographers in Atlanta I've worked with. He is hard working and the results show. Worth every penny as my listing sold very quickly when I use him."</p>
+        <div class="testimonial-author">Sarah S.</div>
+        <div class="testimonial-role">Google Review</div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+        <p class="testimonial-text">"Jeff is our chosen photographer when it comes to our real estate listings. He knows his angles and truly delivers! From photos to videos and aerial, iCapture is it!"</p>
+        <div class="testimonial-author">Jassey K.</div>
+        <div class="testimonial-role">Google Review</div>
+      </div>
+      <div class="testimonial">
         <div class="testimonial-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
         <p class="testimonial-text">"Jeff does an incredible job every time. His work is consistently high quality, and he has a great eye for capturing homes in a way that makes them stand out. He is professional, reliable, and easy to work with, which makes the entire process seamless. Highly recommend."</p>
         <div class="testimonial-author">Nick N.</div>
         <div class="testimonial-role">Local Guide · Google Review</div>
       </div>
-      <div class="testimonial reveal reveal-delay-1">
+      <div class="testimonial">
         <div class="testimonial-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
-        <p class="testimonial-text">"Jeff is a phenomenal photographer and videographer! He has a very intricate eye for the minuscule details. His work is second to none here in Atlanta. I'd actually choose him over the majority of photographers nationwide. His photography/videography will help your listings have fewer days on market."</p>
+        <p class="testimonial-text">"Jeff is a phenomenal photographer and videographer! He has a very intricate eye for the minuscule details. His work is second to none here in Atlanta. His photography and videography will help your listings have fewer days on market."</p>
         <div class="testimonial-author">Tracy M.</div>
         <div class="testimonial-role">Google Review</div>
       </div>
-      <div class="testimonial reveal reveal-delay-2">
+      <div class="testimonial">
+        <div class="testimonial-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+        <p class="testimonial-text">"Phenomenal quality and quick results!"</p>
+        <div class="testimonial-author">Ryan A.</div>
+        <div class="testimonial-role">Google Review</div>
+      </div>
+      <div class="testimonial">
         <div class="testimonial-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
         <p class="testimonial-text">"Incredibly talented and Jeff does an amazing job every time!"</p>
         <div class="testimonial-author">Denise M. B.</div>
         <div class="testimonial-role">Local Guide · Google Review</div>
+      </div>
+        </div>
+      </div>
+      <div class="testimonial-nav">
+        <div class="testimonial-dots">
+          <div class="t-dot active" data-page="0"></div>
+          <div class="t-dot" data-page="1"></div>
+          <div class="t-dot" data-page="2"></div>
+          <div class="t-dot" data-page="3"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span class="testimonial-counter" id="tCounter">Page 1 of 4</span>
+          <div class="testimonial-nav-btns">
+            <button class="testimonial-nav-btn" id="tPrev" disabled>&#8249;</button>
+            <button class="testimonial-nav-btn" id="tNext">&#8250;</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -2532,6 +2645,43 @@
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
     }, { threshold: 0.12 });
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Testimonial carousel
+    (function() {
+      var perPage = 3;
+      var cards = document.querySelectorAll('.testimonial-track .testimonial');
+      var total = cards.length;
+      var pages = Math.ceil(total / perPage);
+      var cur = 0;
+      var prevBtn = document.getElementById('tPrev');
+      var nextBtn = document.getElementById('tNext');
+      var counter = document.getElementById('tCounter');
+      var dots = document.querySelectorAll('.t-dot');
+
+      function showPage(idx) {
+        cur = Math.max(0, Math.min(idx, pages - 1));
+        cards.forEach(function(card, i) {
+          card.style.display = (i >= cur * perPage && i < (cur + 1) * perPage) ? '' : 'none';
+        });
+        if (counter) counter.textContent = 'Page ' + (cur + 1) + ' of ' + pages;
+        if (prevBtn) prevBtn.disabled = cur === 0;
+        if (nextBtn) nextBtn.disabled = cur === pages - 1;
+        dots.forEach(function(d, i) {
+          d.classList.toggle('active', i === cur);
+        });
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', function() { showPage(cur - 1); });
+      if (nextBtn) nextBtn.addEventListener('click', function() { showPage(cur + 1); });
+      dots.forEach(function(d, i) {
+        d.addEventListener('click', function() { showPage(i); });
+      });
+
+      // Mobile: adjust perPage
+      if (window.innerWidth <= 640) { perPage = 1; pages = total; }
+
+      showPage(0);
+    })();
 
     // Photo gallery + filmstrip
     document.querySelectorAll('.gallery-wrap').forEach(function(wrap) {
