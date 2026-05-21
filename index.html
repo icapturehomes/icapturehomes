@@ -1053,13 +1053,13 @@
       section { padding: 72px 24px; }
       .hero { padding: 0 24px 56px; }
       .hero-image-mosaic { width: 100%; opacity: 0.25; }
-      .hero-overlay { background: linear-gradient(135deg, rgba(10,9,7,0.92) 0%, rgba(10,9,7,0.75) 50%, rgba(10,9,7,0.45) 100%); }
+      .hero-overlay { background: linear-gradient(to right, rgba(8,7,5,0.96) 0%, rgba(8,7,5,0.85) 40%, rgba(8,7,5,0.6) 70%, rgba(8,7,5,0.35) 100%) !important; }
       h1 { font-size: 40px; }
       .services-grid, .pricing-grid, .faq-grid, .testimonials-grid { grid-template-columns: 1fr; }
       .portfolio-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 200px 200px 200px; }
       .port-cell:nth-child(1) { grid-row: span 1; grid-column: span 2; }
       .video-grid, .floorplan-grid, .marketing-grid { grid-template-columns: 1fr; }
-      .website-embed-wrap iframe { height: 300px; }
+      .website-embed-wrap iframe { height: 400px; }
       .filter-group { gap: 4px; }
       .filter-btn { padding: 7px 11px; font-size: 9px; }
       .booking-inner { grid-template-columns: 1fr; gap: 48px; }
@@ -1207,6 +1207,33 @@
       font-family: 'DM Sans', sans-serif;
       letter-spacing: 0.03em;
       background: #0d0d0d;
+    }
+
+    /* FILMSTRIP — horizontal scroll for photography on mobile */
+    @media (max-width: 640px) {
+      #panel-photo .port-masonry {
+        columns: unset !important;
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        gap: 6px !important;
+        padding-bottom: 12px !important;
+        scroll-snap-type: x mandatory !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      #panel-photo .port-masonry .port-item {
+        flex: 0 0 82vw !important;
+        scroll-snap-align: start !important;
+        break-inside: unset !important;
+        margin-bottom: 0 !important;
+        height: 260px !important;
+        overflow: hidden !important;
+      }
+      #panel-photo .port-masonry .port-item img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+      }
     }
   </style>
 </head>
