@@ -1235,6 +1235,89 @@
         object-fit: cover !important;
       }
     }
+
+    /* PHOTO GALLERY */
+    .gallery-wrap { position: relative; width: 100%; }
+    .gallery-main {
+      width: 100%; aspect-ratio: 3/2; overflow: hidden;
+      position: relative; background: #111; cursor: zoom-in;
+    }
+    .gallery-main img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .gallery-main img.gactive { display: block; }
+    .gallery-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(10,10,10,0.55); border: none; color: rgba(240,237,230,0.8);
+      font-size: 30px; padding: 12px 16px; cursor: pointer; z-index: 5;
+      transition: background 0.2s; line-height: 1;
+    }
+    .gallery-nav:hover { background: rgba(10,10,10,0.85); color: var(--gold); }
+    .gprev { left: 0; } .gnext { right: 0; }
+    .gallery-counter {
+      position: absolute; bottom: 10px; right: 12px;
+      font-size: 11px; color: rgba(240,237,230,0.6);
+      font-family: 'DM Sans', sans-serif; letter-spacing: 0.05em;
+      background: rgba(10,10,10,0.55); padding: 3px 8px;
+    }
+    .gallery-strip {
+      display: flex; gap: 4px; padding: 5px 0; margin-top: 4px;
+      overflow-x: auto; scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .gallery-strip::-webkit-scrollbar { height: 3px; }
+    .gallery-strip::-webkit-scrollbar-thumb { background: var(--gold); }
+    .gthumb {
+      flex: 0 0 70px; height: 50px; overflow: hidden; cursor: pointer;
+      opacity: 0.4; transition: opacity 0.2s; scroll-snap-align: start;
+      border: 1.5px solid transparent;
+    }
+    .gthumb.gactive { opacity: 1; border-color: var(--gold); }
+    .gthumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    @media (max-width: 640px) {
+      .gallery-main { aspect-ratio: 4/3; }
+      .gthumb { flex: 0 0 54px; height: 40px; }
+    }
+    /* VIDEO THUMB GRID */
+    .vtgrid { display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; }
+    @media (max-width: 640px) { .vtgrid { grid-template-columns: repeat(2,1fr); } }
+    .vtitem { position: relative; aspect-ratio: 16/9; background: #111; overflow: hidden; cursor: pointer; }
+    .vtitem.vert { aspect-ratio: 9/16; }
+    .vtitem img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .vtplay {
+      position: absolute; inset: 0; background: rgba(10,10,10,0.3);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .vtitem:hover .vtplay { background: rgba(10,10,10,0.1); }
+    .vtplaybtn {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: rgba(200,169,110,0.88);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s;
+    }
+    .vtplaybtn::after {
+      content:''; width:0; height:0;
+      border-top: 9px solid transparent; border-bottom: 9px solid transparent;
+      border-left: 15px solid #0a0a0a; margin-left: 3px;
+    }
+    .vtitem:hover .vtplaybtn { transform: scale(1.1); }
+    /* VIDEO LIGHTBOX */
+    .vbox {
+      display: none; position: fixed; inset: 0; z-index: 9100;
+      background: rgba(5,5,5,0.97); align-items: center; justify-content: center;
+    }
+    .vbox.open { display: flex; }
+    .vbox-inner { position: relative; width: 90vw; max-width: 960px; }
+    .vbox-inner.vert { max-width: 380px; }
+    .vbox-frame { width: 100%; aspect-ratio: 16/9; }
+    .vbox-frame.vert { aspect-ratio: 9/16; }
+    .vbox-frame iframe { width: 100%; height: 100%; border: none; }
+    .vbox-close {
+      position: fixed; top: 20px; right: 24px;
+      background: none; border: none; color: rgba(240,237,230,0.6);
+      font-size: 30px; cursor: pointer; z-index: 9101;
+      transition: color 0.2s;
+    }
+    .vbox-close:hover { color: var(--gold); }
   </style>
 </head>
 <body>
@@ -1398,101 +1481,288 @@
 
     <!-- ── LISTING PHOTOGRAPHY ── -->
     <div class="portfolio-panel active" id="panel-photo">
-      <div class="port-masonry">
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1OJaO7nPiE946dK_c5gjzwoAFM1nbWhOM" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1xvTw_TDo0LgYureMbbP1CRQrlH3yqgnn" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1nuEXkCKIGgC7VnwjvxIqQIf8tMTZuN7U" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1sQB6POnCB7FvmMXe4CcSD4do3ZfVoQBC" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1XEb6X1mkqh-kNyN-ZQcodtQughuZl762" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1HksHLtWKJdKlmc7iZRwTYzb2Yn6cbpNg" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1N5FZQCAoeK6sEX_sjMts_Fu25zyNpG_u" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1ki7HaHzEuScZm6CaurqZh2TPicUwd3Mi" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1FjEOK5NeHK088Qr53Fgz9z0_RRv_g4gM" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1s608P8YurBf3_CFHlepfPTpr8To-nX3f" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1VEm1ZFWkzhUg20WFQZBOfyvcW22pZO56" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1taWPs2q-RsBw7ULVqpZFM2wrJFgCvppB" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1XLWZBqGPvll6Dai1S3CIoBFhwlqfpdB4" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1nzCUED-ARn_0nTTTONv4uJ7IPNOzt2Hu" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1JNtxWTOd7qBaEPVMZKXd83A4G349XZwH" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1KmU88uu5x319fMh4lYwcc-hlGIPn3z0O" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1DOnC5-461Vd8hId1Ya-JsOjY8s_tICLr" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1dOq5DkEocwkknsG-uc25twtt9JGjD2uR" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1kTzp2zZ3UvvSeBWYkXtwd7cp8WbL1RQn" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1Kh2iHXA45fq0haIX1RNzVcpfwltnB64o" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1jbfycXqRdoHcQPpQp5qtKlnIGhccuuns" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1XGPuiy7uQUhE5nZquv0tNPCCbmFV8m-Z" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1wWHnPwm_Wvfkk4a7b4w2NAl5bkZIeMaa" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1ZXkTeHnVE01RXXdFWVw9ZwZB6ySfctE-" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1Oe5PwgRGNcbNu3CX4gvVdkr29ixJEybU" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1Fy-qhpvZANW_TP2KsVH9TWPabyolct7p" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1bcQAnv-jQr7M2OXoumxmTd4QtsQ_rkPH" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1SPZqzkY92vijeR9HhAFh6gAn4p-oGrxf" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1b9NtkQxxiw5zwjxV8jw5_WSGbHW-GOhu" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1_FqmiAXhtd_WuuxSj61ujOsFKqEG9fDs" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
-        <div class="port-item" data-caption="Listing Photography"><img src="https://lh3.googleusercontent.com/d/1pwk4N7H7Y1XNbzf-TcvytShjQh4eUc76" alt="Listing Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Listing Photography</div></div></div></div>
+      <div class="gallery-wrap">
+        <div class="gallery-main">
+          <img src="https://lh3.googleusercontent.com/d/1OJaO7nPiE946dK_c5gjzwoAFM1nbWhOM" alt="Listing Photography" loading="lazy" class="gactive">
+          <img src="https://lh3.googleusercontent.com/d/1xvTw_TDo0LgYureMbbP1CRQrlH3yqgnn" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1nuEXkCKIGgC7VnwjvxIqQIf8tMTZuN7U" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1sQB6POnCB7FvmMXe4CcSD4do3ZfVoQBC" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1XEb6X1mkqh-kNyN-ZQcodtQughuZl762" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1HksHLtWKJdKlmc7iZRwTYzb2Yn6cbpNg" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1N5FZQCAoeK6sEX_sjMts_Fu25zyNpG_u" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1ki7HaHzEuScZm6CaurqZh2TPicUwd3Mi" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1FjEOK5NeHK088Qr53Fgz9z0_RRv_g4gM" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1s608P8YurBf3_CFHlepfPTpr8To-nX3f" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1VEm1ZFWkzhUg20WFQZBOfyvcW22pZO56" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1taWPs2q-RsBw7ULVqpZFM2wrJFgCvppB" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1XLWZBqGPvll6Dai1S3CIoBFhwlqfpdB4" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1nzCUED-ARn_0nTTTONv4uJ7IPNOzt2Hu" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1JNtxWTOd7qBaEPVMZKXd83A4G349XZwH" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1KmU88uu5x319fMh4lYwcc-hlGIPn3z0O" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1DOnC5-461Vd8hId1Ya-JsOjY8s_tICLr" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1dOq5DkEocwkknsG-uc25twtt9JGjD2uR" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1kTzp2zZ3UvvSeBWYkXtwd7cp8WbL1RQn" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1Kh2iHXA45fq0haIX1RNzVcpfwltnB64o" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1jbfycXqRdoHcQPpQp5qtKlnIGhccuuns" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1XGPuiy7uQUhE5nZquv0tNPCCbmFV8m-Z" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1wWHnPwm_Wvfkk4a7b4w2NAl5bkZIeMaa" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1ZXkTeHnVE01RXXdFWVw9ZwZB6ySfctE-" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1Oe5PwgRGNcbNu3CX4gvVdkr29ixJEybU" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1Fy-qhpvZANW_TP2KsVH9TWPabyolct7p" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1bcQAnv-jQr7M2OXoumxmTd4QtsQ_rkPH" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1SPZqzkY92vijeR9HhAFh6gAn4p-oGrxf" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1b9NtkQxxiw5zwjxV8jw5_WSGbHW-GOhu" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1_FqmiAXhtd_WuuxSj61ujOsFKqEG9fDs" alt="Listing Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1pwk4N7H7Y1XNbzf-TcvytShjQh4eUc76" alt="Listing Photography" loading="lazy">
+          <button class="gallery-nav gprev">&#8249;</button>
+          <button class="gallery-nav gnext">&#8250;</button>
+          <div class="gallery-counter">1 / 31</div>
+        </div>
+        <div class="gallery-strip">
+          <div class="gthumb gactive"><img src="https://lh3.googleusercontent.com/d/1OJaO7nPiE946dK_c5gjzwoAFM1nbWhOM" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1xvTw_TDo0LgYureMbbP1CRQrlH3yqgnn" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1nuEXkCKIGgC7VnwjvxIqQIf8tMTZuN7U" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1sQB6POnCB7FvmMXe4CcSD4do3ZfVoQBC" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1XEb6X1mkqh-kNyN-ZQcodtQughuZl762" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1HksHLtWKJdKlmc7iZRwTYzb2Yn6cbpNg" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1N5FZQCAoeK6sEX_sjMts_Fu25zyNpG_u" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1ki7HaHzEuScZm6CaurqZh2TPicUwd3Mi" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1FjEOK5NeHK088Qr53Fgz9z0_RRv_g4gM" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1s608P8YurBf3_CFHlepfPTpr8To-nX3f" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1VEm1ZFWkzhUg20WFQZBOfyvcW22pZO56" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1taWPs2q-RsBw7ULVqpZFM2wrJFgCvppB" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1XLWZBqGPvll6Dai1S3CIoBFhwlqfpdB4" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1nzCUED-ARn_0nTTTONv4uJ7IPNOzt2Hu" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1JNtxWTOd7qBaEPVMZKXd83A4G349XZwH" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1KmU88uu5x319fMh4lYwcc-hlGIPn3z0O" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1DOnC5-461Vd8hId1Ya-JsOjY8s_tICLr" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1dOq5DkEocwkknsG-uc25twtt9JGjD2uR" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1kTzp2zZ3UvvSeBWYkXtwd7cp8WbL1RQn" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1Kh2iHXA45fq0haIX1RNzVcpfwltnB64o" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1jbfycXqRdoHcQPpQp5qtKlnIGhccuuns" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1XGPuiy7uQUhE5nZquv0tNPCCbmFV8m-Z" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1wWHnPwm_Wvfkk4a7b4w2NAl5bkZIeMaa" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1ZXkTeHnVE01RXXdFWVw9ZwZB6ySfctE-" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1Oe5PwgRGNcbNu3CX4gvVdkr29ixJEybU" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1Fy-qhpvZANW_TP2KsVH9TWPabyolct7p" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1bcQAnv-jQr7M2OXoumxmTd4QtsQ_rkPH" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1SPZqzkY92vijeR9HhAFh6gAn4p-oGrxf" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1b9NtkQxxiw5zwjxV8jw5_WSGbHW-GOhu" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1_FqmiAXhtd_WuuxSj61ujOsFKqEG9fDs" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1pwk4N7H7Y1XNbzf-TcvytShjQh4eUc76" loading="lazy"></div>
+        </div>
       </div>
     </div>
+
+
 
     <div class="portfolio-panel" id="panel-video">
-      <div class="video-grid">
-        <div class="video-cell" style="aspect-ratio:16/9;"><iframe src="https://player.vimeo.com/video/1052803557?autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:16/9;"><iframe src="https://player.vimeo.com/video/876666057?autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:16/9;"><iframe src="https://player.vimeo.com/video/1184354041?h=ca87b0c1f4&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:16/9;"><iframe src="https://player.vimeo.com/video/1193098414?h=00d56ee416&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:16/9;"><iframe src="https://player.vimeo.com/video/860697644?h=5451672594&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:16/9;"><iframe src="https://player.vimeo.com/video/1120478671?h=5dbbdbdeaf&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:16/9;"><iframe src="https://player.vimeo.com/video/1118338344?autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:16/9;"><iframe src="https://player.vimeo.com/video/912385493?h=34c7a3a033&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:16/9;"><iframe src="https://player.vimeo.com/video/1052806452?autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>
+      <div class="vtgrid">
+        <div class="vtitem" data-src="https://player.vimeo.com/video/1052803557?autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1052803557.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem" data-src="https://player.vimeo.com/video/876666057?autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/876666057.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem" data-src="https://player.vimeo.com/video/1184354041?h=ca87b0c1f4&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1184354041.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem" data-src="https://player.vimeo.com/video/1193098414?h=00d56ee416&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1193098414.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem" data-src="https://player.vimeo.com/video/860697644?h=5451672594&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/860697644.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem" data-src="https://player.vimeo.com/video/1120478671?h=5dbbdbdeaf&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1120478671.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem" data-src="https://player.vimeo.com/video/1118338344?autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1118338344.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem" data-src="https://player.vimeo.com/video/912385493?h=34c7a3a033&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/912385493.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem" data-src="https://player.vimeo.com/video/1052806452?autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1052806452.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+
       </div>
     </div>
+
+
 
     <div class="portfolio-panel" id="panel-reels">
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;">
-        <div class="video-cell" style="aspect-ratio:9/16;max-height:500px;"><iframe src="https://player.vimeo.com/video/1192449921?h=bae8c11e0f&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:9/16;max-height:500px;"><iframe src="https://player.vimeo.com/video/1190791976?h=91f18afde5&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:9/16;max-height:500px;"><iframe src="https://player.vimeo.com/video/1184081609?h=c2537ddf48&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:9/16;max-height:500px;"><iframe src="https://player.vimeo.com/video/1181963427?h=26298a6d80&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:9/16;max-height:500px;"><iframe src="https://player.vimeo.com/video/1175364895?h=8f3f98b61d&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:9/16;max-height:500px;"><iframe src="https://player.vimeo.com/video/1152416357?h=f1c8b90204&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:9/16;max-height:500px;"><iframe src="https://player.vimeo.com/video/1193094164?h=c08c5da313&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:9/16;max-height:500px;"><iframe src="https://player.vimeo.com/video/1165055395?h=09c56be29e&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:9/16;max-height:500px;"><iframe src="https://player.vimeo.com/video/1175645533?h=635d94369a&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:9/16;max-height:500px;"><iframe src="https://player.vimeo.com/video/1097221833?autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:9/16;max-height:500px;"><iframe src="https://player.vimeo.com/video/1077803869?autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>
+      <div class="vtgrid">
+        <div class="vtitem vert" data-src="https://player.vimeo.com/video/1192449921?h=bae8c11e0f&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1192449921.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem vert" data-src="https://player.vimeo.com/video/1190791976?h=91f18afde5&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1190791976.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem vert" data-src="https://player.vimeo.com/video/1184081609?h=c2537ddf48&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1184081609.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem vert" data-src="https://player.vimeo.com/video/1181963427?h=26298a6d80&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1181963427.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem vert" data-src="https://player.vimeo.com/video/1175364895?h=8f3f98b61d&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1175364895.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem vert" data-src="https://player.vimeo.com/video/1152416357?h=f1c8b90204&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1152416357.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem vert" data-src="https://player.vimeo.com/video/1193094164?h=c08c5da313&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1193094164.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem vert" data-src="https://player.vimeo.com/video/1165055395?h=09c56be29e&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1165055395.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem vert" data-src="https://player.vimeo.com/video/1175645533?h=635d94369a&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1175645533.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem vert" data-src="https://player.vimeo.com/video/1097221833?autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1097221833.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem vert" data-src="https://player.vimeo.com/video/1077803869?autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1077803869.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+
       </div>
     </div>
+
+
 
     <div class="portfolio-panel" id="panel-ai">
-      <div class="video-grid">
-        <div class="video-cell" style="aspect-ratio:16/9;"><iframe src="https://player.vimeo.com/video/1193099960?h=3ea8e19439&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:16/9;"><iframe src="https://player.vimeo.com/video/1178167108?h=250c977ea2&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>        <div class="video-cell" style="aspect-ratio:16/9;"><iframe src="https://player.vimeo.com/video/1193077716?h=832f05dead&autoplay=0&title=0&byline=0&portrait=0&share=0&pip=0" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;" loading="lazy" allowfullscreen></iframe></div>
+      <div class="vtgrid">
+        <div class="vtitem" data-src="https://player.vimeo.com/video/1193099960?h=3ea8e19439&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1193099960.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem" data-src="https://player.vimeo.com/video/1178167108?h=250c977ea2&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1178167108.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+        <div class="vtitem" data-src="https://player.vimeo.com/video/1193077716?h=832f05dead&autoplay=1&loop=0&title=0&byline=0&portrait=0&share=0&pip=0">
+          <img src="https://vumbnail.com/1193077716.jpg" alt="Video" loading="lazy">
+          <div class="vtplay"><div class="vtplaybtn"></div></div>
+        </div>
+
       </div>
     </div>
 
+
+
     <div class="portfolio-panel" id="panel-drone">
-      <div class="port-masonry">
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1ZfwfLJhePF5H7b5j4QkM_KdEqTHAfupQ" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1r0A6pFc1GukWxS-ym4sbttMID1BSQMIw" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/19W3Pf8TZNQd0dJBG8N8dRSPstBr8a3yf" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1Soqqdyi0z-EozGzVKEyI9wgL9q56cC7B" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1ywUny3l65IUCpmf1tTwlTzJ39To3OnIz" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/18J2ikdeodCG6SkAOlKk6u6fnMjU2yKGg" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1H562c2dfb2f9mhohWmIujKvJdMVfLxot" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1x5-vNboTyMpUWADELydofQr1IovXo6gt" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1TxNwvqhG7NdUb7CY_8K2fwuUJ_wp9o6B" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1zy_B-i8GhCfEMiHR-B62ogZytUC8BvpM" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1Ko-dKMViKphjKS6F9XKiF9w89fZHsFmq" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1LvH3mUIX88aufuA12R4jmAYPD4ndlYoN" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1vMAFvzzHjXBU0XrWx01WxlyFfQBXp4LF" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1RWqhwAZlxg9yRz-4zc_6te-YtSPjhM1J" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1j48EykAfns0MU3h2m_hraURGUG9DNCc8" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1BTd96hL1cqMdzEMLj3WV1lisoDjeWHEU" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
-        <div class="port-item" data-caption="Drone &amp; Aerial"><img src="https://lh3.googleusercontent.com/d/1ADVvvw5og9hOI5vRoh215SGXgRTeEPTa" alt="Drone &amp; Aerial" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Drone &amp; Aerial</div></div></div></div>
+      <div class="gallery-wrap">
+        <div class="gallery-main">
+          <img src="https://lh3.googleusercontent.com/d/1ZfwfLJhePF5H7b5j4QkM_KdEqTHAfupQ" alt="Drone & Aerial" loading="lazy" class="gactive">
+          <img src="https://lh3.googleusercontent.com/d/1r0A6pFc1GukWxS-ym4sbttMID1BSQMIw" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/19W3Pf8TZNQd0dJBG8N8dRSPstBr8a3yf" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1Soqqdyi0z-EozGzVKEyI9wgL9q56cC7B" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1ywUny3l65IUCpmf1tTwlTzJ39To3OnIz" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/18J2ikdeodCG6SkAOlKk6u6fnMjU2yKGg" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1H562c2dfb2f9mhohWmIujKvJdMVfLxot" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1x5-vNboTyMpUWADELydofQr1IovXo6gt" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1TxNwvqhG7NdUb7CY_8K2fwuUJ_wp9o6B" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1zy_B-i8GhCfEMiHR-B62ogZytUC8BvpM" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1Ko-dKMViKphjKS6F9XKiF9w89fZHsFmq" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1LvH3mUIX88aufuA12R4jmAYPD4ndlYoN" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1vMAFvzzHjXBU0XrWx01WxlyFfQBXp4LF" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1RWqhwAZlxg9yRz-4zc_6te-YtSPjhM1J" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1j48EykAfns0MU3h2m_hraURGUG9DNCc8" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1BTd96hL1cqMdzEMLj3WV1lisoDjeWHEU" alt="Drone & Aerial" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1ADVvvw5og9hOI5vRoh215SGXgRTeEPTa" alt="Drone & Aerial" loading="lazy">
+          <button class="gallery-nav gprev">&#8249;</button>
+          <button class="gallery-nav gnext">&#8250;</button>
+          <div class="gallery-counter">1 / 17</div>
+        </div>
+        <div class="gallery-strip">
+          <div class="gthumb gactive"><img src="https://lh3.googleusercontent.com/d/1ZfwfLJhePF5H7b5j4QkM_KdEqTHAfupQ" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1r0A6pFc1GukWxS-ym4sbttMID1BSQMIw" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/19W3Pf8TZNQd0dJBG8N8dRSPstBr8a3yf" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1Soqqdyi0z-EozGzVKEyI9wgL9q56cC7B" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1ywUny3l65IUCpmf1tTwlTzJ39To3OnIz" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/18J2ikdeodCG6SkAOlKk6u6fnMjU2yKGg" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1H562c2dfb2f9mhohWmIujKvJdMVfLxot" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1x5-vNboTyMpUWADELydofQr1IovXo6gt" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1TxNwvqhG7NdUb7CY_8K2fwuUJ_wp9o6B" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1zy_B-i8GhCfEMiHR-B62ogZytUC8BvpM" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1Ko-dKMViKphjKS6F9XKiF9w89fZHsFmq" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1LvH3mUIX88aufuA12R4jmAYPD4ndlYoN" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1vMAFvzzHjXBU0XrWx01WxlyFfQBXp4LF" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1RWqhwAZlxg9yRz-4zc_6te-YtSPjhM1J" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1j48EykAfns0MU3h2m_hraURGUG9DNCc8" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1BTd96hL1cqMdzEMLj3WV1lisoDjeWHEU" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1ADVvvw5og9hOI5vRoh215SGXgRTeEPTa" loading="lazy"></div>
+        </div>
       </div>
-      <p style="font-size:12px;color:var(--text-dim);margin-top:16px;letter-spacing:0.05em;">Drone &amp; Aerial is available as an add-on with any photography or video package.</p>
+      <p style="font-size:12px;color:var(--text-dim);margin-top:12px;letter-spacing:0.05em;">Drone &amp; Aerial is available as an add-on with any photography or video package.</p>
     </div>
+
+
 
     <!-- ── TWILIGHT ── -->
     <div class="portfolio-panel" id="panel-twilight">
-      <div class="port-masonry">
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1bR9S2e68_gh6c2sWzXSlRkfOer4Ie9Jn" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1gQ0u-FS-O0spRxiWm72KHZvOb_ZlHnWh" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1tyAnn8lWigpqkOTV44Chf-Bia9ruWfpy" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1VpaYjkDCjvk_9Atzk2V_AdMwteDclL5J" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1YtU7YBU3uXrXVF8p0UQsa-pMiyUnD2bx" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1G3bZu3jDaRXF8KODUYlRoMptCq5kQe4t" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1cgaC0PZx6Y615SyuPF0Jcc1EeBndyVJx" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1HesABijypMD-VypZOeL2P-v3pEENeo3R" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1EK3jImDr4TDByZF-ka6eCF2Dfr2fTWL8" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1tKeTNMjpFgJsOgJUGKAFdrAu8QsOVtV1" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1TT9rJycSQ2tHS2GlYEyQezrJV67NB6JU" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1p5MefgyrZ53ZHmzDgtCAFS5OTmXBiyRa" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1HJRO6Fd13hmlC9YXOgoY-zZZF2PabpaV" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1qy5-KnonKS00ajg-o5ZcpC9DHUUvn5JO" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/15GproZY7mUqK290LyCR0pofytwBFPGLh" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
-        <div class="port-item" data-caption="Twilight Photography"><img src="https://lh3.googleusercontent.com/d/1xXk2hXSBwXlQXQNqt2rSuyr_cl2f_5H6" alt="Twilight Photography" loading="lazy"><div class="port-overlay"><div class="port-info"><div class="port-type">Twilight Photography</div></div></div></div>
+      <div class="gallery-wrap">
+        <div class="gallery-main">
+          <img src="https://lh3.googleusercontent.com/d/1bR9S2e68_gh6c2sWzXSlRkfOer4Ie9Jn" alt="Twilight Photography" loading="lazy" class="gactive">
+          <img src="https://lh3.googleusercontent.com/d/1gQ0u-FS-O0spRxiWm72KHZvOb_ZlHnWh" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1tyAnn8lWigpqkOTV44Chf-Bia9ruWfpy" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1VpaYjkDCjvk_9Atzk2V_AdMwteDclL5J" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1YtU7YBU3uXrXVF8p0UQsa-pMiyUnD2bx" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1G3bZu3jDaRXF8KODUYlRoMptCq5kQe4t" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1cgaC0PZx6Y615SyuPF0Jcc1EeBndyVJx" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1HesABijypMD-VypZOeL2P-v3pEENeo3R" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1EK3jImDr4TDByZF-ka6eCF2Dfr2fTWL8" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1tKeTNMjpFgJsOgJUGKAFdrAu8QsOVtV1" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1TT9rJycSQ2tHS2GlYEyQezrJV67NB6JU" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1p5MefgyrZ53ZHmzDgtCAFS5OTmXBiyRa" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1HJRO6Fd13hmlC9YXOgoY-zZZF2PabpaV" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1qy5-KnonKS00ajg-o5ZcpC9DHUUvn5JO" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/15GproZY7mUqK290LyCR0pofytwBFPGLh" alt="Twilight Photography" loading="lazy">
+          <img src="https://lh3.googleusercontent.com/d/1xXk2hXSBwXlQXQNqt2rSuyr_cl2f_5H6" alt="Twilight Photography" loading="lazy">
+          <button class="gallery-nav gprev">&#8249;</button>
+          <button class="gallery-nav gnext">&#8250;</button>
+          <div class="gallery-counter">1 / 16</div>
+        </div>
+        <div class="gallery-strip">
+          <div class="gthumb gactive"><img src="https://lh3.googleusercontent.com/d/1bR9S2e68_gh6c2sWzXSlRkfOer4Ie9Jn" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1gQ0u-FS-O0spRxiWm72KHZvOb_ZlHnWh" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1tyAnn8lWigpqkOTV44Chf-Bia9ruWfpy" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1VpaYjkDCjvk_9Atzk2V_AdMwteDclL5J" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1YtU7YBU3uXrXVF8p0UQsa-pMiyUnD2bx" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1G3bZu3jDaRXF8KODUYlRoMptCq5kQe4t" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1cgaC0PZx6Y615SyuPF0Jcc1EeBndyVJx" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1HesABijypMD-VypZOeL2P-v3pEENeo3R" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1EK3jImDr4TDByZF-ka6eCF2Dfr2fTWL8" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1tKeTNMjpFgJsOgJUGKAFdrAu8QsOVtV1" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1TT9rJycSQ2tHS2GlYEyQezrJV67NB6JU" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1p5MefgyrZ53ZHmzDgtCAFS5OTmXBiyRa" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1HJRO6Fd13hmlC9YXOgoY-zZZF2PabpaV" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1qy5-KnonKS00ajg-o5ZcpC9DHUUvn5JO" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/15GproZY7mUqK290LyCR0pofytwBFPGLh" loading="lazy"></div>
+          <div class="gthumb"><img src="https://lh3.googleusercontent.com/d/1xXk2hXSBwXlQXQNqt2rSuyr_cl2f_5H6" loading="lazy"></div>
+        </div>
       </div>
     </div>
 
@@ -2077,6 +2347,14 @@
     </div>
   </section>
 
+  <!-- VIDEO LIGHTBOX -->
+  <div class="vbox" id="vbox">
+    <button class="vbox-close" id="vboxClose">&#10005;</button>
+    <div class="vbox-inner" id="vboxInner">
+      <div class="vbox-frame" id="vboxFrame"></div>
+    </div>
+  </div>
+
   <!-- LIGHTBOX -->
   <div class="lb-overlay" id="lightbox">
     <button class="lb-close" id="lbClose">&#10005;</button>
@@ -2202,6 +2480,57 @@
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
     }, { threshold: 0.12 });
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Photo gallery + filmstrip
+    document.querySelectorAll('.gallery-wrap').forEach(function(wrap) {
+      var imgs = wrap.querySelectorAll('.gallery-main img');
+      var thumbs = wrap.querySelectorAll('.gthumb');
+      var counter = wrap.querySelector('.gallery-counter');
+      var cur = 0;
+      function show(idx) {
+        imgs[cur].classList.remove('gactive');
+        thumbs[cur].classList.remove('gactive');
+        cur = (idx + imgs.length) % imgs.length;
+        imgs[cur].classList.add('gactive');
+        thumbs[cur].classList.add('gactive');
+        thumbs[cur].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+        if (counter) counter.textContent = (cur+1) + ' / ' + imgs.length;
+      }
+      wrap.querySelector('.gprev').addEventListener('click', function(){ show(cur-1); });
+      wrap.querySelector('.gnext').addEventListener('click', function(){ show(cur+1); });
+      thumbs.forEach(function(t,i){ t.addEventListener('click', function(){ show(i); }); });
+      var tx = 0;
+      var main = wrap.querySelector('.gallery-main');
+      main.addEventListener('touchstart', function(e){ tx = e.touches[0].clientX; }, {passive:true});
+      main.addEventListener('touchend', function(e){
+        var dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 40) show(dx < 0 ? cur+1 : cur-1);
+      }, {passive:true});
+      main.addEventListener('click', function(){
+        var lbImgs = Array.from(imgs).map(function(i){ return {src:i.src,cap:''}; });
+        openLB(lbImgs, cur);
+      });
+    });
+    // Video lightbox
+    var vbox = document.getElementById('vbox');
+    var vboxFrame = document.getElementById('vboxFrame');
+    var vboxInner = document.getElementById('vboxInner');
+    document.getElementById('vboxClose').addEventListener('click', function(){
+      vbox.classList.remove('open'); vboxFrame.innerHTML = '';
+    });
+    vbox.addEventListener('click', function(e){
+      if (e.target === vbox) { vbox.classList.remove('open'); vboxFrame.innerHTML = ''; }
+    });
+    document.querySelectorAll('.vtitem').forEach(function(item){
+      item.addEventListener('click', function(){
+        var src = item.dataset.src;
+        var vert = item.classList.contains('vert');
+        vboxInner.className = 'vbox-inner' + (vert ? ' vert' : '');
+        vboxFrame.className = 'vbox-frame' + (vert ? ' vert' : '');
+        vboxFrame.innerHTML = '<iframe src="' + src + '" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+        vbox.classList.add('open');
+      });
+    });
 
     // Before/After Sliders
     document.querySelectorAll('.ba-slider').forEach(slider => {
