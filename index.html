@@ -2632,6 +2632,14 @@
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const panel = btn.dataset.panel;
+
+        // Stop all playing iframes before switching
+        document.querySelectorAll('.portfolio-panel iframe').forEach(iframe => {
+          const src = iframe.src;
+          iframe.src = '';
+          iframe.src = src;
+        });
+
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         document.querySelectorAll('.portfolio-panel').forEach(p => p.classList.remove('active'));
