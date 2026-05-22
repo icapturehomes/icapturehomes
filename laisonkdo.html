@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery — iCaptureHomes Photography</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --gold: #c8a96e; --bg: #0a0a0a; --bg-mid: #0d0d0d;
+      --text: #f0ede6; --text-muted: rgba(240,237,230,0.55);
+      --text-dim: rgba(240,237,230,0.3); --border: rgba(240,237,230,0.08);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; cursor: none; }
+    .cursor { position:fixed; width:8px; height:8px; background:var(--gold); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width 0.2s,height 0.2s; }
+    .cursor-ring { position:fixed; width:32px; height:32px; border:1px solid rgba(200,169,110,0.4); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
+    header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:24px 48px; border-bottom:0.5px solid var(--border);
+      position:sticky; top:0; background:rgba(10,10,10,0.95);
+      backdrop-filter:blur(16px); z-index:100;
+    }
+    .logo { font-family:'Playfair Display',serif; font-size:18px; color:var(--text); text-decoration:none; }
+    .logo span { color:var(--gold); font-style:italic; }
+    .header-right { display:flex; align-items:center; gap:24px; }
+    .gallery-title { font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-dim); }
+    .header-count { font-size:11px; color:var(--text-dim); }
+    .back-link { font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); text-decoration:none; transition:color 0.2s; display:flex; align-items:center; gap:6px; }
+    .back-link:hover { color:var(--gold); }
+    .back-link::before { content:'←'; }
+    .gallery-intro {
+      padding:48px 48px 32px; border-bottom:0.5px solid var(--border);
+      display:flex; align-items:flex-end; justify-content:space-between;
+    }
+    .gallery-intro h1 { font-family:'Playfair Display',serif; font-size:clamp(28px,4vw,48px); font-weight:500; line-height:1.1; }
+    .gallery-intro h1 em { font-style:italic; color:var(--gold); }
+    .gallery-meta { text-align:right; }
+    .gallery-meta-label { font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-dim); margin-bottom:4px; }
+    .gallery-meta-val { font-size:13px; color:var(--text-muted); }
+    .gallery-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:2px; padding:2px;
+    }
+    @media(max-width:600px) { .gallery-grid { grid-template-columns:1fr; } }
+    .gi { position:relative; aspect-ratio:3/2; overflow:hidden; cursor:zoom-in; background:#111; }
+    .gi img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.5s ease; }
+    .gi:hover img { transform:scale(1.04); }
+    .gi-num { position:absolute; bottom:8px; left:10px; font-size:10px; letter-spacing:0.1em; color:rgba(240,237,230,0.4); font-family:'DM Sans',sans-serif; opacity:0; transition:opacity 0.2s; }
+    .gi:hover .gi-num { opacity:1; }
+    .lb { display:none; position:fixed; inset:0; z-index:9000; background:rgba(5,5,5,0.98); flex-direction:column; align-items:center; justify-content:center; }
+    .lb.open { display:flex; }
+    .lb-img-wrap { position:relative; max-width:92vw; max-height:82vh; display:flex; align-items:center; justify-content:center; }
+    .lb-img-wrap img { max-width:92vw; max-height:82vh; object-fit:contain; display:block; }
+    .lb-close { position:fixed; top:20px; right:24px; background:none; border:none; color:rgba(240,237,230,0.5); font-size:28px; cursor:pointer; z-index:9001; line-height:1; transition:color 0.2s; }
+    .lb-close:hover { color:var(--gold); }
+    .lb-prev,.lb-next { position:fixed; top:50%; transform:translateY(-50%); background:none; border:none; color:rgba(240,237,230,0.4); font-size:44px; cursor:pointer; z-index:9001; padding:20px; transition:color 0.2s; line-height:1; }
+    .lb-prev { left:4px; } .lb-next { right:4px; }
+    .lb-prev:hover,.lb-next:hover { color:var(--gold); }
+    .lb-meta { margin-top:14px; text-align:center; font-size:11px; color:var(--text-dim); font-family:'DM Sans',sans-serif; letter-spacing:0.08em; }
+    footer { padding:32px 48px; border-top:0.5px solid var(--border); display:flex; align-items:center; justify-content:space-between; margin-top:2px; }
+    .footer-logo { font-family:'Playfair Display',serif; font-size:14px; color:var(--text-dim); }
+    .footer-note { font-size:11px; color:var(--text-dim); letter-spacing:0.05em; }
+    @media(max-width:600px) {
+      header { padding:16px 20px; }
+      .gallery-intro { padding:28px 20px 20px; flex-direction:column; gap:16px; }
+      .gallery-meta { text-align:left; }
+      footer { padding:24px 20px; flex-direction:column; gap:12px; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cur"></div>
+  <div class="cursor-ring" id="ring"></div>
+  <header>
+    <a href="https://www.icapturehomes.com" class="logo">iCaptureHomes</a>
+    <div class="header-right">
+      <span class="gallery-title">Client Gallery</span>
+      <span class="header-count">145 photos</span>
+      <a href="galleries.html" class="back-link">All Galleries</a>
+    </div>
+  </header>
+  <div class="gallery-intro">
+    <div>
+      <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:10px;"><div style="width:18px;height:1px;background:var(--gold);"></div>iCaptureHomes Photography</div>
+      <h1>Laison<br><em>KDO</em></h1>
+    </div>
+    <div class="gallery-meta">
+      <div class="gallery-meta-label">Photos</div>
+      <div class="gallery-meta-val">145 images</div>
+    </div>
+  </div>
+  <div class="gallery-grid" id="grid">
+        <div class="gi" data-idx="0">
+          <img src="https://lh3.googleusercontent.com/d/1gD7EEV3TrFVuIrTnOziXxdt7Hx8lQckd" alt="Photo 001" loading="lazy">
+          <div class="gi-num">001</div>
+        </div>
+        <div class="gi" data-idx="1">
+          <img src="https://lh3.googleusercontent.com/d/1Ijfj46HfrVzVHILlSFkDm8CUFx_GLjA6" alt="Photo 002" loading="lazy">
+          <div class="gi-num">002</div>
+        </div>
+        <div class="gi" data-idx="2">
+          <img src="https://lh3.googleusercontent.com/d/1Q9xA4Sv9Ls0UfQrAoyjZ6Gzacyd6Ic5p" alt="Photo 003" loading="lazy">
+          <div class="gi-num">003</div>
+        </div>
+        <div class="gi" data-idx="3">
+          <img src="https://lh3.googleusercontent.com/d/1BLWVrmfxxi19teL9q_Mi5jiEwkxGuOX0" alt="Photo 004" loading="lazy">
+          <div class="gi-num">004</div>
+        </div>
+        <div class="gi" data-idx="4">
+          <img src="https://lh3.googleusercontent.com/d/1dq7kcH5ci9zE1pUtUsWiRpGFd-HUa8TP" alt="Photo 005" loading="lazy">
+          <div class="gi-num">005</div>
+        </div>
+        <div class="gi" data-idx="5">
+          <img src="https://lh3.googleusercontent.com/d/1HlF6_10ZmpGhgg34ia8fWXuBo6jhjCiu" alt="Photo 006" loading="lazy">
+          <div class="gi-num">006</div>
+        </div>
+        <div class="gi" data-idx="6">
+          <img src="https://lh3.googleusercontent.com/d/18PnOPlylkdLypKv1f86viUIu8MrZNccI" alt="Photo 007" loading="lazy">
+          <div class="gi-num">007</div>
+        </div>
+        <div class="gi" data-idx="7">
+          <img src="https://lh3.googleusercontent.com/d/140MJrjqWkex0yD4bLQXPKMC-XO_38iZ-" alt="Photo 008" loading="lazy">
+          <div class="gi-num">008</div>
+        </div>
+        <div class="gi" data-idx="8">
+          <img src="https://lh3.googleusercontent.com/d/108EL5PVOt6Vdh-tHpdyueMY2X4gKQt2e" alt="Photo 009" loading="lazy">
+          <div class="gi-num">009</div>
+        </div>
+        <div class="gi" data-idx="9">
+          <img src="https://lh3.googleusercontent.com/d/1jlVk01q6Tf8aw7DHH8OL14-8ZxYW9mBh" alt="Photo 010" loading="lazy">
+          <div class="gi-num">010</div>
+        </div>
+        <div class="gi" data-idx="10">
+          <img src="https://lh3.googleusercontent.com/d/1pGUdYTn00UvpQf2njRuWsfnwMozPHpWP" alt="Photo 011" loading="lazy">
+          <div class="gi-num">011</div>
+        </div>
+        <div class="gi" data-idx="11">
+          <img src="https://lh3.googleusercontent.com/d/1dL8fxxufPSWKaULRN_KvSuYfkYkAx5KO" alt="Photo 012" loading="lazy">
+          <div class="gi-num">012</div>
+        </div>
+        <div class="gi" data-idx="12">
+          <img src="https://lh3.googleusercontent.com/d/1vZrLp4b2LJcXtEo-dtPjWQmxFSwQ3w_-" alt="Photo 013" loading="lazy">
+          <div class="gi-num">013</div>
+        </div>
+        <div class="gi" data-idx="13">
+          <img src="https://lh3.googleusercontent.com/d/1lQAQo10olvmcfrhcoI2yXPjsVHdBDQr8" alt="Photo 014" loading="lazy">
+          <div class="gi-num">014</div>
+        </div>
+        <div class="gi" data-idx="14">
+          <img src="https://lh3.googleusercontent.com/d/1yK9XtjMGBB-EMJXznjPBimI3nvW_XMh3" alt="Photo 015" loading="lazy">
+          <div class="gi-num">015</div>
+        </div>
+        <div class="gi" data-idx="15">
+          <img src="https://lh3.googleusercontent.com/d/1vN60M5U5cYgtaAilxjlhkvvjS8EryLAV" alt="Photo 016" loading="lazy">
+          <div class="gi-num">016</div>
+        </div>
+        <div class="gi" data-idx="16">
+          <img src="https://lh3.googleusercontent.com/d/1Q8rYzad6M_TuGrxfP1SGZ1UK9-PYnvJd" alt="Photo 017" loading="lazy">
+          <div class="gi-num">017</div>
+        </div>
+        <div class="gi" data-idx="17">
+          <img src="https://lh3.googleusercontent.com/d/1VWqrYbkdU5XlyYeBL0tZU4Rf58zt_7_3" alt="Photo 018" loading="lazy">
+          <div class="gi-num">018</div>
+        </div>
+        <div class="gi" data-idx="18">
+          <img src="https://lh3.googleusercontent.com/d/1kLuhUgXRSrefRJ3eJ7hRSfkWsXepnqFh" alt="Photo 019" loading="lazy">
+          <div class="gi-num">019</div>
+        </div>
+        <div class="gi" data-idx="19">
+          <img src="https://lh3.googleusercontent.com/d/1uKUFvswRYxUIsNSaiXfEJ5VwotSrQimr" alt="Photo 020" loading="lazy">
+          <div class="gi-num">020</div>
+        </div>
+        <div class="gi" data-idx="20">
+          <img src="https://lh3.googleusercontent.com/d/17lzCFQZQ4b5rBL287teGC0-Js4q2NFcd" alt="Photo 021" loading="lazy">
+          <div class="gi-num">021</div>
+        </div>
+        <div class="gi" data-idx="21">
+          <img src="https://lh3.googleusercontent.com/d/1be2lLjcz0b-TxFkfWF5TUY9WJVIvPdJ6" alt="Photo 022" loading="lazy">
+          <div class="gi-num">022</div>
+        </div>
+        <div class="gi" data-idx="22">
+          <img src="https://lh3.googleusercontent.com/d/191ahztMwEVkCiTAZNVuIBRHCUqvFCXw9" alt="Photo 023" loading="lazy">
+          <div class="gi-num">023</div>
+        </div>
+        <div class="gi" data-idx="23">
+          <img src="https://lh3.googleusercontent.com/d/1qPVWxCrSkJ3s8wG5Nc2sX00KOBBwMSI1" alt="Photo 024" loading="lazy">
+          <div class="gi-num">024</div>
+        </div>
+        <div class="gi" data-idx="24">
+          <img src="https://lh3.googleusercontent.com/d/1FXL2SdhPHO6j0fho7ER0u4EQctbwcxGA" alt="Photo 025" loading="lazy">
+          <div class="gi-num">025</div>
+        </div>
+        <div class="gi" data-idx="25">
+          <img src="https://lh3.googleusercontent.com/d/1gvnVv5ey06SRh5Mvs-JJEGxYqGaCJ5_Y" alt="Photo 026" loading="lazy">
+          <div class="gi-num">026</div>
+        </div>
+        <div class="gi" data-idx="26">
+          <img src="https://lh3.googleusercontent.com/d/19iIZN7iX4r6SV3q5eRjknK411GTfMR_3" alt="Photo 027" loading="lazy">
+          <div class="gi-num">027</div>
+        </div>
+        <div class="gi" data-idx="27">
+          <img src="https://lh3.googleusercontent.com/d/17dyiVKTBrCBzGAPrvNifoedaHYkrkRDB" alt="Photo 028" loading="lazy">
+          <div class="gi-num">028</div>
+        </div>
+        <div class="gi" data-idx="28">
+          <img src="https://lh3.googleusercontent.com/d/13fEdBMGEUtaYIk8EmRkYHAFN0rla7aZv" alt="Photo 029" loading="lazy">
+          <div class="gi-num">029</div>
+        </div>
+        <div class="gi" data-idx="29">
+          <img src="https://lh3.googleusercontent.com/d/19GAjhQCHzaICsRmq5EI-TnlfIEpXqc7P" alt="Photo 030" loading="lazy">
+          <div class="gi-num">030</div>
+        </div>
+        <div class="gi" data-idx="30">
+          <img src="https://lh3.googleusercontent.com/d/1jGIT4E33uUj1mXKCLJ6bjj1Z59A5Hifm" alt="Photo 031" loading="lazy">
+          <div class="gi-num">031</div>
+        </div>
+        <div class="gi" data-idx="31">
+          <img src="https://lh3.googleusercontent.com/d/1d2RmUZcVYPxMTZ6iaG_TKUVwoZF9CV0R" alt="Photo 032" loading="lazy">
+          <div class="gi-num">032</div>
+        </div>
+        <div class="gi" data-idx="32">
+          <img src="https://lh3.googleusercontent.com/d/1ZXxdnkoIOExjjcIVNH9MNWmylgM0VoLo" alt="Photo 033" loading="lazy">
+          <div class="gi-num">033</div>
+        </div>
+        <div class="gi" data-idx="33">
+          <img src="https://lh3.googleusercontent.com/d/1VFT5_Tkk9CYQLMLxVxnb7NUD8trFYueF" alt="Photo 034" loading="lazy">
+          <div class="gi-num">034</div>
+        </div>
+        <div class="gi" data-idx="34">
+          <img src="https://lh3.googleusercontent.com/d/1btISnD4oQP7EWfOUsWszXpJcG2FUTpwp" alt="Photo 035" loading="lazy">
+          <div class="gi-num">035</div>
+        </div>
+        <div class="gi" data-idx="35">
+          <img src="https://lh3.googleusercontent.com/d/1omerbLCAzw-6pSpUd6Jk5yDmNaHNLhb7" alt="Photo 036" loading="lazy">
+          <div class="gi-num">036</div>
+        </div>
+        <div class="gi" data-idx="36">
+          <img src="https://lh3.googleusercontent.com/d/1BaeYOHgISOSoYd7Rwh0A3cNRTbPYzOBc" alt="Photo 037" loading="lazy">
+          <div class="gi-num">037</div>
+        </div>
+        <div class="gi" data-idx="37">
+          <img src="https://lh3.googleusercontent.com/d/1YrdKJuntPrQaepW0yUkS8TUVtud7yK2t" alt="Photo 038" loading="lazy">
+          <div class="gi-num">038</div>
+        </div>
+        <div class="gi" data-idx="38">
+          <img src="https://lh3.googleusercontent.com/d/192ZuWSCaYmbTOPgb3lpWbSTlTKi0mmkE" alt="Photo 039" loading="lazy">
+          <div class="gi-num">039</div>
+        </div>
+        <div class="gi" data-idx="39">
+          <img src="https://lh3.googleusercontent.com/d/1n7p1L91v8rpfJKvBt9V3e3FeYATmIOd6" alt="Photo 040" loading="lazy">
+          <div class="gi-num">040</div>
+        </div>
+        <div class="gi" data-idx="40">
+          <img src="https://lh3.googleusercontent.com/d/1k2WOrElQ83y_B-TMQpebR63Um64U9jXt" alt="Photo 041" loading="lazy">
+          <div class="gi-num">041</div>
+        </div>
+        <div class="gi" data-idx="41">
+          <img src="https://lh3.googleusercontent.com/d/1Cnxy5NjOyPI8dkNYyOenCyWbRXaW6_RC" alt="Photo 042" loading="lazy">
+          <div class="gi-num">042</div>
+        </div>
+        <div class="gi" data-idx="42">
+          <img src="https://lh3.googleusercontent.com/d/1v8s3QYo5EVJPxxotsAQQGX4ePDTVgm6N" alt="Photo 043" loading="lazy">
+          <div class="gi-num">043</div>
+        </div>
+        <div class="gi" data-idx="43">
+          <img src="https://lh3.googleusercontent.com/d/13tc8NXE07sNZzB0RoD1qijsqspvXDtnE" alt="Photo 044" loading="lazy">
+          <div class="gi-num">044</div>
+        </div>
+        <div class="gi" data-idx="44">
+          <img src="https://lh3.googleusercontent.com/d/1_8ZB92TxNjBTtz_yoFtSoqj9R2a7oaan" alt="Photo 045" loading="lazy">
+          <div class="gi-num">045</div>
+        </div>
+        <div class="gi" data-idx="45">
+          <img src="https://lh3.googleusercontent.com/d/1m79qC2hkWEz05Aay1ort0hHl3WZubTEk" alt="Photo 046" loading="lazy">
+          <div class="gi-num">046</div>
+        </div>
+        <div class="gi" data-idx="46">
+          <img src="https://lh3.googleusercontent.com/d/1IW1_GLR9cEOvphkAwggtKdsZpX6rTwdN" alt="Photo 047" loading="lazy">
+          <div class="gi-num">047</div>
+        </div>
+        <div class="gi" data-idx="47">
+          <img src="https://lh3.googleusercontent.com/d/1nydkbhSTvPbU0Fj3Rn_hjhHpJ5H74cm-" alt="Photo 048" loading="lazy">
+          <div class="gi-num">048</div>
+        </div>
+        <div class="gi" data-idx="48">
+          <img src="https://lh3.googleusercontent.com/d/1WfxmMA6odLsBtsoalOFIJVrGz9cswt7g" alt="Photo 049" loading="lazy">
+          <div class="gi-num">049</div>
+        </div>
+        <div class="gi" data-idx="49">
+          <img src="https://lh3.googleusercontent.com/d/1O6NEPKUWX5MKygc7y7TMxDCfX4j9as3v" alt="Photo 050" loading="lazy">
+          <div class="gi-num">050</div>
+        </div>
+        <div class="gi" data-idx="50">
+          <img src="https://lh3.googleusercontent.com/d/1bSuXnlwFqQsiuWLheZFhbANpkvKLUiIU" alt="Photo 051" loading="lazy">
+          <div class="gi-num">051</div>
+        </div>
+        <div class="gi" data-idx="51">
+          <img src="https://lh3.googleusercontent.com/d/1UvUtrRCIKWff8UsK0ZHN_T5Q078RzAXG" alt="Photo 052" loading="lazy">
+          <div class="gi-num">052</div>
+        </div>
+        <div class="gi" data-idx="52">
+          <img src="https://lh3.googleusercontent.com/d/1lOFIpIVuLJTqzKx19Ho91xi5ShCiwwC7" alt="Photo 053" loading="lazy">
+          <div class="gi-num">053</div>
+        </div>
+        <div class="gi" data-idx="53">
+          <img src="https://lh3.googleusercontent.com/d/1pnHjl7KU8bLNWPI0Rli9TP5NejUP_piq" alt="Photo 054" loading="lazy">
+          <div class="gi-num">054</div>
+        </div>
+        <div class="gi" data-idx="54">
+          <img src="https://lh3.googleusercontent.com/d/1RceOQmC4CY-O9DDwFDep19H6rdu1RhqJ" alt="Photo 055" loading="lazy">
+          <div class="gi-num">055</div>
+        </div>
+        <div class="gi" data-idx="55">
+          <img src="https://lh3.googleusercontent.com/d/1A8M8oATmR9qfQ4WZHxnbO9EO6imFn_Un" alt="Photo 056" loading="lazy">
+          <div class="gi-num">056</div>
+        </div>
+        <div class="gi" data-idx="56">
+          <img src="https://lh3.googleusercontent.com/d/1peMMob-nhdCza7d6ystLUtXOB0cnZjpE" alt="Photo 057" loading="lazy">
+          <div class="gi-num">057</div>
+        </div>
+        <div class="gi" data-idx="57">
+          <img src="https://lh3.googleusercontent.com/d/1DfJruv1FRvn8FcwT298a_oG9jpRkVe0z" alt="Photo 058" loading="lazy">
+          <div class="gi-num">058</div>
+        </div>
+        <div class="gi" data-idx="58">
+          <img src="https://lh3.googleusercontent.com/d/1g4bde2er02BVwV9t195GzZR2O-olFefY" alt="Photo 059" loading="lazy">
+          <div class="gi-num">059</div>
+        </div>
+        <div class="gi" data-idx="59">
+          <img src="https://lh3.googleusercontent.com/d/1unG5TsicTIA7-Cc0eoWNendWPmIU84Zs" alt="Photo 060" loading="lazy">
+          <div class="gi-num">060</div>
+        </div>
+        <div class="gi" data-idx="60">
+          <img src="https://lh3.googleusercontent.com/d/1qYoVUaHmjYUvatW_-Ek-TtqPkO1bEq8W" alt="Photo 061" loading="lazy">
+          <div class="gi-num">061</div>
+        </div>
+        <div class="gi" data-idx="61">
+          <img src="https://lh3.googleusercontent.com/d/1K8fWOk7PHh48AspSa34z_ewcOsnLY2SV" alt="Photo 062" loading="lazy">
+          <div class="gi-num">062</div>
+        </div>
+        <div class="gi" data-idx="62">
+          <img src="https://lh3.googleusercontent.com/d/1fF8pSZKYI_7YAhBL2Nb6XHZB8AOfmuea" alt="Photo 063" loading="lazy">
+          <div class="gi-num">063</div>
+        </div>
+        <div class="gi" data-idx="63">
+          <img src="https://lh3.googleusercontent.com/d/1fLEGjR_ZYoKLe1u-tG13vQF9Y2oqFWZv" alt="Photo 064" loading="lazy">
+          <div class="gi-num">064</div>
+        </div>
+        <div class="gi" data-idx="64">
+          <img src="https://lh3.googleusercontent.com/d/1ziShDoH5mNrJcnAQbylz0MUl2GmqCLl_" alt="Photo 065" loading="lazy">
+          <div class="gi-num">065</div>
+        </div>
+        <div class="gi" data-idx="65">
+          <img src="https://lh3.googleusercontent.com/d/16zVHC4E2jU4XdqbzLdS0oG3bESq8qwlc" alt="Photo 066" loading="lazy">
+          <div class="gi-num">066</div>
+        </div>
+        <div class="gi" data-idx="66">
+          <img src="https://lh3.googleusercontent.com/d/1GZXXFhiqHD6cCviERwHRuQvq9bSrdhSe" alt="Photo 067" loading="lazy">
+          <div class="gi-num">067</div>
+        </div>
+        <div class="gi" data-idx="67">
+          <img src="https://lh3.googleusercontent.com/d/1HGB77mSsRynFqt7jeFmld5RgixTEJMBh" alt="Photo 068" loading="lazy">
+          <div class="gi-num">068</div>
+        </div>
+        <div class="gi" data-idx="68">
+          <img src="https://lh3.googleusercontent.com/d/1O8IO68Pe03WJaWATcAnUAMLHvWEElbO0" alt="Photo 069" loading="lazy">
+          <div class="gi-num">069</div>
+        </div>
+        <div class="gi" data-idx="69">
+          <img src="https://lh3.googleusercontent.com/d/1JtOi4rPbmkpO6IdcjN3ygHPHjZwYhFwj" alt="Photo 070" loading="lazy">
+          <div class="gi-num">070</div>
+        </div>
+        <div class="gi" data-idx="70">
+          <img src="https://lh3.googleusercontent.com/d/1E0RAEFLyjTfRFjYyS3GP86N6bBUoh-bV" alt="Photo 071" loading="lazy">
+          <div class="gi-num">071</div>
+        </div>
+        <div class="gi" data-idx="71">
+          <img src="https://lh3.googleusercontent.com/d/1b-v0C8lhwpq__tnu8KQT5Rd5W377xcFH" alt="Photo 072" loading="lazy">
+          <div class="gi-num">072</div>
+        </div>
+        <div class="gi" data-idx="72">
+          <img src="https://lh3.googleusercontent.com/d/1FkfP6Zq5Up-tYw2Su-iYpGRB7VnR0hOW" alt="Photo 073" loading="lazy">
+          <div class="gi-num">073</div>
+        </div>
+        <div class="gi" data-idx="73">
+          <img src="https://lh3.googleusercontent.com/d/1vjTPWIytg9WAxvW8tF0_s9yOZjsvCiL2" alt="Photo 074" loading="lazy">
+          <div class="gi-num">074</div>
+        </div>
+        <div class="gi" data-idx="74">
+          <img src="https://lh3.googleusercontent.com/d/16a3Pje4SS_iwJ7MrfK_nmU6vlkVbibOL" alt="Photo 075" loading="lazy">
+          <div class="gi-num">075</div>
+        </div>
+        <div class="gi" data-idx="75">
+          <img src="https://lh3.googleusercontent.com/d/1bXXv-q7VRPsKPUUvAwqU7ZRhB1440FDh" alt="Photo 076" loading="lazy">
+          <div class="gi-num">076</div>
+        </div>
+        <div class="gi" data-idx="76">
+          <img src="https://lh3.googleusercontent.com/d/1ptPV5DF9ATbvMeL39diyX3I1UjnqrW4A" alt="Photo 077" loading="lazy">
+          <div class="gi-num">077</div>
+        </div>
+        <div class="gi" data-idx="77">
+          <img src="https://lh3.googleusercontent.com/d/1hHuNoPDmA1MMiITzccMRgDeOU5oD2mbc" alt="Photo 078" loading="lazy">
+          <div class="gi-num">078</div>
+        </div>
+        <div class="gi" data-idx="78">
+          <img src="https://lh3.googleusercontent.com/d/1fZIsYCnVA4jB0LCAsYgi0OUFcfR08r_d" alt="Photo 079" loading="lazy">
+          <div class="gi-num">079</div>
+        </div>
+        <div class="gi" data-idx="79">
+          <img src="https://lh3.googleusercontent.com/d/1vBSEYvVKGLrn61TNztXpIl6bqfiJuDto" alt="Photo 080" loading="lazy">
+          <div class="gi-num">080</div>
+        </div>
+        <div class="gi" data-idx="80">
+          <img src="https://lh3.googleusercontent.com/d/1AxOWrS3fvmu-V61ZlHlYcvUBAaso-MMo" alt="Photo 081" loading="lazy">
+          <div class="gi-num">081</div>
+        </div>
+        <div class="gi" data-idx="81">
+          <img src="https://lh3.googleusercontent.com/d/1bfJkPd2eoAV0zhaWDJYZKuOWcswnVpTJ" alt="Photo 082" loading="lazy">
+          <div class="gi-num">082</div>
+        </div>
+        <div class="gi" data-idx="82">
+          <img src="https://lh3.googleusercontent.com/d/1ptiTcoi3eGFulSd9xUFSHVVU_lB6YVp3" alt="Photo 083" loading="lazy">
+          <div class="gi-num">083</div>
+        </div>
+        <div class="gi" data-idx="83">
+          <img src="https://lh3.googleusercontent.com/d/1m00iXmQbDY4rF-7fHcH4AFyt1wjU1HEn" alt="Photo 084" loading="lazy">
+          <div class="gi-num">084</div>
+        </div>
+        <div class="gi" data-idx="84">
+          <img src="https://lh3.googleusercontent.com/d/1b8J4d36JntLIfa49xZNMuVGCi7FdV28K" alt="Photo 085" loading="lazy">
+          <div class="gi-num">085</div>
+        </div>
+        <div class="gi" data-idx="85">
+          <img src="https://lh3.googleusercontent.com/d/19nng8pu8aurjitogzV7vYicMIe1lZX5l" alt="Photo 086" loading="lazy">
+          <div class="gi-num">086</div>
+        </div>
+        <div class="gi" data-idx="86">
+          <img src="https://lh3.googleusercontent.com/d/1U5YVQKbRnNAvqMMWDN5-xIL7L4j6ek_N" alt="Photo 087" loading="lazy">
+          <div class="gi-num">087</div>
+        </div>
+        <div class="gi" data-idx="87">
+          <img src="https://lh3.googleusercontent.com/d/1im5IQipxhVS5tSYxiccrdiauF5EEUFDY" alt="Photo 088" loading="lazy">
+          <div class="gi-num">088</div>
+        </div>
+        <div class="gi" data-idx="88">
+          <img src="https://lh3.googleusercontent.com/d/1372m9sEogv-iAFk9ODXWRBtiqax-3ESc" alt="Photo 089" loading="lazy">
+          <div class="gi-num">089</div>
+        </div>
+        <div class="gi" data-idx="89">
+          <img src="https://lh3.googleusercontent.com/d/14iuaV6pofecDs7CY-vdxGCh7Ew_Denll" alt="Photo 090" loading="lazy">
+          <div class="gi-num">090</div>
+        </div>
+        <div class="gi" data-idx="90">
+          <img src="https://lh3.googleusercontent.com/d/1FmBJpLyi6vOweniGltYZucGCuaKjbzj8" alt="Photo 091" loading="lazy">
+          <div class="gi-num">091</div>
+        </div>
+        <div class="gi" data-idx="91">
+          <img src="https://lh3.googleusercontent.com/d/1uTdFPX_CZMwqBlne37W0lmuLtagUxv5E" alt="Photo 092" loading="lazy">
+          <div class="gi-num">092</div>
+        </div>
+        <div class="gi" data-idx="92">
+          <img src="https://lh3.googleusercontent.com/d/1Txx6Q8PAZg4lSw3BP2M6SS2CTflT4zDN" alt="Photo 093" loading="lazy">
+          <div class="gi-num">093</div>
+        </div>
+        <div class="gi" data-idx="93">
+          <img src="https://lh3.googleusercontent.com/d/1YR2CVfonoSEP3sO6HnejNkLuIrF3wJYv" alt="Photo 094" loading="lazy">
+          <div class="gi-num">094</div>
+        </div>
+        <div class="gi" data-idx="94">
+          <img src="https://lh3.googleusercontent.com/d/1_I4BDeawjoks8sz5cObbIYS2c2bpUOMP" alt="Photo 095" loading="lazy">
+          <div class="gi-num">095</div>
+        </div>
+        <div class="gi" data-idx="95">
+          <img src="https://lh3.googleusercontent.com/d/18n_4WiNh73FQeJMr1rqOidDUhwA2FWno" alt="Photo 096" loading="lazy">
+          <div class="gi-num">096</div>
+        </div>
+        <div class="gi" data-idx="96">
+          <img src="https://lh3.googleusercontent.com/d/1DuyzfXZdTmQOrUnzNKHRaAdb5L-59FCt" alt="Photo 097" loading="lazy">
+          <div class="gi-num">097</div>
+        </div>
+        <div class="gi" data-idx="97">
+          <img src="https://lh3.googleusercontent.com/d/17DFzW9R08Wm8-teLu5wEtCZtyAhw4K7C" alt="Photo 098" loading="lazy">
+          <div class="gi-num">098</div>
+        </div>
+        <div class="gi" data-idx="98">
+          <img src="https://lh3.googleusercontent.com/d/1u0DM1EoXvaKvjQTQ0dd5gscEOWZfiX1V" alt="Photo 099" loading="lazy">
+          <div class="gi-num">099</div>
+        </div>
+        <div class="gi" data-idx="99">
+          <img src="https://lh3.googleusercontent.com/d/1uVZzyemYAlusAvsYkejQw_80X5nT3zXd" alt="Photo 100" loading="lazy">
+          <div class="gi-num">100</div>
+        </div>
+        <div class="gi" data-idx="100">
+          <img src="https://lh3.googleusercontent.com/d/1khWsngtEwIYMgtVQG9ydw7DKbG1IRWQu" alt="Photo 101" loading="lazy">
+          <div class="gi-num">101</div>
+        </div>
+        <div class="gi" data-idx="101">
+          <img src="https://lh3.googleusercontent.com/d/1bTJvOXDWLzbYq-Z4-0xAiQV-D-cxpWWW" alt="Photo 102" loading="lazy">
+          <div class="gi-num">102</div>
+        </div>
+        <div class="gi" data-idx="102">
+          <img src="https://lh3.googleusercontent.com/d/1TzvGwjVSKRFdf6QSQZ93Ej3Kl2_efZrd" alt="Photo 103" loading="lazy">
+          <div class="gi-num">103</div>
+        </div>
+        <div class="gi" data-idx="103">
+          <img src="https://lh3.googleusercontent.com/d/100nsSQQmESS2JHwaJCrujxxcubnubWnk" alt="Photo 104" loading="lazy">
+          <div class="gi-num">104</div>
+        </div>
+        <div class="gi" data-idx="104">
+          <img src="https://lh3.googleusercontent.com/d/1bpKggpawPEAaHNkMefEssShfbLTiivmb" alt="Photo 105" loading="lazy">
+          <div class="gi-num">105</div>
+        </div>
+        <div class="gi" data-idx="105">
+          <img src="https://lh3.googleusercontent.com/d/1xZleOSBFdEfRfzYiEUH9DFCtkolOooUr" alt="Photo 106" loading="lazy">
+          <div class="gi-num">106</div>
+        </div>
+        <div class="gi" data-idx="106">
+          <img src="https://lh3.googleusercontent.com/d/1HDIYUbzE56L_4hB681cCDXI6pi1GnRgj" alt="Photo 107" loading="lazy">
+          <div class="gi-num">107</div>
+        </div>
+        <div class="gi" data-idx="107">
+          <img src="https://lh3.googleusercontent.com/d/1ic23GkUK5ux6OViMdaeD9c0_RAjbMkk8" alt="Photo 108" loading="lazy">
+          <div class="gi-num">108</div>
+        </div>
+        <div class="gi" data-idx="108">
+          <img src="https://lh3.googleusercontent.com/d/1Q_b4QOm4OmWynBKNcLzZ0cWQ-4dXWAp6" alt="Photo 109" loading="lazy">
+          <div class="gi-num">109</div>
+        </div>
+        <div class="gi" data-idx="109">
+          <img src="https://lh3.googleusercontent.com/d/1_1mnLcY6YexmS8AxYJ7CBAEuWRhghpci" alt="Photo 110" loading="lazy">
+          <div class="gi-num">110</div>
+        </div>
+        <div class="gi" data-idx="110">
+          <img src="https://lh3.googleusercontent.com/d/1UNcareTH22o4coTdNj49WGnWD2oI_588" alt="Photo 111" loading="lazy">
+          <div class="gi-num">111</div>
+        </div>
+        <div class="gi" data-idx="111">
+          <img src="https://lh3.googleusercontent.com/d/127zCFgjOEZ-QTy3qlE7Y_BzSp_SYreAw" alt="Photo 112" loading="lazy">
+          <div class="gi-num">112</div>
+        </div>
+        <div class="gi" data-idx="112">
+          <img src="https://lh3.googleusercontent.com/d/1IyADFHealwlneNzr5tkMkWTNJur6RYB0" alt="Photo 113" loading="lazy">
+          <div class="gi-num">113</div>
+        </div>
+        <div class="gi" data-idx="113">
+          <img src="https://lh3.googleusercontent.com/d/1RJp0JTShhd6wW4UhQSUWPwyoQ9h06S__" alt="Photo 114" loading="lazy">
+          <div class="gi-num">114</div>
+        </div>
+        <div class="gi" data-idx="114">
+          <img src="https://lh3.googleusercontent.com/d/1l3aurMYavyq-2vCDhSXQY6utK0dbJbak" alt="Photo 115" loading="lazy">
+          <div class="gi-num">115</div>
+        </div>
+        <div class="gi" data-idx="115">
+          <img src="https://lh3.googleusercontent.com/d/1Syc-WAFYma8IXN_lFgGgDlJynl7i2fpB" alt="Photo 116" loading="lazy">
+          <div class="gi-num">116</div>
+        </div>
+        <div class="gi" data-idx="116">
+          <img src="https://lh3.googleusercontent.com/d/1GDPJu2IE5-5V2P20Z2KvrrcWDxpAagmr" alt="Photo 117" loading="lazy">
+          <div class="gi-num">117</div>
+        </div>
+        <div class="gi" data-idx="117">
+          <img src="https://lh3.googleusercontent.com/d/10Qm_ZgXN0g_Ozfc9HEiCcW6fPtTMVkY_" alt="Photo 118" loading="lazy">
+          <div class="gi-num">118</div>
+        </div>
+        <div class="gi" data-idx="118">
+          <img src="https://lh3.googleusercontent.com/d/1N96fvkOqiAAaRNcT664XaXbwM1HYtAv2" alt="Photo 119" loading="lazy">
+          <div class="gi-num">119</div>
+        </div>
+        <div class="gi" data-idx="119">
+          <img src="https://lh3.googleusercontent.com/d/1adWjCTQ_PPnwKdGahsgU0TnRoM0zAKru" alt="Photo 120" loading="lazy">
+          <div class="gi-num">120</div>
+        </div>
+        <div class="gi" data-idx="120">
+          <img src="https://lh3.googleusercontent.com/d/1HW-tspO6YQZwKzvQOg8jFVLLUkuHAS4e" alt="Photo 121" loading="lazy">
+          <div class="gi-num">121</div>
+        </div>
+        <div class="gi" data-idx="121">
+          <img src="https://lh3.googleusercontent.com/d/1OcQRFs3_Zj3w4l980KaEF6sxbnLu16_N" alt="Photo 122" loading="lazy">
+          <div class="gi-num">122</div>
+        </div>
+        <div class="gi" data-idx="122">
+          <img src="https://lh3.googleusercontent.com/d/1jGCS-D40efdaeHCleON44BFwNuU7JG5J" alt="Photo 123" loading="lazy">
+          <div class="gi-num">123</div>
+        </div>
+        <div class="gi" data-idx="123">
+          <img src="https://lh3.googleusercontent.com/d/11H1m892FhCT4CM7praxyPnKS-INuUViv" alt="Photo 124" loading="lazy">
+          <div class="gi-num">124</div>
+        </div>
+        <div class="gi" data-idx="124">
+          <img src="https://lh3.googleusercontent.com/d/1ek5Did1yrDifB8J5YMEWUa4saeflNXuF" alt="Photo 125" loading="lazy">
+          <div class="gi-num">125</div>
+        </div>
+        <div class="gi" data-idx="125">
+          <img src="https://lh3.googleusercontent.com/d/1yuqju0rx5Vz3TZrHWkhB7KlIuAcYfwWX" alt="Photo 126" loading="lazy">
+          <div class="gi-num">126</div>
+        </div>
+        <div class="gi" data-idx="126">
+          <img src="https://lh3.googleusercontent.com/d/1HBXULg8xyq0FsdVIoetY3mB2bXTHvu6K" alt="Photo 127" loading="lazy">
+          <div class="gi-num">127</div>
+        </div>
+        <div class="gi" data-idx="127">
+          <img src="https://lh3.googleusercontent.com/d/1ENRaFnOnpBNN2BMzj9T0WZa0F8HR9Qcu" alt="Photo 128" loading="lazy">
+          <div class="gi-num">128</div>
+        </div>
+        <div class="gi" data-idx="128">
+          <img src="https://lh3.googleusercontent.com/d/1ak08FNBWqEkv7fcPt_7qHDcDcTpadQfE" alt="Photo 129" loading="lazy">
+          <div class="gi-num">129</div>
+        </div>
+        <div class="gi" data-idx="129">
+          <img src="https://lh3.googleusercontent.com/d/1ezQ3kpDyvZur2g2PP1kngbBn6c4DStkA" alt="Photo 130" loading="lazy">
+          <div class="gi-num">130</div>
+        </div>
+        <div class="gi" data-idx="130">
+          <img src="https://lh3.googleusercontent.com/d/14-5jbGsToHOc4IBofmjLDo40iIQuRpxH" alt="Photo 131" loading="lazy">
+          <div class="gi-num">131</div>
+        </div>
+        <div class="gi" data-idx="131">
+          <img src="https://lh3.googleusercontent.com/d/1i7SCtRNnvikC4W5hQMHWU09kvRtT1DKs" alt="Photo 132" loading="lazy">
+          <div class="gi-num">132</div>
+        </div>
+        <div class="gi" data-idx="132">
+          <img src="https://lh3.googleusercontent.com/d/1xxpboCJjFqFeTqQLm9l_hMLRuw5el8RF" alt="Photo 133" loading="lazy">
+          <div class="gi-num">133</div>
+        </div>
+        <div class="gi" data-idx="133">
+          <img src="https://lh3.googleusercontent.com/d/1Si2JKGHvmPHRIQHv6pivX8AU0IwSDcgk" alt="Photo 134" loading="lazy">
+          <div class="gi-num">134</div>
+        </div>
+        <div class="gi" data-idx="134">
+          <img src="https://lh3.googleusercontent.com/d/1qFjbuaCwGOnisHfklqySOhhbRlfbhXKD" alt="Photo 135" loading="lazy">
+          <div class="gi-num">135</div>
+        </div>
+        <div class="gi" data-idx="135">
+          <img src="https://lh3.googleusercontent.com/d/1a9GpF9_UMzpp5XNTp7nlm26klDMj1kJQ" alt="Photo 136" loading="lazy">
+          <div class="gi-num">136</div>
+        </div>
+        <div class="gi" data-idx="136">
+          <img src="https://lh3.googleusercontent.com/d/10rhyU0beZaAeR6pZ4GMXT0h9SluxGZ6u" alt="Photo 137" loading="lazy">
+          <div class="gi-num">137</div>
+        </div>
+        <div class="gi" data-idx="137">
+          <img src="https://lh3.googleusercontent.com/d/1PNhndXQ_2WpLgHDojW3NrqLOLr2nIXXg" alt="Photo 138" loading="lazy">
+          <div class="gi-num">138</div>
+        </div>
+        <div class="gi" data-idx="138">
+          <img src="https://lh3.googleusercontent.com/d/1_Jl69i3EYTIYjhJp91yC7qmtSpByTjTD" alt="Photo 139" loading="lazy">
+          <div class="gi-num">139</div>
+        </div>
+        <div class="gi" data-idx="139">
+          <img src="https://lh3.googleusercontent.com/d/1xi6rTb6Es_Dl1Op5F7KgfBgLEEKshFbq" alt="Photo 140" loading="lazy">
+          <div class="gi-num">140</div>
+        </div>
+        <div class="gi" data-idx="140">
+          <img src="https://lh3.googleusercontent.com/d/19BlWXn19GN7fEvcDjI182qiFg8kHlxQl" alt="Photo 141" loading="lazy">
+          <div class="gi-num">141</div>
+        </div>
+        <div class="gi" data-idx="141">
+          <img src="https://lh3.googleusercontent.com/d/1GQfnT_PFcBKsR5A5aqQK0o71WNaWEweN" alt="Photo 142" loading="lazy">
+          <div class="gi-num">142</div>
+        </div>
+        <div class="gi" data-idx="142">
+          <img src="https://lh3.googleusercontent.com/d/1lamoNDyc6yBwFE3yh3qqWGV10fENKJCo" alt="Photo 143" loading="lazy">
+          <div class="gi-num">143</div>
+        </div>
+        <div class="gi" data-idx="143">
+          <img src="https://lh3.googleusercontent.com/d/1MqScnt6AwCYpSY6D-OPjBWXgjdh5SN6B" alt="Photo 144" loading="lazy">
+          <div class="gi-num">144</div>
+        </div>
+        <div class="gi" data-idx="144">
+          <img src="https://lh3.googleusercontent.com/d/1SDHMTSp3Dvrst6n1AaUdD5JgezznbEaC" alt="Photo 145" loading="lazy">
+          <div class="gi-num">145</div>
+        </div>
+  </div>
+  <div class="lb" id="lb">
+    <button class="lb-close" id="lbClose">&#10005;</button>
+    <button class="lb-prev" id="lbPrev">&#8249;</button>
+    <div class="lb-img-wrap"><img id="lbImg" src="" alt=""></div>
+    <div class="lb-meta" id="lbMeta"></div>
+    <button class="lb-next" id="lbNext">&#8250;</button>
+  </div>
+  <footer>
+    <div class="footer-logo">iCaptureHomes Photography</div>
+    <div class="footer-note">Private gallery — for viewing only</div>
+  </footer>
+  <script>
+    var cx=0,cy=0,rx=0,ry=0;
+    var cur=document.getElementById('cur'),ring=document.getElementById('ring');
+    document.addEventListener('mousemove',function(e){cx=e.clientX;cy=e.clientY;cur.style.left=cx+'px';cur.style.top=cy+'px';});
+    function animRing(){rx+=(cx-rx)*0.12;ry+=(cy-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+    animRing();
+    var imgs = [
+    "https://lh3.googleusercontent.com/d/1gD7EEV3TrFVuIrTnOziXxdt7Hx8lQckd",
+    "https://lh3.googleusercontent.com/d/1Ijfj46HfrVzVHILlSFkDm8CUFx_GLjA6",
+    "https://lh3.googleusercontent.com/d/1Q9xA4Sv9Ls0UfQrAoyjZ6Gzacyd6Ic5p",
+    "https://lh3.googleusercontent.com/d/1BLWVrmfxxi19teL9q_Mi5jiEwkxGuOX0",
+    "https://lh3.googleusercontent.com/d/1dq7kcH5ci9zE1pUtUsWiRpGFd-HUa8TP",
+    "https://lh3.googleusercontent.com/d/1HlF6_10ZmpGhgg34ia8fWXuBo6jhjCiu",
+    "https://lh3.googleusercontent.com/d/18PnOPlylkdLypKv1f86viUIu8MrZNccI",
+    "https://lh3.googleusercontent.com/d/140MJrjqWkex0yD4bLQXPKMC-XO_38iZ-",
+    "https://lh3.googleusercontent.com/d/108EL5PVOt6Vdh-tHpdyueMY2X4gKQt2e",
+    "https://lh3.googleusercontent.com/d/1jlVk01q6Tf8aw7DHH8OL14-8ZxYW9mBh",
+    "https://lh3.googleusercontent.com/d/1pGUdYTn00UvpQf2njRuWsfnwMozPHpWP",
+    "https://lh3.googleusercontent.com/d/1dL8fxxufPSWKaULRN_KvSuYfkYkAx5KO",
+    "https://lh3.googleusercontent.com/d/1vZrLp4b2LJcXtEo-dtPjWQmxFSwQ3w_-",
+    "https://lh3.googleusercontent.com/d/1lQAQo10olvmcfrhcoI2yXPjsVHdBDQr8",
+    "https://lh3.googleusercontent.com/d/1yK9XtjMGBB-EMJXznjPBimI3nvW_XMh3",
+    "https://lh3.googleusercontent.com/d/1vN60M5U5cYgtaAilxjlhkvvjS8EryLAV",
+    "https://lh3.googleusercontent.com/d/1Q8rYzad6M_TuGrxfP1SGZ1UK9-PYnvJd",
+    "https://lh3.googleusercontent.com/d/1VWqrYbkdU5XlyYeBL0tZU4Rf58zt_7_3",
+    "https://lh3.googleusercontent.com/d/1kLuhUgXRSrefRJ3eJ7hRSfkWsXepnqFh",
+    "https://lh3.googleusercontent.com/d/1uKUFvswRYxUIsNSaiXfEJ5VwotSrQimr",
+    "https://lh3.googleusercontent.com/d/17lzCFQZQ4b5rBL287teGC0-Js4q2NFcd",
+    "https://lh3.googleusercontent.com/d/1be2lLjcz0b-TxFkfWF5TUY9WJVIvPdJ6",
+    "https://lh3.googleusercontent.com/d/191ahztMwEVkCiTAZNVuIBRHCUqvFCXw9",
+    "https://lh3.googleusercontent.com/d/1qPVWxCrSkJ3s8wG5Nc2sX00KOBBwMSI1",
+    "https://lh3.googleusercontent.com/d/1FXL2SdhPHO6j0fho7ER0u4EQctbwcxGA",
+    "https://lh3.googleusercontent.com/d/1gvnVv5ey06SRh5Mvs-JJEGxYqGaCJ5_Y",
+    "https://lh3.googleusercontent.com/d/19iIZN7iX4r6SV3q5eRjknK411GTfMR_3",
+    "https://lh3.googleusercontent.com/d/17dyiVKTBrCBzGAPrvNifoedaHYkrkRDB",
+    "https://lh3.googleusercontent.com/d/13fEdBMGEUtaYIk8EmRkYHAFN0rla7aZv",
+    "https://lh3.googleusercontent.com/d/19GAjhQCHzaICsRmq5EI-TnlfIEpXqc7P",
+    "https://lh3.googleusercontent.com/d/1jGIT4E33uUj1mXKCLJ6bjj1Z59A5Hifm",
+    "https://lh3.googleusercontent.com/d/1d2RmUZcVYPxMTZ6iaG_TKUVwoZF9CV0R",
+    "https://lh3.googleusercontent.com/d/1ZXxdnkoIOExjjcIVNH9MNWmylgM0VoLo",
+    "https://lh3.googleusercontent.com/d/1VFT5_Tkk9CYQLMLxVxnb7NUD8trFYueF",
+    "https://lh3.googleusercontent.com/d/1btISnD4oQP7EWfOUsWszXpJcG2FUTpwp",
+    "https://lh3.googleusercontent.com/d/1omerbLCAzw-6pSpUd6Jk5yDmNaHNLhb7",
+    "https://lh3.googleusercontent.com/d/1BaeYOHgISOSoYd7Rwh0A3cNRTbPYzOBc",
+    "https://lh3.googleusercontent.com/d/1YrdKJuntPrQaepW0yUkS8TUVtud7yK2t",
+    "https://lh3.googleusercontent.com/d/192ZuWSCaYmbTOPgb3lpWbSTlTKi0mmkE",
+    "https://lh3.googleusercontent.com/d/1n7p1L91v8rpfJKvBt9V3e3FeYATmIOd6",
+    "https://lh3.googleusercontent.com/d/1k2WOrElQ83y_B-TMQpebR63Um64U9jXt",
+    "https://lh3.googleusercontent.com/d/1Cnxy5NjOyPI8dkNYyOenCyWbRXaW6_RC",
+    "https://lh3.googleusercontent.com/d/1v8s3QYo5EVJPxxotsAQQGX4ePDTVgm6N",
+    "https://lh3.googleusercontent.com/d/13tc8NXE07sNZzB0RoD1qijsqspvXDtnE",
+    "https://lh3.googleusercontent.com/d/1_8ZB92TxNjBTtz_yoFtSoqj9R2a7oaan",
+    "https://lh3.googleusercontent.com/d/1m79qC2hkWEz05Aay1ort0hHl3WZubTEk",
+    "https://lh3.googleusercontent.com/d/1IW1_GLR9cEOvphkAwggtKdsZpX6rTwdN",
+    "https://lh3.googleusercontent.com/d/1nydkbhSTvPbU0Fj3Rn_hjhHpJ5H74cm-",
+    "https://lh3.googleusercontent.com/d/1WfxmMA6odLsBtsoalOFIJVrGz9cswt7g",
+    "https://lh3.googleusercontent.com/d/1O6NEPKUWX5MKygc7y7TMxDCfX4j9as3v",
+    "https://lh3.googleusercontent.com/d/1bSuXnlwFqQsiuWLheZFhbANpkvKLUiIU",
+    "https://lh3.googleusercontent.com/d/1UvUtrRCIKWff8UsK0ZHN_T5Q078RzAXG",
+    "https://lh3.googleusercontent.com/d/1lOFIpIVuLJTqzKx19Ho91xi5ShCiwwC7",
+    "https://lh3.googleusercontent.com/d/1pnHjl7KU8bLNWPI0Rli9TP5NejUP_piq",
+    "https://lh3.googleusercontent.com/d/1RceOQmC4CY-O9DDwFDep19H6rdu1RhqJ",
+    "https://lh3.googleusercontent.com/d/1A8M8oATmR9qfQ4WZHxnbO9EO6imFn_Un",
+    "https://lh3.googleusercontent.com/d/1peMMob-nhdCza7d6ystLUtXOB0cnZjpE",
+    "https://lh3.googleusercontent.com/d/1DfJruv1FRvn8FcwT298a_oG9jpRkVe0z",
+    "https://lh3.googleusercontent.com/d/1g4bde2er02BVwV9t195GzZR2O-olFefY",
+    "https://lh3.googleusercontent.com/d/1unG5TsicTIA7-Cc0eoWNendWPmIU84Zs",
+    "https://lh3.googleusercontent.com/d/1qYoVUaHmjYUvatW_-Ek-TtqPkO1bEq8W",
+    "https://lh3.googleusercontent.com/d/1K8fWOk7PHh48AspSa34z_ewcOsnLY2SV",
+    "https://lh3.googleusercontent.com/d/1fF8pSZKYI_7YAhBL2Nb6XHZB8AOfmuea",
+    "https://lh3.googleusercontent.com/d/1fLEGjR_ZYoKLe1u-tG13vQF9Y2oqFWZv",
+    "https://lh3.googleusercontent.com/d/1ziShDoH5mNrJcnAQbylz0MUl2GmqCLl_",
+    "https://lh3.googleusercontent.com/d/16zVHC4E2jU4XdqbzLdS0oG3bESq8qwlc",
+    "https://lh3.googleusercontent.com/d/1GZXXFhiqHD6cCviERwHRuQvq9bSrdhSe",
+    "https://lh3.googleusercontent.com/d/1HGB77mSsRynFqt7jeFmld5RgixTEJMBh",
+    "https://lh3.googleusercontent.com/d/1O8IO68Pe03WJaWATcAnUAMLHvWEElbO0",
+    "https://lh3.googleusercontent.com/d/1JtOi4rPbmkpO6IdcjN3ygHPHjZwYhFwj",
+    "https://lh3.googleusercontent.com/d/1E0RAEFLyjTfRFjYyS3GP86N6bBUoh-bV",
+    "https://lh3.googleusercontent.com/d/1b-v0C8lhwpq__tnu8KQT5Rd5W377xcFH",
+    "https://lh3.googleusercontent.com/d/1FkfP6Zq5Up-tYw2Su-iYpGRB7VnR0hOW",
+    "https://lh3.googleusercontent.com/d/1vjTPWIytg9WAxvW8tF0_s9yOZjsvCiL2",
+    "https://lh3.googleusercontent.com/d/16a3Pje4SS_iwJ7MrfK_nmU6vlkVbibOL",
+    "https://lh3.googleusercontent.com/d/1bXXv-q7VRPsKPUUvAwqU7ZRhB1440FDh",
+    "https://lh3.googleusercontent.com/d/1ptPV5DF9ATbvMeL39diyX3I1UjnqrW4A",
+    "https://lh3.googleusercontent.com/d/1hHuNoPDmA1MMiITzccMRgDeOU5oD2mbc",
+    "https://lh3.googleusercontent.com/d/1fZIsYCnVA4jB0LCAsYgi0OUFcfR08r_d",
+    "https://lh3.googleusercontent.com/d/1vBSEYvVKGLrn61TNztXpIl6bqfiJuDto",
+    "https://lh3.googleusercontent.com/d/1AxOWrS3fvmu-V61ZlHlYcvUBAaso-MMo",
+    "https://lh3.googleusercontent.com/d/1bfJkPd2eoAV0zhaWDJYZKuOWcswnVpTJ",
+    "https://lh3.googleusercontent.com/d/1ptiTcoi3eGFulSd9xUFSHVVU_lB6YVp3",
+    "https://lh3.googleusercontent.com/d/1m00iXmQbDY4rF-7fHcH4AFyt1wjU1HEn",
+    "https://lh3.googleusercontent.com/d/1b8J4d36JntLIfa49xZNMuVGCi7FdV28K",
+    "https://lh3.googleusercontent.com/d/19nng8pu8aurjitogzV7vYicMIe1lZX5l",
+    "https://lh3.googleusercontent.com/d/1U5YVQKbRnNAvqMMWDN5-xIL7L4j6ek_N",
+    "https://lh3.googleusercontent.com/d/1im5IQipxhVS5tSYxiccrdiauF5EEUFDY",
+    "https://lh3.googleusercontent.com/d/1372m9sEogv-iAFk9ODXWRBtiqax-3ESc",
+    "https://lh3.googleusercontent.com/d/14iuaV6pofecDs7CY-vdxGCh7Ew_Denll",
+    "https://lh3.googleusercontent.com/d/1FmBJpLyi6vOweniGltYZucGCuaKjbzj8",
+    "https://lh3.googleusercontent.com/d/1uTdFPX_CZMwqBlne37W0lmuLtagUxv5E",
+    "https://lh3.googleusercontent.com/d/1Txx6Q8PAZg4lSw3BP2M6SS2CTflT4zDN",
+    "https://lh3.googleusercontent.com/d/1YR2CVfonoSEP3sO6HnejNkLuIrF3wJYv",
+    "https://lh3.googleusercontent.com/d/1_I4BDeawjoks8sz5cObbIYS2c2bpUOMP",
+    "https://lh3.googleusercontent.com/d/18n_4WiNh73FQeJMr1rqOidDUhwA2FWno",
+    "https://lh3.googleusercontent.com/d/1DuyzfXZdTmQOrUnzNKHRaAdb5L-59FCt",
+    "https://lh3.googleusercontent.com/d/17DFzW9R08Wm8-teLu5wEtCZtyAhw4K7C",
+    "https://lh3.googleusercontent.com/d/1u0DM1EoXvaKvjQTQ0dd5gscEOWZfiX1V",
+    "https://lh3.googleusercontent.com/d/1uVZzyemYAlusAvsYkejQw_80X5nT3zXd",
+    "https://lh3.googleusercontent.com/d/1khWsngtEwIYMgtVQG9ydw7DKbG1IRWQu",
+    "https://lh3.googleusercontent.com/d/1bTJvOXDWLzbYq-Z4-0xAiQV-D-cxpWWW",
+    "https://lh3.googleusercontent.com/d/1TzvGwjVSKRFdf6QSQZ93Ej3Kl2_efZrd",
+    "https://lh3.googleusercontent.com/d/100nsSQQmESS2JHwaJCrujxxcubnubWnk",
+    "https://lh3.googleusercontent.com/d/1bpKggpawPEAaHNkMefEssShfbLTiivmb",
+    "https://lh3.googleusercontent.com/d/1xZleOSBFdEfRfzYiEUH9DFCtkolOooUr",
+    "https://lh3.googleusercontent.com/d/1HDIYUbzE56L_4hB681cCDXI6pi1GnRgj",
+    "https://lh3.googleusercontent.com/d/1ic23GkUK5ux6OViMdaeD9c0_RAjbMkk8",
+    "https://lh3.googleusercontent.com/d/1Q_b4QOm4OmWynBKNcLzZ0cWQ-4dXWAp6",
+    "https://lh3.googleusercontent.com/d/1_1mnLcY6YexmS8AxYJ7CBAEuWRhghpci",
+    "https://lh3.googleusercontent.com/d/1UNcareTH22o4coTdNj49WGnWD2oI_588",
+    "https://lh3.googleusercontent.com/d/127zCFgjOEZ-QTy3qlE7Y_BzSp_SYreAw",
+    "https://lh3.googleusercontent.com/d/1IyADFHealwlneNzr5tkMkWTNJur6RYB0",
+    "https://lh3.googleusercontent.com/d/1RJp0JTShhd6wW4UhQSUWPwyoQ9h06S__",
+    "https://lh3.googleusercontent.com/d/1l3aurMYavyq-2vCDhSXQY6utK0dbJbak",
+    "https://lh3.googleusercontent.com/d/1Syc-WAFYma8IXN_lFgGgDlJynl7i2fpB",
+    "https://lh3.googleusercontent.com/d/1GDPJu2IE5-5V2P20Z2KvrrcWDxpAagmr",
+    "https://lh3.googleusercontent.com/d/10Qm_ZgXN0g_Ozfc9HEiCcW6fPtTMVkY_",
+    "https://lh3.googleusercontent.com/d/1N96fvkOqiAAaRNcT664XaXbwM1HYtAv2",
+    "https://lh3.googleusercontent.com/d/1adWjCTQ_PPnwKdGahsgU0TnRoM0zAKru",
+    "https://lh3.googleusercontent.com/d/1HW-tspO6YQZwKzvQOg8jFVLLUkuHAS4e",
+    "https://lh3.googleusercontent.com/d/1OcQRFs3_Zj3w4l980KaEF6sxbnLu16_N",
+    "https://lh3.googleusercontent.com/d/1jGCS-D40efdaeHCleON44BFwNuU7JG5J",
+    "https://lh3.googleusercontent.com/d/11H1m892FhCT4CM7praxyPnKS-INuUViv",
+    "https://lh3.googleusercontent.com/d/1ek5Did1yrDifB8J5YMEWUa4saeflNXuF",
+    "https://lh3.googleusercontent.com/d/1yuqju0rx5Vz3TZrHWkhB7KlIuAcYfwWX",
+    "https://lh3.googleusercontent.com/d/1HBXULg8xyq0FsdVIoetY3mB2bXTHvu6K",
+    "https://lh3.googleusercontent.com/d/1ENRaFnOnpBNN2BMzj9T0WZa0F8HR9Qcu",
+    "https://lh3.googleusercontent.com/d/1ak08FNBWqEkv7fcPt_7qHDcDcTpadQfE",
+    "https://lh3.googleusercontent.com/d/1ezQ3kpDyvZur2g2PP1kngbBn6c4DStkA",
+    "https://lh3.googleusercontent.com/d/14-5jbGsToHOc4IBofmjLDo40iIQuRpxH",
+    "https://lh3.googleusercontent.com/d/1i7SCtRNnvikC4W5hQMHWU09kvRtT1DKs",
+    "https://lh3.googleusercontent.com/d/1xxpboCJjFqFeTqQLm9l_hMLRuw5el8RF",
+    "https://lh3.googleusercontent.com/d/1Si2JKGHvmPHRIQHv6pivX8AU0IwSDcgk",
+    "https://lh3.googleusercontent.com/d/1qFjbuaCwGOnisHfklqySOhhbRlfbhXKD",
+    "https://lh3.googleusercontent.com/d/1a9GpF9_UMzpp5XNTp7nlm26klDMj1kJQ",
+    "https://lh3.googleusercontent.com/d/10rhyU0beZaAeR6pZ4GMXT0h9SluxGZ6u",
+    "https://lh3.googleusercontent.com/d/1PNhndXQ_2WpLgHDojW3NrqLOLr2nIXXg",
+    "https://lh3.googleusercontent.com/d/1_Jl69i3EYTIYjhJp91yC7qmtSpByTjTD",
+    "https://lh3.googleusercontent.com/d/1xi6rTb6Es_Dl1Op5F7KgfBgLEEKshFbq",
+    "https://lh3.googleusercontent.com/d/19BlWXn19GN7fEvcDjI182qiFg8kHlxQl",
+    "https://lh3.googleusercontent.com/d/1GQfnT_PFcBKsR5A5aqQK0o71WNaWEweN",
+    "https://lh3.googleusercontent.com/d/1lamoNDyc6yBwFE3yh3qqWGV10fENKJCo",
+    "https://lh3.googleusercontent.com/d/1MqScnt6AwCYpSY6D-OPjBWXgjdh5SN6B",
+    "https://lh3.googleusercontent.com/d/1SDHMTSp3Dvrst6n1AaUdD5JgezznbEaC"
+  ];
+    var cur_idx=0;
+    var lb=document.getElementById('lb'),lbImg=document.getElementById('lbImg'),lbMeta=document.getElementById('lbMeta');
+    function openLB(idx){cur_idx=idx;lbImg.src=imgs[idx];lbMeta.textContent=(idx+1)+' / '+imgs.length;lb.classList.add('open');document.body.style.overflow='hidden';}
+    function closeLB(){lb.classList.remove('open');document.body.style.overflow='';}
+    function prevImg(){cur_idx=(cur_idx-1+imgs.length)%imgs.length;lbImg.src=imgs[cur_idx];lbMeta.textContent=(cur_idx+1)+' / '+imgs.length;}
+    function nextImg(){cur_idx=(cur_idx+1)%imgs.length;lbImg.src=imgs[cur_idx];lbMeta.textContent=(cur_idx+1)+' / '+imgs.length;}
+    document.getElementById('lbClose').onclick=closeLB;
+    document.getElementById('lbPrev').onclick=prevImg;
+    document.getElementById('lbNext').onclick=nextImg;
+    lb.addEventListener('click',function(e){if(e.target===lb)closeLB();});
+    document.addEventListener('keydown',function(e){if(!lb.classList.contains('open'))return;if(e.key==='Escape')closeLB();if(e.key==='ArrowLeft')prevImg();if(e.key==='ArrowRight')nextImg();});
+    var tx=0;
+    lb.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;},{passive:true});
+    lb.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>40){if(dx<0)nextImg();else prevImg();}},{passive:true});
+    document.querySelectorAll('.gi').forEach(function(el){el.addEventListener('click',function(){openLB(parseInt(el.dataset.idx));});});
+    document.addEventListener('contextmenu',function(e){e.preventDefault();});
+  </script>
+</body>
+</html>
