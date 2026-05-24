@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Randall Test Shots — iCaptureHomes Photography</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --gold: #c8a96e; --bg: #0a0a0a; --bg-mid: #0d0d0d;
+      --text: #f0ede6; --text-muted: rgba(240,237,230,0.55);
+      --text-dim: rgba(240,237,230,0.3); --border: rgba(240,237,230,0.08);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; cursor: none; }
+    .cursor { position:fixed; width:8px; height:8px; background:var(--gold); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width 0.2s,height 0.2s; }
+    .cursor-ring { position:fixed; width:32px; height:32px; border:1px solid rgba(200,169,110,0.4); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
+    header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:24px 48px; border-bottom:0.5px solid var(--border);
+      position:sticky; top:0; background:rgba(10,10,10,0.95);
+      backdrop-filter:blur(16px); z-index:100;
+    }
+    .logo { font-family:'Playfair Display',serif; font-size:18px; color:var(--text); text-decoration:none; }
+    .logo span { color:var(--gold); font-style:italic; }
+    .header-right { display:flex; align-items:center; gap:24px; }
+    .gallery-title { font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-dim); }
+    .header-count { font-size:11px; color:var(--text-dim); }
+    .back-link { font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); text-decoration:none; transition:color 0.2s; display:flex; align-items:center; gap:6px; }
+    .back-link:hover { color:var(--gold); }
+    .back-link::before { content:'←'; }
+    .gallery-intro {
+      padding:48px 48px 32px; border-bottom:0.5px solid var(--border);
+      display:flex; align-items:flex-end; justify-content:space-between;
+    }
+    .gallery-intro h1 { font-family:'Playfair Display',serif; font-size:clamp(28px,4vw,48px); font-weight:500; line-height:1.1; }
+    .gallery-intro h1 em { font-style:italic; color:var(--gold); }
+    .gallery-meta { text-align:right; }
+    .gallery-meta-label { font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-dim); margin-bottom:4px; }
+    .gallery-meta-val { font-size:13px; color:var(--text-muted); }
+    .gallery-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:2px; padding:2px;
+    }
+    @media(max-width:600px) { .gallery-grid { grid-template-columns:1fr; } }
+    .gi { position:relative; aspect-ratio:3/2; overflow:hidden; cursor:zoom-in; background:#111; }
+    .gi img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.5s ease; }
+    .gi:hover img { transform:scale(1.04); }
+    .gi-num { position:absolute; bottom:8px; left:10px; font-size:10px; letter-spacing:0.1em; color:rgba(240,237,230,0.4); font-family:'DM Sans',sans-serif; opacity:0; transition:opacity 0.2s; }
+    .gi:hover .gi-num { opacity:1; }
+    .lb { display:none; position:fixed; inset:0; z-index:9000; background:rgba(5,5,5,0.98); flex-direction:column; align-items:center; justify-content:center; }
+    .lb.open { display:flex; }
+    .lb-img-wrap { position:relative; max-width:92vw; max-height:82vh; display:flex; align-items:center; justify-content:center; }
+    .lb-img-wrap img { max-width:92vw; max-height:82vh; object-fit:contain; display:block; }
+    .lb-close { position:fixed; top:20px; right:24px; background:none; border:none; color:rgba(240,237,230,0.5); font-size:28px; cursor:pointer; z-index:9001; line-height:1; transition:color 0.2s; }
+    .lb-close:hover { color:var(--gold); }
+    .lb-prev,.lb-next { position:fixed; top:50%; transform:translateY(-50%); background:none; border:none; color:rgba(240,237,230,0.4); font-size:44px; cursor:pointer; z-index:9001; padding:20px; transition:color 0.2s; line-height:1; }
+    .lb-prev { left:4px; } .lb-next { right:4px; }
+    .lb-prev:hover,.lb-next:hover { color:var(--gold); }
+    .lb-meta { margin-top:14px; text-align:center; font-size:11px; color:var(--text-dim); font-family:'DM Sans',sans-serif; letter-spacing:0.08em; }
+    footer { padding:32px 48px; border-top:0.5px solid var(--border); display:flex; align-items:center; justify-content:space-between; margin-top:2px; }
+    .footer-logo { font-family:'Playfair Display',serif; font-size:14px; color:var(--text-dim); }
+    .footer-note { font-size:11px; color:var(--text-dim); letter-spacing:0.05em; }
+    @media(max-width:600px) {
+      header { padding:16px 20px; }
+      .gallery-intro { padding:28px 20px 20px; flex-direction:column; gap:16px; }
+      .gallery-meta { text-align:left; }
+      footer { padding:24px 20px; flex-direction:column; gap:12px; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cur"></div>
+  <div class="cursor-ring" id="ring"></div>
+  <header>
+    <a href="https://www.icapturehomes.com" class="logo">iCaptureHomes</a>
+    <div class="header-right">
+      <span class="gallery-title">Client Gallery</span>
+      <span class="header-count">55 photos</span>
+      <a href="index.html" class="back-link">All Galleries</a>
+    </div>
+  </header>
+  <div class="gallery-intro">
+    <div>
+      <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:10px;"><div style="width:18px;height:1px;background:var(--gold);"></div>iCaptureHomes Photography</div>
+      <h1>Randall<br><em>Test Shots</em></h1>
+    </div>
+    <div class="gallery-meta">
+      <div class="gallery-meta-label">Photos</div>
+      <div class="gallery-meta-val">55 images</div>
+    </div>
+  </div>
+  <div class="gallery-grid" id="grid">
+        <div class="gi" data-idx="0">
+          <img src="https://lh3.googleusercontent.com/d/1VyTK2jarns7E4lMYzrJyn8lZAXFVVFuX" alt="Photo 01" loading="lazy">
+          <div class="gi-num">01</div>
+        </div>
+        <div class="gi" data-idx="1">
+          <img src="https://lh3.googleusercontent.com/d/1obZd8iFSVB6HAoM7Pd1l-k4xeNPhgMML" alt="Photo 02" loading="lazy">
+          <div class="gi-num">02</div>
+        </div>
+        <div class="gi" data-idx="2">
+          <img src="https://lh3.googleusercontent.com/d/1X0PQHyzWZETCaTjmL5uznXZUbubENuVn" alt="Photo 03" loading="lazy">
+          <div class="gi-num">03</div>
+        </div>
+        <div class="gi" data-idx="3">
+          <img src="https://lh3.googleusercontent.com/d/1uB1Gccuf_UvLiX344KNOb7SdXPJiodUQ" alt="Photo 04" loading="lazy">
+          <div class="gi-num">04</div>
+        </div>
+        <div class="gi" data-idx="4">
+          <img src="https://lh3.googleusercontent.com/d/1_aGgBRy0090719RtysSbmoRurRYdkeYD" alt="Photo 05" loading="lazy">
+          <div class="gi-num">05</div>
+        </div>
+        <div class="gi" data-idx="5">
+          <img src="https://lh3.googleusercontent.com/d/1zOyT-ZVppNcZeaqVp2HsS65dCFZwk3Li" alt="Photo 06" loading="lazy">
+          <div class="gi-num">06</div>
+        </div>
+        <div class="gi" data-idx="6">
+          <img src="https://lh3.googleusercontent.com/d/1QZaRWyMYJY_0OhmpoPgQVTc0x42voPFW" alt="Photo 07" loading="lazy">
+          <div class="gi-num">07</div>
+        </div>
+        <div class="gi" data-idx="7">
+          <img src="https://lh3.googleusercontent.com/d/1E9yncMwgGhWLx-byJH_BqGgPdDVDpR5g" alt="Photo 08" loading="lazy">
+          <div class="gi-num">08</div>
+        </div>
+        <div class="gi" data-idx="8">
+          <img src="https://lh3.googleusercontent.com/d/1HujF1oK0toXCwF3IBKJMBM6tuOiOYJWT" alt="Photo 09" loading="lazy">
+          <div class="gi-num">09</div>
+        </div>
+        <div class="gi" data-idx="9">
+          <img src="https://lh3.googleusercontent.com/d/1kViXqfDxww_GGtgkcQq-Bc-QmHUBUQTH" alt="Photo 10" loading="lazy">
+          <div class="gi-num">10</div>
+        </div>
+        <div class="gi" data-idx="10">
+          <img src="https://lh3.googleusercontent.com/d/1RZtYUChCbTryNEkq1OGAsBLFhjsNSEMw" alt="Photo 11" loading="lazy">
+          <div class="gi-num">11</div>
+        </div>
+        <div class="gi" data-idx="11">
+          <img src="https://lh3.googleusercontent.com/d/1uA9XPl071QNJl3xym3aMBYuHV1sc3Sp0" alt="Photo 12" loading="lazy">
+          <div class="gi-num">12</div>
+        </div>
+        <div class="gi" data-idx="12">
+          <img src="https://lh3.googleusercontent.com/d/1BVOMLu_tQNL6jNnVqCKFNyETAPxNpWNh" alt="Photo 13" loading="lazy">
+          <div class="gi-num">13</div>
+        </div>
+        <div class="gi" data-idx="13">
+          <img src="https://lh3.googleusercontent.com/d/1cS1OGvXKf3SAvEqns8NY-E-p-nyEfcYB" alt="Photo 14" loading="lazy">
+          <div class="gi-num">14</div>
+        </div>
+        <div class="gi" data-idx="14">
+          <img src="https://lh3.googleusercontent.com/d/1YTWHl6kfa8Ox3weAHx5sxUyhRvRJPNLn" alt="Photo 15" loading="lazy">
+          <div class="gi-num">15</div>
+        </div>
+        <div class="gi" data-idx="15">
+          <img src="https://lh3.googleusercontent.com/d/1Bsg7l5JJUUTgMYdSmPSRCIRXQCalQCEK" alt="Photo 16" loading="lazy">
+          <div class="gi-num">16</div>
+        </div>
+        <div class="gi" data-idx="16">
+          <img src="https://lh3.googleusercontent.com/d/1zCezD3_rBQlr-kTD5JsU5jPxFohgvp-J" alt="Photo 17" loading="lazy">
+          <div class="gi-num">17</div>
+        </div>
+        <div class="gi" data-idx="17">
+          <img src="https://lh3.googleusercontent.com/d/1RMrFROSiJqx4XzNCCXd135Afr53EXUlP" alt="Photo 18" loading="lazy">
+          <div class="gi-num">18</div>
+        </div>
+        <div class="gi" data-idx="18">
+          <img src="https://lh3.googleusercontent.com/d/1NKBhCHvOnoq2BoC_2nj4p4_T_Z17xiRL" alt="Photo 19" loading="lazy">
+          <div class="gi-num">19</div>
+        </div>
+        <div class="gi" data-idx="19">
+          <img src="https://lh3.googleusercontent.com/d/1LeYUhqozvj7kqZ8kjPpxoaZTeVFEpfUK" alt="Photo 20" loading="lazy">
+          <div class="gi-num">20</div>
+        </div>
+        <div class="gi" data-idx="20">
+          <img src="https://lh3.googleusercontent.com/d/1TiogzJWVoM1LSQ6ZghNPqeUZ3zAq1_ni" alt="Photo 21" loading="lazy">
+          <div class="gi-num">21</div>
+        </div>
+        <div class="gi" data-idx="21">
+          <img src="https://lh3.googleusercontent.com/d/15-CaSoUEEqhFAdsmiUzwcebdxh99y8wb" alt="Photo 22" loading="lazy">
+          <div class="gi-num">22</div>
+        </div>
+        <div class="gi" data-idx="22">
+          <img src="https://lh3.googleusercontent.com/d/1v4gzAcNGmwTYjYQ5iIFZN8-vXdbG6FRa" alt="Photo 23" loading="lazy">
+          <div class="gi-num">23</div>
+        </div>
+        <div class="gi" data-idx="23">
+          <img src="https://lh3.googleusercontent.com/d/1qDo3j8lgtY9Wv2KE0EagOCkzi8AGXzNy" alt="Photo 24" loading="lazy">
+          <div class="gi-num">24</div>
+        </div>
+        <div class="gi" data-idx="24">
+          <img src="https://lh3.googleusercontent.com/d/1-EbFkPhsoA0YakXMB7dPSR3qEwLSBcMc" alt="Photo 25" loading="lazy">
+          <div class="gi-num">25</div>
+        </div>
+        <div class="gi" data-idx="25">
+          <img src="https://lh3.googleusercontent.com/d/1Kh9LhqFw2ZTxGy2AypOn0Ks3w5d-FQPN" alt="Photo 26" loading="lazy">
+          <div class="gi-num">26</div>
+        </div>
+        <div class="gi" data-idx="26">
+          <img src="https://lh3.googleusercontent.com/d/1Dv4ylE9pN_-LGYGhYvR4NsuZScmgn3Mh" alt="Photo 27" loading="lazy">
+          <div class="gi-num">27</div>
+        </div>
+        <div class="gi" data-idx="27">
+          <img src="https://lh3.googleusercontent.com/d/10Vf_Bfczp1cjVu35AzxS8LOUO9YE_szQ" alt="Photo 28" loading="lazy">
+          <div class="gi-num">28</div>
+        </div>
+        <div class="gi" data-idx="28">
+          <img src="https://lh3.googleusercontent.com/d/19Pj98-bXVyrOtn_GAr8_n58jB2BltoHu" alt="Photo 29" loading="lazy">
+          <div class="gi-num">29</div>
+        </div>
+        <div class="gi" data-idx="29">
+          <img src="https://lh3.googleusercontent.com/d/1HuRWkixlyL_fYZyIP4y4EBs3DKTWyCvI" alt="Photo 30" loading="lazy">
+          <div class="gi-num">30</div>
+        </div>
+        <div class="gi" data-idx="30">
+          <img src="https://lh3.googleusercontent.com/d/1wek3xYlnCQuDUMAelF_pcIHtQ4aWzTgO" alt="Photo 31" loading="lazy">
+          <div class="gi-num">31</div>
+        </div>
+        <div class="gi" data-idx="31">
+          <img src="https://lh3.googleusercontent.com/d/1Dre3TJSr5An446uSP8mm3UcQ560dOG8C" alt="Photo 32" loading="lazy">
+          <div class="gi-num">32</div>
+        </div>
+        <div class="gi" data-idx="32">
+          <img src="https://lh3.googleusercontent.com/d/1qUbB6aCJBML43hSPTAn8jWOllgvWYp6T" alt="Photo 33" loading="lazy">
+          <div class="gi-num">33</div>
+        </div>
+        <div class="gi" data-idx="33">
+          <img src="https://lh3.googleusercontent.com/d/1_oGEgIdPMyDVp8JvrSEOhkoiv2S1KeqV" alt="Photo 34" loading="lazy">
+          <div class="gi-num">34</div>
+        </div>
+        <div class="gi" data-idx="34">
+          <img src="https://lh3.googleusercontent.com/d/18YBV067mEkXA2KmK1Kl9Zd8AXTLrZHH3" alt="Photo 35" loading="lazy">
+          <div class="gi-num">35</div>
+        </div>
+        <div class="gi" data-idx="35">
+          <img src="https://lh3.googleusercontent.com/d/1WUAkUtpsRHmIP9v2uYg8gc7FFktHNWpE" alt="Photo 36" loading="lazy">
+          <div class="gi-num">36</div>
+        </div>
+        <div class="gi" data-idx="36">
+          <img src="https://lh3.googleusercontent.com/d/1F8bwycSNA9tjr44XCUTZcmlSV59U-BEn" alt="Photo 37" loading="lazy">
+          <div class="gi-num">37</div>
+        </div>
+        <div class="gi" data-idx="37">
+          <img src="https://lh3.googleusercontent.com/d/1hf08jxx6xXH3PN3adieKkfAzsQAQ9g8f" alt="Photo 38" loading="lazy">
+          <div class="gi-num">38</div>
+        </div>
+        <div class="gi" data-idx="38">
+          <img src="https://lh3.googleusercontent.com/d/1mChJsy4tnS6Zbf7dm4gKxjxBhpv9hX94" alt="Photo 39" loading="lazy">
+          <div class="gi-num">39</div>
+        </div>
+        <div class="gi" data-idx="39">
+          <img src="https://lh3.googleusercontent.com/d/1xKeq2BG48b60BDqTvgW8Wr3T43k63FTy" alt="Photo 40" loading="lazy">
+          <div class="gi-num">40</div>
+        </div>
+        <div class="gi" data-idx="40">
+          <img src="https://lh3.googleusercontent.com/d/1jE_ct2ZFo5ERQRES0J0OzyxYkTXn50GO" alt="Photo 41" loading="lazy">
+          <div class="gi-num">41</div>
+        </div>
+        <div class="gi" data-idx="41">
+          <img src="https://lh3.googleusercontent.com/d/1Oi66TPtRZF_hHjQykoRnYhW4ka5DSJ2m" alt="Photo 42" loading="lazy">
+          <div class="gi-num">42</div>
+        </div>
+        <div class="gi" data-idx="42">
+          <img src="https://lh3.googleusercontent.com/d/1HHSaS39vGklP4z5l9Sbb4fofU29EG5g2" alt="Photo 43" loading="lazy">
+          <div class="gi-num">43</div>
+        </div>
+        <div class="gi" data-idx="43">
+          <img src="https://lh3.googleusercontent.com/d/1Nd_Wql4woqBhTr1lxscw-Je_wzqzapA-" alt="Photo 44" loading="lazy">
+          <div class="gi-num">44</div>
+        </div>
+        <div class="gi" data-idx="44">
+          <img src="https://lh3.googleusercontent.com/d/1vuAWQxwNeM_0SEFNk4dhgeS2LUxcaxQg" alt="Photo 45" loading="lazy">
+          <div class="gi-num">45</div>
+        </div>
+        <div class="gi" data-idx="45">
+          <img src="https://lh3.googleusercontent.com/d/1O96xwYS4laOQZ6sipQe2_7p4LN7ewuJy" alt="Photo 46" loading="lazy">
+          <div class="gi-num">46</div>
+        </div>
+        <div class="gi" data-idx="46">
+          <img src="https://lh3.googleusercontent.com/d/1ZR2_q9ChRxIG6OgDfLJmZlLuG5ipO6tf" alt="Photo 47" loading="lazy">
+          <div class="gi-num">47</div>
+        </div>
+        <div class="gi" data-idx="47">
+          <img src="https://lh3.googleusercontent.com/d/1LXbPuiW9zHwt7uigqVBRSQthIA8wJkCg" alt="Photo 48" loading="lazy">
+          <div class="gi-num">48</div>
+        </div>
+        <div class="gi" data-idx="48">
+          <img src="https://lh3.googleusercontent.com/d/10AeR3reLL6X5Hdvd56JeQTeCqQBNPZf1" alt="Photo 49" loading="lazy">
+          <div class="gi-num">49</div>
+        </div>
+        <div class="gi" data-idx="49">
+          <img src="https://lh3.googleusercontent.com/d/1GjU6SpeNZ7PWE1tVYY_GiWOiFXsluxxb" alt="Photo 50" loading="lazy">
+          <div class="gi-num">50</div>
+        </div>
+        <div class="gi" data-idx="50">
+          <img src="https://lh3.googleusercontent.com/d/1_4V3SpIl2Jm6mwcmXqZ5lpPv3b8n49Kd" alt="Photo 51" loading="lazy">
+          <div class="gi-num">51</div>
+        </div>
+        <div class="gi" data-idx="51">
+          <img src="https://lh3.googleusercontent.com/d/1pE9fSK5PS_cp6C4V20hrv8fGfGMfC4uS" alt="Photo 52" loading="lazy">
+          <div class="gi-num">52</div>
+        </div>
+        <div class="gi" data-idx="52">
+          <img src="https://lh3.googleusercontent.com/d/1x3W6Pavd33Pi7hOXbH2tXWsMhe6TRwut" alt="Photo 53" loading="lazy">
+          <div class="gi-num">53</div>
+        </div>
+        <div class="gi" data-idx="53">
+          <img src="https://lh3.googleusercontent.com/d/1G8q4_23GVykaPboWwl_yxIHPj0jQoIPN" alt="Photo 54" loading="lazy">
+          <div class="gi-num">54</div>
+        </div>
+        <div class="gi" data-idx="54">
+          <img src="https://lh3.googleusercontent.com/d/1cEwbGS7nIAy3oNQ53yMNz0p9SgTadEHZ" alt="Photo 55" loading="lazy">
+          <div class="gi-num">55</div>
+        </div>
+  </div>
+  <div class="lb" id="lb">
+    <button class="lb-close" id="lbClose">&#10005;</button>
+    <button class="lb-prev" id="lbPrev">&#8249;</button>
+    <div class="lb-img-wrap"><img id="lbImg" src="" alt=""></div>
+    <div class="lb-meta" id="lbMeta"></div>
+    <button class="lb-next" id="lbNext">&#8250;</button>
+  </div>
+  <footer>
+    <div class="footer-logo">iCaptureHomes Photography</div>
+    <div class="footer-note">Private gallery — for viewing only</div>
+  </footer>
+  <script>
+    var cx=0,cy=0,rx=0,ry=0;
+    var cur=document.getElementById('cur'),ring=document.getElementById('ring');
+    document.addEventListener('mousemove',function(e){cx=e.clientX;cy=e.clientY;cur.style.left=cx+'px';cur.style.top=cy+'px';});
+    function animRing(){rx+=(cx-rx)*0.12;ry+=(cy-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+    animRing();
+    var imgs = [
+    "https://lh3.googleusercontent.com/d/1VyTK2jarns7E4lMYzrJyn8lZAXFVVFuX",
+    "https://lh3.googleusercontent.com/d/1obZd8iFSVB6HAoM7Pd1l-k4xeNPhgMML",
+    "https://lh3.googleusercontent.com/d/1X0PQHyzWZETCaTjmL5uznXZUbubENuVn",
+    "https://lh3.googleusercontent.com/d/1uB1Gccuf_UvLiX344KNOb7SdXPJiodUQ",
+    "https://lh3.googleusercontent.com/d/1_aGgBRy0090719RtysSbmoRurRYdkeYD",
+    "https://lh3.googleusercontent.com/d/1zOyT-ZVppNcZeaqVp2HsS65dCFZwk3Li",
+    "https://lh3.googleusercontent.com/d/1QZaRWyMYJY_0OhmpoPgQVTc0x42voPFW",
+    "https://lh3.googleusercontent.com/d/1E9yncMwgGhWLx-byJH_BqGgPdDVDpR5g",
+    "https://lh3.googleusercontent.com/d/1HujF1oK0toXCwF3IBKJMBM6tuOiOYJWT",
+    "https://lh3.googleusercontent.com/d/1kViXqfDxww_GGtgkcQq-Bc-QmHUBUQTH",
+    "https://lh3.googleusercontent.com/d/1RZtYUChCbTryNEkq1OGAsBLFhjsNSEMw",
+    "https://lh3.googleusercontent.com/d/1uA9XPl071QNJl3xym3aMBYuHV1sc3Sp0",
+    "https://lh3.googleusercontent.com/d/1BVOMLu_tQNL6jNnVqCKFNyETAPxNpWNh",
+    "https://lh3.googleusercontent.com/d/1cS1OGvXKf3SAvEqns8NY-E-p-nyEfcYB",
+    "https://lh3.googleusercontent.com/d/1YTWHl6kfa8Ox3weAHx5sxUyhRvRJPNLn",
+    "https://lh3.googleusercontent.com/d/1Bsg7l5JJUUTgMYdSmPSRCIRXQCalQCEK",
+    "https://lh3.googleusercontent.com/d/1zCezD3_rBQlr-kTD5JsU5jPxFohgvp-J",
+    "https://lh3.googleusercontent.com/d/1RMrFROSiJqx4XzNCCXd135Afr53EXUlP",
+    "https://lh3.googleusercontent.com/d/1NKBhCHvOnoq2BoC_2nj4p4_T_Z17xiRL",
+    "https://lh3.googleusercontent.com/d/1LeYUhqozvj7kqZ8kjPpxoaZTeVFEpfUK",
+    "https://lh3.googleusercontent.com/d/1TiogzJWVoM1LSQ6ZghNPqeUZ3zAq1_ni",
+    "https://lh3.googleusercontent.com/d/15-CaSoUEEqhFAdsmiUzwcebdxh99y8wb",
+    "https://lh3.googleusercontent.com/d/1v4gzAcNGmwTYjYQ5iIFZN8-vXdbG6FRa",
+    "https://lh3.googleusercontent.com/d/1qDo3j8lgtY9Wv2KE0EagOCkzi8AGXzNy",
+    "https://lh3.googleusercontent.com/d/1-EbFkPhsoA0YakXMB7dPSR3qEwLSBcMc",
+    "https://lh3.googleusercontent.com/d/1Kh9LhqFw2ZTxGy2AypOn0Ks3w5d-FQPN",
+    "https://lh3.googleusercontent.com/d/1Dv4ylE9pN_-LGYGhYvR4NsuZScmgn3Mh",
+    "https://lh3.googleusercontent.com/d/10Vf_Bfczp1cjVu35AzxS8LOUO9YE_szQ",
+    "https://lh3.googleusercontent.com/d/19Pj98-bXVyrOtn_GAr8_n58jB2BltoHu",
+    "https://lh3.googleusercontent.com/d/1HuRWkixlyL_fYZyIP4y4EBs3DKTWyCvI",
+    "https://lh3.googleusercontent.com/d/1wek3xYlnCQuDUMAelF_pcIHtQ4aWzTgO",
+    "https://lh3.googleusercontent.com/d/1Dre3TJSr5An446uSP8mm3UcQ560dOG8C",
+    "https://lh3.googleusercontent.com/d/1qUbB6aCJBML43hSPTAn8jWOllgvWYp6T",
+    "https://lh3.googleusercontent.com/d/1_oGEgIdPMyDVp8JvrSEOhkoiv2S1KeqV",
+    "https://lh3.googleusercontent.com/d/18YBV067mEkXA2KmK1Kl9Zd8AXTLrZHH3",
+    "https://lh3.googleusercontent.com/d/1WUAkUtpsRHmIP9v2uYg8gc7FFktHNWpE",
+    "https://lh3.googleusercontent.com/d/1F8bwycSNA9tjr44XCUTZcmlSV59U-BEn",
+    "https://lh3.googleusercontent.com/d/1hf08jxx6xXH3PN3adieKkfAzsQAQ9g8f",
+    "https://lh3.googleusercontent.com/d/1mChJsy4tnS6Zbf7dm4gKxjxBhpv9hX94",
+    "https://lh3.googleusercontent.com/d/1xKeq2BG48b60BDqTvgW8Wr3T43k63FTy",
+    "https://lh3.googleusercontent.com/d/1jE_ct2ZFo5ERQRES0J0OzyxYkTXn50GO",
+    "https://lh3.googleusercontent.com/d/1Oi66TPtRZF_hHjQykoRnYhW4ka5DSJ2m",
+    "https://lh3.googleusercontent.com/d/1HHSaS39vGklP4z5l9Sbb4fofU29EG5g2",
+    "https://lh3.googleusercontent.com/d/1Nd_Wql4woqBhTr1lxscw-Je_wzqzapA-",
+    "https://lh3.googleusercontent.com/d/1vuAWQxwNeM_0SEFNk4dhgeS2LUxcaxQg",
+    "https://lh3.googleusercontent.com/d/1O96xwYS4laOQZ6sipQe2_7p4LN7ewuJy",
+    "https://lh3.googleusercontent.com/d/1ZR2_q9ChRxIG6OgDfLJmZlLuG5ipO6tf",
+    "https://lh3.googleusercontent.com/d/1LXbPuiW9zHwt7uigqVBRSQthIA8wJkCg",
+    "https://lh3.googleusercontent.com/d/10AeR3reLL6X5Hdvd56JeQTeCqQBNPZf1",
+    "https://lh3.googleusercontent.com/d/1GjU6SpeNZ7PWE1tVYY_GiWOiFXsluxxb",
+    "https://lh3.googleusercontent.com/d/1_4V3SpIl2Jm6mwcmXqZ5lpPv3b8n49Kd",
+    "https://lh3.googleusercontent.com/d/1pE9fSK5PS_cp6C4V20hrv8fGfGMfC4uS",
+    "https://lh3.googleusercontent.com/d/1x3W6Pavd33Pi7hOXbH2tXWsMhe6TRwut",
+    "https://lh3.googleusercontent.com/d/1G8q4_23GVykaPboWwl_yxIHPj0jQoIPN",
+    "https://lh3.googleusercontent.com/d/1cEwbGS7nIAy3oNQ53yMNz0p9SgTadEHZ"
+  ];
+    var cur_idx=0;
+    var lb=document.getElementById('lb'),lbImg=document.getElementById('lbImg'),lbMeta=document.getElementById('lbMeta');
+    function openLB(idx){cur_idx=idx;lbImg.src=imgs[idx];lbMeta.textContent=(idx+1)+' / '+imgs.length;lb.classList.add('open');document.body.style.overflow='hidden';}
+    function closeLB(){lb.classList.remove('open');document.body.style.overflow='';}
+    function prevImg(){cur_idx=(cur_idx-1+imgs.length)%imgs.length;lbImg.src=imgs[cur_idx];lbMeta.textContent=(cur_idx+1)+' / '+imgs.length;}
+    function nextImg(){cur_idx=(cur_idx+1)%imgs.length;lbImg.src=imgs[cur_idx];lbMeta.textContent=(cur_idx+1)+' / '+imgs.length;}
+    document.getElementById('lbClose').onclick=closeLB;
+    document.getElementById('lbPrev').onclick=prevImg;
+    document.getElementById('lbNext').onclick=nextImg;
+    lb.addEventListener('click',function(e){if(e.target===lb)closeLB();});
+    document.addEventListener('keydown',function(e){if(!lb.classList.contains('open'))return;if(e.key==='Escape')closeLB();if(e.key==='ArrowLeft')prevImg();if(e.key==='ArrowRight')nextImg();});
+    var tx=0;
+    lb.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;},{passive:true});
+    lb.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>40){if(dx<0)nextImg();else prevImg();}},{passive:true});
+    document.querySelectorAll('.gi').forEach(function(el){el.addEventListener('click',function(){openLB(parseInt(el.dataset.idx));});});
+    document.addEventListener('contextmenu',function(e){e.preventDefault();});
+  </script>
+</body>
+</html>
