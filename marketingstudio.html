@@ -84,7 +84,7 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .gen-btn:hover{opacity:.85}
 .gen-btn:disabled{opacity:.4;cursor:not-allowed}
 /* preview panel */
-.preview-panel{padding:1.5rem 1.75rem 3rem;overflow-y:auto;display:flex;flex-direction:column;gap:1rem}
+.preview-panel{padding:1.5rem 1.75rem 3rem;overflow-y:auto;display:flex;flex-direction:column;gap:1rem;align-items:flex-start}
 .preview-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
 .preview-lbl{font-size:.625rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
 .act-row{display:flex;gap:.375rem;flex-wrap:wrap}
@@ -221,19 +221,19 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .sq-pills{display:flex;gap:.3rem;flex-wrap:wrap}
 .sq-pill{font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)}
 /* social story */
-.st-wrap{width:100%;max-width:300px}
+.st-wrap{width:100%;max-width:360px;margin:0 auto}
 .st-card{aspect-ratio:9/16;width:100%;position:relative;overflow:hidden;background:#111;border-radius:var(--rl)}
 .st-card img{width:100%;height:100%;object-fit:cover;display:block}
 .st-ph{width:100%;height:100%;background:#222;display:flex;align-items:center;justify-content:center;color:#555;font-size:.8rem;font-style:italic}
 .st-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.92) 40%,rgba(0,0,0,.12) 70%,transparent)}
 .st-brand{position:absolute;top:16px;left:16px;font-size:.5625rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75);z-index:2}
 .st-bottom{position:absolute;bottom:0;left:0;right:0;padding:1.375rem 1.25rem}
-.st-tag{font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin-bottom:.3rem}
-.st-addr{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.2rem}
-.st-price{font-size:.9375rem;font-weight:300;color:rgba(255,255,255,.9);margin-bottom:.75rem}
-.st-facts{display:flex;flex-direction:column;gap:.25rem;margin-bottom:1rem}
-.st-fact{font-size:.6875rem;color:rgba(255,255,255,.75)}
-.st-cta{display:inline-block;padding:.4375rem 1.125rem;border-radius:20px;font-size:.6875rem;font-weight:500;color:#fff;letter-spacing:.04em}
+.st-tag{font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:.375rem}
+.st-addr{font-family:'Cormorant Garamond',serif;font-size:1.375rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.25rem}
+.st-price{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:#fff;margin-bottom:.75rem}
+.st-facts{display:flex;flex-direction:row;flex-wrap:wrap;gap:.375rem;margin-bottom:.875rem}
+.st-fact{font-size:.6875rem;color:rgba(255,255,255,.85);background:rgba(255,255,255,.15);padding:3px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.25)}
+.st-cta{display:inline-block;padding:.5rem 1.375rem;border-radius:20px;font-size:.75rem;font-weight:600;color:#fff;letter-spacing:.04em;margin-top:.25rem}
 /* social 2-photo */
 .s2-card{aspect-ratio:1;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl);display:grid;grid-template-columns:1fr 1fr;gap:2px}
 .s2-cell{overflow:hidden;position:relative}
@@ -440,14 +440,14 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .sl3-card{aspect-ratio:16/9;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl);display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px}
 
 /* Story vertical multi-photo */
-.stv-card{aspect-ratio:9/16;width:100%;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl)}
+.stv-card{aspect-ratio:9/16;width:100%;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl);display:block}
 .stv-grid3{display:grid;grid-template-rows:1fr 1fr 1fr;gap:2px;height:100%}
 .stv-grid5{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:2px;height:100%}
 .stv-grid5 .stv-top{grid-column:1/3}
 .stv-cell{overflow:hidden;position:relative}
 .stv-cell img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .stv-ph{position:absolute;inset:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#555;font-style:italic}
-.stv-over{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 30%,transparent 65%);pointer-events:none;z-index:1}
+.stv-over{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.92) 45%,rgba(0,0,0,.3) 70%,rgba(0,0,0,.05) 100%);pointer-events:none;z-index:1}
 .stv-content{position:absolute;bottom:0;left:0;right:0;padding:1.25rem;z-index:2}
 
 /* Photo strip drag reorder */
@@ -1116,7 +1116,7 @@ function logoHtml(pos){
 }
 function logoFooter(){
   if(!logoData) return '';
-  return '<img src="'+logoData+'" style="max-height:30px;max-width:100px;object-fit:contain;display:block" alt="Logo"/>';
+  return '<img src="'+logoData+'" style="max-height:48px;max-width:160px;object-fit:contain;display:block" alt="Logo"/>';
 }
 // Logo overlay for dark photo templates (top-right corner, inside card)
 function logoInCard(pos){
@@ -1127,7 +1127,7 @@ function logoInCard(pos){
     'br': 'position:absolute;bottom:14px;right:14px;z-index:10'
   };
   return '<div style="'+posMap[pos||'tr']+'">'
-    +'<img src="'+logoData+'" style="max-height:36px;max-width:120px;object-fit:contain;display:block;border-radius:3px;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))" alt="Logo"/>'
+    +'<img src="'+logoData+'" style="max-height:64px;max-width:180px;object-fit:contain;display:block;border-radius:3px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6))" alt="Logo"/>'
     +'</div>';
 }
 function ph(i){return photos[i]||null;}
@@ -1170,7 +1170,7 @@ function idxs(base,count){
 }
 function cgBody(d,copy,a){
   return '<div class="cg-body">'
-    +(logoData?'<div style="margin-bottom:.625rem">'+logoFooter()+'</div>':'')
+    +(logoData?'<div style="margin-bottom:.75rem;padding-top:.25rem">'+logoFooter()+'</div>':'')
     +'<div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;line-height:1.1;margin-bottom:.15rem">'+fullAddr(d)+'</div>'
     +'<div style="font-size:.875rem;color:var(--ink-muted);margin-bottom:.75rem">'+d.ci+'</div>'
     +'<div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem">'
@@ -1298,15 +1298,15 @@ function renderPreview(d,copy){
   // FLYER
   if(fmt==='flyer'){
     if(lay==='classic'){
-      tpl='<div class="tpl-white" style="position:relative">'+photoBox(activePhoto,270,false)+logoHtml('tr')+'<div class="fc-bar" style="background:'+a+'"></div><div class="fc-body"><div class="fc-eyebrow" style="color:'+a+'">'+getTypeLabel()+' &middot; '+(copy.tagline||'')+'</div><div class="fc-address">'+fullAddr(d)+'</div><div class="fc-city">'+d.ci+'</div><div class="fc-stats"><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bd+'</span><span class="fc-sl">Beds</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bt+'</span><span class="fc-sl">Baths</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.sq+'</span><span class="fc-sl">Sq Ft</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.yr+'</span><span class="fc-sl">Built</span></div></div><div class="fc-desc">'+(copy.description||'')+'</div><div class="fc-hls">'+hlsHtml(copy.highlights,'fc',a)+'</div><div class="fc-bottom"><div class="fc-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fc-aname">'+d.ag+'</div>'+(d.ph?'<div class="fc-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fc-asub">'+d.br+'</div>':'')+(d.ws?'<div class="fc-asub">'+d.ws+'</div>':'')+'</div></div></div></div>';
+      tpl='<div class="tpl-white" style="position:relative">'+photoBox(activePhoto,270,false)+logoHtml('tr')+'<div class="fc-bar" style="background:'+a+'"></div><div class="fc-body"><div class="fc-eyebrow" style="color:'+a+'">'+getTypeLabel()+' &middot; '+(copy.tagline||'')+'</div><div class="fc-address">'+fullAddr(d)+'</div><div class="fc-city">'+d.ci+'</div><div class="fc-stats"><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bd+'</span><span class="fc-sl">Beds</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bt+'</span><span class="fc-sl">Baths</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.sq+'</span><span class="fc-sl">Sq Ft</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.yr+'</span><span class="fc-sl">Built</span></div></div><div class="fc-desc">'+(copy.description||'')+'</div><div class="fc-hls">'+hlsHtml(copy.highlights,'fc',a)+'</div><div class="fc-bottom">'+(logoData?'<div style="margin-bottom:.5rem">'+logoFooter()+'</div>':'')+'<div class="fc-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fc-aname">'+d.ag+'</div>'+(d.ph?'<div class="fc-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fc-asub">'+d.br+'</div>':'')+(d.ws?'<div class="fc-asub">'+d.ws+'</div>':'')+'</div></div></div></div>';
     } else if(lay==='dark'){
-      tpl='<div class="tpl-dark" style="position:relative">'+photoBox(activePhoto,255,true)+logoHtml('tr')+'<div class="fd-bar" style="background:'+a+'"></div><div class="fd-body"><div class="fd-eyebrow" style="color:'+a+'">'+getTypeLabel()+' &middot; '+(copy.tagline||'')+'</div><div class="fd-address">'+fullAddr(d)+'</div><div class="fd-city">'+d.ci+'</div><div class="fd-stats"><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bd+'</span><span class="fd-sl">Beds</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bt+'</span><span class="fd-sl">Baths</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.sq+'</span><span class="fd-sl">Sq Ft</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.yr+'</span><span class="fd-sl">Built</span></div></div><div class="fd-desc">'+(copy.description||'')+'</div><div class="fd-hls">'+hlsHtml(copy.highlights,'fd',a)+'</div><div class="fd-bottom"><div class="fd-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fd-aname">'+d.ag+'</div>'+(d.ph?'<div class="fd-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fd-asub">'+d.br+'</div>':'')+'</div></div></div></div>';
+      tpl='<div class="tpl-dark" style="position:relative">'+photoBox(activePhoto,255,true)+logoHtml('tr')+'<div class="fd-bar" style="background:'+a+'"></div><div class="fd-body"><div class="fd-eyebrow" style="color:'+a+'">'+getTypeLabel()+' &middot; '+(copy.tagline||'')+'</div><div class="fd-address">'+fullAddr(d)+'</div><div class="fd-city">'+d.ci+'</div><div class="fd-stats"><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bd+'</span><span class="fd-sl">Beds</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bt+'</span><span class="fd-sl">Baths</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.sq+'</span><span class="fd-sl">Sq Ft</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.yr+'</span><span class="fd-sl">Built</span></div></div><div class="fd-desc">'+(copy.description||'')+'</div><div class="fd-hls">'+hlsHtml(copy.highlights,'fd',a)+'</div><div class="fd-bottom">'+(logoData?'<div style="margin-bottom:.5rem">'+logoFooter()+'</div>':'')+'<div class="fd-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fd-aname">'+d.ag+'</div>'+(d.ph?'<div class="fd-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fd-asub">'+d.br+'</div>':'')+'</div></div></div></div>';
     } else if(lay==='bold'){
       var s0=ph(activePhoto);
-      tpl='<div class="tpl-white"><div class="fb-top"><div class="fb-aline" style="background:'+a+'"></div><div class="fb-price" style="color:'+a+'">'+d.pr+'</div><div class="fb-address">'+fullAddr(d)+'</div><div class="fb-city">'+d.ci+'</div></div><div class="fb-photobox">'+(s0?'<img src="'+s0+'" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'</div><div class="fb-body"><div class="fb-pills"><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' beds</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' baths</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">Built '+d.yr+'</span></div><div class="fb-desc">'+(copy.description||'')+'</div><div class="fb-hls">'+hlsHtml(copy.highlights,'fb',a)+'</div><div class="fb-footer"><div><div class="fb-aname">'+d.ag+'</div>'+(d.br?'<div class="fb-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fb-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
+      tpl='<div class="tpl-white"><div class="fb-top"><div class="fb-aline" style="background:'+a+'"></div><div class="fb-price" style="color:'+a+'">'+d.pr+'</div><div class="fb-address">'+fullAddr(d)+'</div><div class="fb-city">'+d.ci+'</div></div><div class="fb-photobox">'+(s0?'<img src="'+s0+'" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'</div><div class="fb-body"><div class="fb-pills"><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' beds</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' baths</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">Built '+d.yr+'</span></div><div class="fb-desc">'+(copy.description||'')+'</div><div class="fb-hls">'+hlsHtml(copy.highlights,'fb',a)+'</div><div class="fb-footer">'+(logoData?'<div style="margin-bottom:.5rem">'+logoFooter()+'</div>':'')+'<div><div class="fb-aname">'+d.ag+'</div>'+(d.br?'<div class="fb-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fb-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
     } else if(lay==='split'){
       var s1=ph(activePhoto);
-      tpl='<div class="tpl-white"><div class="fs-wrap"><div class="fs-photo">'+(s1?'<img src="'+s1+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'<div class="fs-badge" style="background:'+a+'">'+getTypeLabel()+'</div></div><div class="fs-right"><div><div class="fs-eyebrow" style="color:'+a+'">'+(copy.tagline||'')+'</div><div class="fs-address">'+fullAddr(d)+'</div><div class="fs-city">'+d.ci+'</div><div class="fs-price" style="color:'+a+'">'+d.pr+'</div></div><div class="fs-stats"><div class="fs-stat-row"><span>Bedrooms</span><strong>'+d.bd+'</strong></div><div class="fs-stat-row"><span>Bathrooms</span><strong>'+d.bt+'</strong></div><div class="fs-stat-row"><span>Sq Footage</span><strong>'+d.sq+'</strong></div><div class="fs-stat-row"><span>Year Built</span><strong>'+d.yr+'</strong></div></div><div class="fs-desc">'+(copy.description||'')+'</div><div class="fs-agent"><div class="fs-aname">'+d.ag+'</div>'+(d.br?'<div class="fs-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fs-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
+      tpl='<div class="tpl-white"><div class="fs-wrap"><div class="fs-photo">'+(s1?'<img src="'+s1+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'<div class="fs-badge" style="background:'+a+'">'+getTypeLabel()+'</div></div><div class="fs-right"><div><div class="fs-eyebrow" style="color:'+a+'">'+(copy.tagline||'')+'</div><div class="fs-address">'+fullAddr(d)+'</div><div class="fs-city">'+d.ci+'</div><div class="fs-price" style="color:'+a+'">'+d.pr+'</div></div><div class="fs-stats"><div class="fs-stat-row"><span>Bedrooms</span><strong>'+d.bd+'</strong></div><div class="fs-stat-row"><span>Bathrooms</span><strong>'+d.bt+'</strong></div><div class="fs-stat-row"><span>Sq Footage</span><strong>'+d.sq+'</strong></div><div class="fs-stat-row"><span>Year Built</span><strong>'+d.yr+'</strong></div></div><div class="fs-desc">'+(copy.description||'')+'</div><div class="fs-agent">'+(logoData?'<div style="margin-bottom:.5rem">'+logoFooter()+'</div>':'')+'<div class="fs-aname">'+d.ag+'</div>'+(d.br?'<div class="fs-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fs-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
     } else if(lay==='grid2'){
       tpl='<div class="mg-wrap"><div class="mg-grid2"><div class="mg-cell">'+pImg(activePhoto)+'</div><div class="mg-cell">'+pImg(activePhoto+1>photos.length-1?0:activePhoto+1)+'</div></div><div class="mg-body"><div class="mg-addr">'+d.a+'</div><div class="mg-city">'+d.ci+'</div><div class="mg-row"><div class="mg-price" style="color:'+a+'">'+d.pr+'</div><div><div class="mg-pills"><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' bd</span><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' ba</span><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span></div></div></div><div style="margin-top:.75rem;font-size:.875rem;line-height:1.7;color:var(--ink-mid)">'+(copy.description||'')+'</div><div style="margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div><div class="mg-agent">'+d.ag+'</div>'+(d.br?'<div class="mg-asub">'+d.br+'</div>':'')+(d.ph?'<div class="mg-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
     } else if(lay==='grid3'){
@@ -1348,9 +1348,9 @@ function renderPreview(d,copy){
   } else if(fmt==='price'){
     var wasP=d.was||'';var nowP=d.now||d.pr;var s4=ph(activePhoto);
     if(lay==='ribbon'){
-      tpl='<div class="pi-wrap"><div style="height:250px;position:relative;overflow:hidden;background:#e8e4de">'+(s4?'<img src="'+s4+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'<div class="pi-ribbon" style="background:'+a+'">Price Improved</div></div><div class="pi-body"><div class="pi-eyebrow" style="color:'+a+'">'+(copy.pi_headline||'Price Just Improved')+'</div><div class="pi-address">'+fullAddr(d)+'</div><div class="pi-city">'+d.ci+'</div><div class="pi-prices">'+(wasP?'<span class="pi-was">'+wasP+'</span><span style="color:var(--ink-muted)">&#8594;</span>':'')+'<span class="pi-now" style="color:'+a+'">'+nowP+'</span>'+(wasP?'<span class="pi-save" style="background:rgba(0,0,0,.06);color:'+a+'">New Price</span>':'')+'</div><div class="pi-stats"><div class="pi-stat"><strong>'+d.bd+'</strong> beds</div><div class="pi-stat"><strong>'+d.bt+'</strong> baths</div><div class="pi-stat"><strong>'+d.sq+'</strong> sqft</div><div class="pi-stat">Built <strong>'+d.yr+'</strong></div></div><div class="pi-desc">'+(copy.description||'')+'</div><div class="pi-footer"><div><div class="pi-aname">'+d.ag+'</div>'+(d.br?'<div class="pi-asub">'+d.br+'</div>':'')+(d.ph?'<div class="pi-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
+      tpl='<div class="pi-wrap"><div style="height:250px;position:relative;overflow:hidden;background:#e8e4de">'+(s4?'<img src="'+s4+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'<div class="pi-ribbon" style="background:'+a+'">Price Improved</div></div><div class="pi-body"><div class="pi-eyebrow" style="color:'+a+'">'+(copy.pi_headline||'Price Just Improved')+'</div><div class="pi-address">'+fullAddr(d)+'</div><div class="pi-city">'+d.ci+'</div><div class="pi-prices">'+(wasP?'<span class="pi-was">'+wasP+'</span><span style="color:var(--ink-muted)">&#8594;</span>':'')+'<span class="pi-now" style="color:'+a+'">'+nowP+'</span>'+(wasP?'<span class="pi-save" style="background:rgba(0,0,0,.06);color:'+a+'">New Price</span>':'')+'</div><div class="pi-stats"><div class="pi-stat"><strong>'+d.bd+'</strong> beds</div><div class="pi-stat"><strong>'+d.bt+'</strong> baths</div><div class="pi-stat"><strong>'+d.sq+'</strong> sqft</div><div class="pi-stat">Built <strong>'+d.yr+'</strong></div></div><div class="pi-desc">'+(copy.description||'')+'</div><div class="pi-footer">'+(logoData?'<div style="margin-bottom:.5rem">'+logoFooter()+'</div>':'')+'<div><div class="pi-aname">'+d.ag+'</div>'+(d.br?'<div class="pi-asub">'+d.br+'</div>':'')+(d.ph?'<div class="pi-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
     } else if(lay==='minimal'){
-      tpl='<div class="pim-wrap"><div class="pim-top"><div class="pim-eyebrow" style="color:'+a+'">'+(copy.pi_headline||'Price just improved')+'</div><div class="pim-prices">'+(wasP?'<span class="pim-was">'+wasP+'</span><span style="color:var(--ink-muted);margin:0 .25rem">&#8594;</span>':'')+'<span class="pim-now" style="color:'+a+'">'+nowP+'</span></div><div class="pim-address">'+d.a+'</div><div class="pim-city">'+d.ci+'</div></div><div class="pim-photobox">'+(s4?'<img src="'+s4+'" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'</div><div class="pim-body"><div class="pim-pills"><span class="pim-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' beds</span><span class="pim-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' baths</span><span class="pim-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span></div><div class="pim-desc">'+(copy.description||'')+'</div><div class="pim-footer"><div><div class="pim-aname">'+d.ag+'</div>'+(d.br?'<div class="pim-asub">'+d.br+'</div>':'')+(d.ph?'<div class="pim-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
+      tpl='<div class="pim-wrap"><div class="pim-top"><div class="pim-eyebrow" style="color:'+a+'">'+(copy.pi_headline||'Price just improved')+'</div><div class="pim-prices">'+(wasP?'<span class="pim-was">'+wasP+'</span><span style="color:var(--ink-muted);margin:0 .25rem">&#8594;</span>':'')+'<span class="pim-now" style="color:'+a+'">'+nowP+'</span></div><div class="pim-address">'+d.a+'</div><div class="pim-city">'+d.ci+'</div></div><div class="pim-photobox">'+(s4?'<img src="'+s4+'" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'</div><div class="pim-body"><div class="pim-pills"><span class="pim-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' beds</span><span class="pim-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' baths</span><span class="pim-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span></div><div class="pim-desc">'+(copy.description||'')+'</div><div class="pim-footer">'+(logoData?'<div style="margin-bottom:.5rem">'+logoFooter()+'</div>':'')+'<div><div class="pim-aname">'+d.ag+'</div>'+(d.br?'<div class="pim-asub">'+d.br+'</div>':'')+(d.ph?'<div class="pim-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
     } else if(lay==='pi3'){
       tpl=cgWrap3lr(d,copy,a,240);
     } else if(lay==='pi4'){
@@ -1365,15 +1365,26 @@ function renderPreview(d,copy){
 
     // Shared story overlay content
     function stBottom(accentColor){
-      return logoInCard('tr')
-        +(logoData?''
-          :'<div class="st-brand" style="opacity:.85">'+agentTag+'</div>')
+      // Agent block: logo or text name+brokerage
+      var agentBlock = logoData
+        ? '<div style="position:absolute;top:16px;left:16px;z-index:10">'
+          + '<img src="'+logoData+'" style="max-height:64px;max-width:180px;object-fit:contain;display:block;filter:drop-shadow(0 2px 8px rgba(0,0,0,.7))" alt="Logo"/>'
+          + (d.ag?'<div style="margin-top:4px;font-size:.625rem;font-weight:500;letter-spacing:.05em;color:rgba(255,255,255,.85);text-shadow:0 1px 3px rgba(0,0,0,.8)">'+d.ag+(d.br?' &middot; '+d.br:'')+'</div>':'')
+          + '</div>'
+        : '<div style="position:absolute;top:16px;left:16px;z-index:10">'
+          + '<div style="font-size:.75rem;font-weight:600;letter-spacing:.04em;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)">'+d.ag+'</div>'
+          + (d.br?'<div style="font-size:.625rem;color:rgba(255,255,255,.75);letter-spacing:.03em;margin-top:2px">'+d.br+'</div>':'')
+          + (d.ph?'<div style="font-size:.625rem;color:rgba(255,255,255,.7);margin-top:1px">'+d.ph+'</div>':'')
+          + '</div>';
+
+      return agentBlock
         +'<div class="stv-content">'
         +'<div class="st-tag" style="color:'+accentColor+'">'+getTypeLabel()+' &middot; '+d.ci+'</div>'
         +'<div class="st-addr">'+fullAddr(d)+'</div>'
         +'<div class="st-price">'+d.pr+'</div>'
         +'<div class="st-facts"><div class="st-fact">'+d.bd+' bd</div><div class="st-fact">'+d.bt+' ba</div><div class="st-fact">'+d.sq+' sqft</div></div>'
-        +(d.ph?'<div class="st-cta" style="background:'+accentColor+'">'+d.ph+'</div>':'')
+        +(d.ph && !logoData ?''
+          : (d.ph?'<div class="st-cta" style="background:'+accentColor+'">'+d.ph+'</div>':''))
         +'</div>';
     }
     function imgOrPh(src,n){
