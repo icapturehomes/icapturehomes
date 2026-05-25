@@ -366,12 +366,50 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .js-asub{font-size:.6875rem;color:var(--ink-muted);margin-top:2px}
 .js-pill{display:inline-block;padding:.375rem 1rem;border-radius:20px;font-size:.6875rem;font-weight:500;color:#fff;letter-spacing:.03em}
 @media(max-width:800px){.app{grid-template-columns:1fr}.panel{border-right:none;border-bottom:1px solid var(--border);padding:1.25rem 1.25rem 2rem}header{padding:1rem 1.25rem}.preview-panel{padding:1.25rem 1.25rem 2rem}.fs-wrap{grid-template-columns:1fr}}
+
+/* ── COLLAGE GRIDS (object-fit:cover prevents stretching) ── */
+.cg-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;max-width:580px}
+.cg-grid{display:grid;gap:3px;overflow:hidden}
+.cg-cell{overflow:hidden;background:#e8e4de;position:relative}
+.cg-cell img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cg-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.6875rem;color:#aaa;font-style:italic}
+/* 2-col equal */
+.cg-2col{grid-template-columns:1fr 1fr}
+/* 3: large left + 2 stacked right */
+.cg-3lr{grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr}
+.cg-3lr .cg-big{grid-row:1/3}
+/* 3: horizontal strip */
+.cg-3strip{grid-template-columns:1fr 1fr 1fr}
+/* 4: 2x2 */
+.cg-4sq{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+/* featured top + 2 bottom */
+.cg-feat2{grid-template-columns:1fr 1fr;grid-template-rows:2fr 1fr}
+.cg-feat2 .cg-top{grid-column:1/3}
+/* 3: big top + 2 bottom */
+.cg-3top{grid-template-columns:1fr 1fr;grid-template-rows:2fr 1fr}
+.cg-3top .cg-top{grid-column:1/3}
+.cg-body{padding:1.375rem 1.75rem 1.25rem}
+/* dark collage variants */
+.cg-dark{background:#0f0f0f;border:1px solid #2a2a2a;border-radius:var(--rl);overflow:hidden;max-width:580px}
+.cg-dark .cg-cell{background:#1a1a1a}
+.cg-dark .cg-ph{color:#555}
+/* social collage */
+.sc-wrap{max-width:460px}
+.sc-card{aspect-ratio:1;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl)}
+.sc-grid{display:grid;gap:2px;width:100%;height:100%}
+.sc-cell{overflow:hidden;position:relative}
+.sc-cell img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.sc-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.6875rem;color:#555;font-style:italic;background:#1a1a1a}
+.sc-over{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 40%,rgba(0,0,0,.05) 80%,transparent);pointer-events:none;z-index:1}
+.sc-content{position:absolute;bottom:0;left:0;right:0;padding:1.125rem;z-index:2}
+
+.logo-upload-zone{border:1px solid var(--border-strong);border-radius:var(--r);padding:.5rem .75rem;background:#fff;cursor:pointer;display:flex;align-items:center;min-height:44px;transition:border-color .15s}
+.logo-upload-zone:hover{border-color:var(--accent)}
 </style>
 </head>
 <body>
-<header>
+<header style="justify-content:center">
   <div class="site-title">iCaptureHomes Marketing Studio</div>
-  <div class="site-sub">Flyers &middot; Social &middot; Email &middot; MLS &middot; Open House &middot; Price Drop &middot; Just Sold</div>
 </header>
 
 <!-- Save overlay -->
@@ -405,15 +443,17 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
   <!-- Format -->
   <div>
     <div class="sec-lbl">Format</div>
-    <div class="fmt-grid">
-      <button class="fmt-btn active" data-fmt="flyer" onclick="setFmt(this)"><span class="fmt-icon">&#128196;</span><span class="fmt-lbl">Flyer</span></button>
-      <button class="fmt-btn" data-fmt="openhouse" onclick="setFmt(this)"><span class="fmt-icon">&#127968;</span><span class="fmt-lbl">Open House</span></button>
-      <button class="fmt-btn" data-fmt="price" onclick="setFmt(this)"><span class="fmt-icon">&#128176;</span><span class="fmt-lbl">Price Drop</span></button>
-      <button class="fmt-btn" data-fmt="social" onclick="setFmt(this)"><span class="fmt-icon">&#128247;</span><span class="fmt-lbl">Social</span></button>
-      <button class="fmt-btn" data-fmt="email" onclick="setFmt(this)"><span class="fmt-icon">&#9993;</span><span class="fmt-lbl">Email</span></button>
-      <button class="fmt-btn" data-fmt="mls" onclick="setFmt(this)"><span class="fmt-icon">&#128221;</span><span class="fmt-lbl">MLS Copy</span></button>
-      <button class="fmt-btn" data-fmt="sold" onclick="setFmt(this)"><span class="fmt-icon">&#127942;</span><span class="fmt-lbl">Just Sold</span></button>
+    <div class="fmt-grid" style="grid-template-columns:repeat(3,1fr)">
+      <button class="fmt-btn active" data-cat="social" onclick="setCat(this)"><span class="fmt-icon">&#128247;</span><span class="fmt-lbl">Social</span></button>
+      <button class="fmt-btn" data-cat="flyer" onclick="setCat(this)"><span class="fmt-icon">&#128196;</span><span class="fmt-lbl">Flyer</span></button>
+      <button class="fmt-btn" data-cat="email" onclick="setCat(this)"><span class="fmt-icon">&#9993;</span><span class="fmt-lbl">Email</span></button>
     </div>
+  </div>
+
+  <!-- Subcategory -->
+  <div id="subSec">
+    <div class="sec-lbl">Type</div>
+    <div class="lay-grid" id="subGrid"></div>
   </div>
 
   <!-- Layout -->
@@ -433,6 +473,12 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
             <input id="fa" type="text" placeholder="123 Peachtree St NE" autocomplete="off" oninput="addrInput(this)"/>
             <div class="addr-suggestions" id="addrSuggestions"></div>
           </div>
+        </div>
+      </div>
+      <div class="frow full">
+        <div class="field">
+          <label>Unit / Suite / Floor (optional)</label>
+          <input id="fa2" type="text" placeholder="Unit 4B, Suite 200, Floor 12..."/>
         </div>
       </div>
       <div class="frow">
@@ -473,6 +519,18 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
   <div>
     <div class="sec-lbl">Your info</div>
     <div class="fields">
+      <!-- Logo upload -->
+      <div class="frow full">
+        <div class="field">
+          <label>Logo (optional — appears on materials)</label>
+          <div class="logo-upload-zone" id="logoZone" onclick="document.getElementById('logoInput').click()">
+            <div id="logoPlaceholder"><span style="font-size:1rem;opacity:.35">&#128444;</span><span style="font-size:.75rem;color:var(--ink-muted);margin-left:.5rem">Click to upload logo</span></div>
+            <img id="logoPreview" style="display:none;max-height:48px;max-width:180px;object-fit:contain;border-radius:3px" alt="Logo"/>
+            <span id="logoRemove" style="display:none;font-size:.6875rem;color:var(--ink-muted);cursor:pointer;margin-left:.5rem;text-decoration:underline" onclick="removeLogo(event)">Remove</span>
+          </div>
+          <input type="file" id="logoInput" accept="image/*" style="display:none" onchange="handleLogo(this)"/>
+        </div>
+      </div>
       <div class="frow">
         <div class="field"><label>Name</label><input id="fn" type="text" placeholder="Alex Rivera"/></div>
         <div class="field"><label>Phone</label><input id="fph" type="tel" placeholder="(404) 555-0182" oninput="fmtPhone(this)" maxlength="14"/></div>
@@ -501,77 +559,184 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 <script>
 var photos = [];
 var activePhoto = 0;
-var fmt = 'flyer';
-var lay = 'classic';
+var cat = 'social';   // top-level: social | flyer | email
+var fmt = 'social';   // actual format fed to renderPreview
+var sub = 'listed';   // subcategory
+var lay = 'square';   // layout
 var lastC = {};
 var lastD = {};
 var addrTimer = null;
+var logoData = null;
+
+// Logo handlers
+function handleLogo(input) {
+  var file = input.files[0]; if (!file) return;
+  var r = new FileReader();
+  r.onload = function(ev) {
+    logoData = ev.target.result;
+    document.getElementById('logoPreview').src = logoData;
+    document.getElementById('logoPreview').style.display = 'inline-block';
+    document.getElementById('logoPlaceholder').style.display = 'none';
+    document.getElementById('logoRemove').style.display = 'inline';
+  };
+  r.readAsDataURL(file);
+}
+function removeLogo(e) {
+  e.stopPropagation();
+  logoData = null;
+  document.getElementById('logoPreview').style.display = 'none';
+  document.getElementById('logoPreview').src = '';
+  document.getElementById('logoPlaceholder').style.display = 'flex';
+  document.getElementById('logoRemove').style.display = 'none';
+  document.getElementById('logoInput').value = '';
+}
+
+// Category → subcategory map → format
+var CAT_SUBS = {
+  social: [
+    {id:'listed',  n:'Just Listed',       d:'New listing post',   fmt:'social'},
+    {id:'openhouse',n:'Open House',        d:'Event announcement', fmt:'openhouse'},
+    {id:'price',   n:'Price Improvement', d:'Price drop post',    fmt:'price'},
+    {id:'sold',    n:'Just Sold',         d:'Celebrate the sale', fmt:'sold'}
+  ],
+  flyer: [
+    {id:'listed',  n:'Just Listed',       d:'Listing flyer',      fmt:'flyer'},
+    {id:'openhouse',n:'Open House',        d:'Open house flyer',   fmt:'openhouse'},
+    {id:'price',   n:'Price Improvement', d:'Price drop flyer',   fmt:'price'},
+    {id:'sold',    n:'Just Sold',         d:'Just sold flyer',    fmt:'sold'},
+    {id:'mls',     n:'MLS Description',   d:'Copy for MLS entry', fmt:'mls'}
+  ],
+  email: [
+    {id:'listed',  n:'Just Listed',       d:'New listing email',  fmt:'email'},
+    {id:'openhouse',n:'Open House',        d:'Event email',        fmt:'openhouse'},
+    {id:'price',   n:'Price Improvement', d:'Price drop email',   fmt:'price'},
+    {id:'sold',    n:'Just Sold',         d:'Just sold email',    fmt:'sold'}
+  ]
+};
 
 var LAYOUTS = {
-  flyer:     [{id:'classic',n:'Classic',d:'Photo top, stats below'},{id:'dark',n:'Dark luxury',d:'Moody dark background'},{id:'bold',n:'Bold minimal',d:'Price-first layout'},{id:'split',n:'Split panel',d:'Photo left, info right'},{id:'grid2',n:'2-photo grid',d:'Two photos side by side'},{id:'grid3',n:'3-photo collage',d:'Large + two stacked'},{id:'grid4',n:'4-photo grid',d:'Four-photo mosaic'}],
-  openhouse: [{id:'light',n:'Light & clean',d:'Bright editorial style'},{id:'dark',n:'Dark & dramatic',d:'Moody dark background'}],
-  price:     [{id:'ribbon',n:'Ribbon badge',d:'Bold photo with ribbon'},{id:'minimal',n:'Minimal',d:'Price-forward layout'}],
-  social:    [{id:'square',n:'Square',d:'Instagram / Facebook'},{id:'story',n:'Story / Reel',d:'Vertical 9:16'},{id:'sq2',n:'2-photo square',d:'Split image collage'}],
-  email:     [{id:'standard',n:'Standard',d:'Agent outreach email'}],
+  flyer:     [
+    {id:'classic',n:'Classic',d:'Single photo, stats below'},
+    {id:'dark',n:'Dark luxury',d:'Moody dark background'},
+    {id:'bold',n:'Bold minimal',d:'Price-first layout'},
+    {id:'split',n:'Split panel',d:'Photo left, info right'},
+    {id:'grid2',n:'2-photo side',d:'Two equal photos'},
+    {id:'grid3',n:'3-photo collage',d:'Large left + two right'},
+    {id:'grid4',n:'4-photo mosaic',d:'2x2 grid'},
+    {id:'strip3',n:'3-photo strip',d:'Three horizontal photos'},
+    {id:'feat2',n:'Feature + 2',d:'Big top, two below'}
+  ],
+  openhouse: [
+    {id:'light',n:'Light & clean',d:'Single photo, bright'},
+    {id:'dark',n:'Dark & dramatic',d:'Single photo, dark'},
+    {id:'oh3',n:'3-photo collage',d:'Three photos'},
+    {id:'oh4',n:'4-photo mosaic',d:'Four photos'}
+  ],
+  price:     [
+    {id:'ribbon',n:'Ribbon badge',d:'Single photo + ribbon'},
+    {id:'minimal',n:'Minimal',d:'Price-forward layout'},
+    {id:'pi3',n:'3-photo collage',d:'Three photos'},
+    {id:'pi4',n:'4-photo mosaic',d:'Four photos'}
+  ],
+  social:    [
+    {id:'square',n:'Square',d:'Single photo'},
+    {id:'story',n:'Story / Reel',d:'Vertical 9:16'},
+    {id:'sq2',n:'2-photo square',d:'Split collage'},
+    {id:'sq3',n:'3-photo square',d:'Large + two stacked'},
+    {id:'sq4',n:'4-photo square',d:'2x2 mosaic'}
+  ],
+  email:     [
+    {id:'standard',n:'Standard',d:'Single hero photo'},
+    {id:'em2',n:'2-photo',d:'Two photos stacked'},
+    {id:'em3',n:'3-photo strip',d:'Three photo strip'}
+  ],
   mls:       [{id:'standard',n:'Standard',d:'MLS-ready description'}],
-  sold:      [{id:'stamp',n:'Just Sold',d:'Celebratory sold graphic'}]
+  sold:      [
+    {id:'stamp',n:'Just Sold',d:'Single photo stamp'},
+    {id:'sold3',n:'3-photo collage',d:'Three photos'},
+    {id:'sold4',n:'4-photo mosaic',d:'Four photos'}
+  ]
 };
 
 setAccent();
-renderLayouts();
+initUI();
 
 function setAccent(){var c=document.getElementById('fcol').value;document.documentElement.style.setProperty('--accent',c);}
+
+function initUI(){
+  renderSubGrid();
+  renderLayouts();
+}
+
+function setCat(btn){
+  document.querySelectorAll('.fmt-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  cat = btn.dataset.cat;
+  sub = (CAT_SUBS[cat]||[])[0]?CAT_SUBS[cat][0].id:'listed';
+  renderSubGrid();
+}
+
+function renderSubGrid(){
+  var subs = CAT_SUBS[cat]||[];
+  var grid = document.getElementById('subGrid');
+  grid.innerHTML = subs.map(function(s){
+    return '<button class="lay-btn'+(s.id===sub?' active':'')
+      +'" data-sid="'+s.id+'" onclick="setSub(this)">'
+      +'<span class="lay-name">'+s.n+'</span>'
+      +'<span class="lay-desc">'+s.d+'</span>'
+      +'</button>';
+  }).join('');
+  // derive fmt from selected sub
+  var found = subs.filter(function(s){return s.id===sub;})[0];
+  fmt = found ? found.fmt : subs[0].fmt;
+  // show/hide conditional fields
+  document.getElementById('ohFlds').style.display=fmt==='openhouse'?'':'none';
+  document.getElementById('piFlds').style.display=fmt==='price'?'':'none';
+  document.getElementById('soldFlds').style.display=fmt==='sold'?'':'none';
+  // update layout options for this fmt
+  var firstLay = (LAYOUTS[fmt]||[])[0];
+  lay = firstLay ? firstLay.id : 'standard';
+  renderLayouts();
+}
+
+function setSub(btn){
+  document.querySelectorAll('#subGrid .lay-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  sub = btn.dataset.sid;
+  // derive fmt
+  var subs = CAT_SUBS[cat]||[];
+  var found = subs.filter(function(s){return s.id===sub;})[0];
+  fmt = found ? found.fmt : fmt;
+  document.getElementById('ohFlds').style.display=fmt==='openhouse'?'':'none';
+  document.getElementById('piFlds').style.display=fmt==='price'?'':'none';
+  document.getElementById('soldFlds').style.display=fmt==='sold'?'':'none';
+  var firstLay = (LAYOUTS[fmt]||[])[0];
+  lay = firstLay ? firstLay.id : 'standard';
+  renderLayouts();
+  if(Object.keys(lastC).length) renderPreview(lastD,lastC);
+}
 
 function renderLayouts(){
   var ls=LAYOUTS[fmt]||[];
   document.getElementById('layGrid').innerHTML=ls.map(function(l){
-    return '<button class="lay-btn'+(l.id===lay?' active':'')+'" data-lid="'+l.id+'" onclick="setLay(this)"><span class="lay-name">'+l.n+'</span><span class="lay-desc">'+l.d+'</span></button>';
+    return '<button class="lay-btn'+(l.id===lay?' active':'')
+      +'" data-lid="'+l.id+'" onclick="setLay(this)">'
+      +'<span class="lay-name">'+l.n+'</span>'
+      +'<span class="lay-desc">'+l.d+'</span>'
+      +'</button>';
   }).join('');
   document.getElementById('laySec').style.display=ls.length<=1?'none':'';
 }
 
-// Upload
-document.getElementById('uploadZone').addEventListener('click',function(){document.getElementById('fileInput').click();});
-document.getElementById('fileInput').addEventListener('change',function(e){
-  var files=Array.from(e.target.files);if(!files.length)return;
-  var ps=files.map(function(f){return new Promise(function(res){var r=new FileReader();r.onload=function(ev){res(ev.target.result);};r.readAsDataURL(f);});});
-  Promise.all(ps).then(function(results){
-    results.forEach(function(s){photos.push(s);});
-    activePhoto=photos.length-results.length;
-    renderStrip();
-  });
-});
-
-function renderStrip(){
-  var strip=document.getElementById('photoStrip');
-  if(!photos.length){strip.style.display='none';return;}
-  strip.style.display='flex';
-  strip.innerHTML=photos.map(function(s,i){
-    return '<div class="photo-thumb'+(i===activePhoto?' active':'')+'" onclick="selPhoto('+i+')">'
-      +'<img src="'+s+'" alt="photo '+(i+1)+'" />'
-      +'<span class="del" onclick="delPhoto(event,'+i+')">x</span>'
-      +'</div>';
-  }).join('')+'<div class="add-more" onclick="document.getElementById(\'fileInput\').click()">+</div>';
-}
-
-function selPhoto(i){activePhoto=i;renderStrip();if(Object.keys(lastC).length)renderPreview(lastD,lastC);}
-function delPhoto(e,i){e.stopPropagation();photos.splice(i,1);if(activePhoto>=photos.length)activePhoto=Math.max(0,photos.length-1);renderStrip();if(Object.keys(lastC).length)renderPreview(lastD,lastC);}
-
-function setFmt(btn){
-  document.querySelectorAll('.fmt-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');fmt=btn.dataset.fmt;
-  lay=(LAYOUTS[fmt]||[])[0]?LAYOUTS[fmt][0].id:'standard';
-  renderLayouts();
-  document.getElementById('ohFlds').style.display=fmt==='openhouse'?'':'none';
-  document.getElementById('piFlds').style.display=fmt==='price'?'':'none';
-  document.getElementById('soldFlds').style.display=fmt==='sold'?'':'none';
-}
-
 function setLay(btn){
-  document.querySelectorAll('.lay-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');lay=btn.dataset.lid;
+  document.querySelectorAll('#layGrid .lay-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  lay=btn.dataset.lid;
   if(Object.keys(lastC).length)renderPreview(lastD,lastC);
 }
+
+// Legacy setFmt kept for any internal calls
+function setFmt(f){ fmt=f; }
 
 // Phone formatter
 function fmtPhone(el){
@@ -628,6 +793,23 @@ document.addEventListener('click',function(e){
 function v(id){var el=document.getElementById(id);return el?el.value.trim():'';}
 function ac(){return document.getElementById('fcol').value||'#888';}
 function ini(n){if(!n)return'AB';var p=n.trim().split(' ');return p.length>=2?p[0][0]+p[p.length-1][0]:p[0].slice(0,2);}
+function fullAddr(d){return d.a+(d.a2?' '+d.a2:'');}
+function logoHtml(pos){
+  // pos: 'tl' top-left, 'tr' top-right, 'br' bottom-right
+  if(!logoData) return '';
+  var posStyles = {
+    'tl':'position:absolute;top:14px;left:14px;z-index:10',
+    'tr':'position:absolute;top:14px;right:14px;z-index:10',
+    'br':'position:absolute;bottom:14px;right:14px;z-index:10'
+  };
+  return '<div style="'+posStyles[pos||'tr']+'">'
+    +'<img src="'+logoData+'" style="max-height:36px;max-width:120px;object-fit:contain;display:block;border-radius:3px" alt="Logo"/>'
+    +'</div>';
+}
+function logoFooter(){
+  if(!logoData) return '';
+  return '<img src="'+logoData+'" style="max-height:30px;max-width:100px;object-fit:contain;display:block" alt="Logo"/>';
+}
 function ph(i){return photos[i]||null;}
 function pImg(i,cls,w,h){
   var s=ph(i);
@@ -644,10 +826,116 @@ function pImgDark(i){
 function photoBox(i,h,dark){return '<div style="height:'+h+'px;overflow:hidden;background:'+(dark?'#1a1a1a':'#e8e4de')+'">'+(dark?pImgDark(i):pImg(i))+'</div>';}
 function hlsHtml(hls,cls,a){return(hls||[]).map(function(h){return'<div class="'+cls+'-hl"><div class="'+cls+'-dot" style="background:'+a+'"></div>'+h+'</div>';}).join('');}
 
+
+// ── Collage helpers ──────────────────────────────────────────────
+function cell(i,cls){
+  var s=ph(i);
+  return '<div class="cg-cell'+(cls?' '+cls:'')+'">'
+    +(s?'<img src="'+s+'" alt="photo '+(i+1)+'" />':'<div class="cg-ph">Photo '+(i+1)+'</div>')
+    +'</div>';
+}
+function scell(i){
+  var s=ph(i);
+  return '<div class="sc-cell">'
+    +(s?'<img src="'+s+'" alt="photo '+(i+1)+'" />':'<div class="sc-ph">Photo '+(i+1)+'</div>')
+    +'</div>';
+}
+function idxs(base,count){
+  // return array of 'count' indices wrapping around photos array
+  var arr=[];
+  for(var i=0;i<count;i++){
+    arr.push(photos.length>0?(base+i)%photos.length:0);
+  }
+  return arr;
+}
+function cgBody(d,copy,a){
+  return '<div class="cg-body">'
+    +'<div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;line-height:1.1;margin-bottom:.15rem">'+fullAddr(d)+'</div>'
+    +'<div style="font-size:.875rem;color:var(--ink-muted);margin-bottom:.75rem">'+d.ci+'</div>'
+    +'<div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem">'
+    +'<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:'+a+'">'+d.pr+'</div>'
+    +'<div style="display:flex;gap:.375rem;flex-wrap:wrap">'
+    +'<span style="font-size:.6875rem;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid '+a+';color:'+a+'">'+d.bd+' bd</span>'
+    +'<span style="font-size:.6875rem;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid '+a+';color:'+a+'">'+d.bt+' ba</span>'
+    +'<span style="font-size:.6875rem;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid '+a+';color:'+a+'">'+d.sq+' sqft</span>'
+    +'</div></div>'
+    +'<div style="margin-top:.625rem;font-size:.875rem;line-height:1.7;color:var(--ink-mid)">'+(copy.description||'')+'</div>'
+    +'<div style="margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">'
+    +'<div><div style="font-size:.875rem;font-weight:500">'+d.ag+'</div>'+(d.br?'<div style="font-size:.6875rem;color:var(--ink-muted)">'+d.br+'</div>':'')+(d.ph?'<div style="font-size:.6875rem;color:var(--ink-muted)">'+d.ph+'</div>':'')+'</div>'
+    +(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')
+    +'</div>'
+    +'</div>';
+}
+function cgWrap2(d,copy,a,h){
+  var ix=idxs(activePhoto,2);
+  return '<div class="cg-wrap"><div class="cg-grid cg-2col" style="height:'+h+'px">'
+    +cell(ix[0])+cell(ix[1])
+    +'</div>'+cgBody(d,copy,a)+'</div>';
+}
+function cgWrap3lr(d,copy,a,h){
+  var ix=idxs(activePhoto,3);
+  return '<div class="cg-wrap"><div class="cg-grid cg-3lr" style="height:'+h+'px">'
+    +cell(ix[0],'cg-big')+cell(ix[1])+cell(ix[2])
+    +'</div>'+cgBody(d,copy,a)+'</div>';
+}
+function cgWrap3strip(d,copy,a,h){
+  var ix=idxs(activePhoto,3);
+  return '<div class="cg-wrap"><div class="cg-grid cg-3strip" style="height:'+h+'px">'
+    +cell(ix[0])+cell(ix[1])+cell(ix[2])
+    +'</div>'+cgBody(d,copy,a)+'</div>';
+}
+function cgWrap4(d,copy,a,h){
+  var ix=idxs(activePhoto,4);
+  return '<div class="cg-wrap"><div class="cg-grid cg-4sq" style="height:'+h+'px">'
+    +cell(ix[0])+cell(ix[1])+cell(ix[2])+cell(ix[3])
+    +'</div>'+cgBody(d,copy,a)+'</div>';
+}
+function cgWrapFeat2(d,copy,a,h){
+  var ix=idxs(activePhoto,3);
+  return '<div class="cg-wrap"><div class="cg-grid cg-feat2" style="height:'+h+'px">'
+    +cell(ix[0],'cg-top')+cell(ix[1])+cell(ix[2])
+    +'</div>'+cgBody(d,copy,a)+'</div>';
+}
+// Social collage cards
+function scOvContent(d,a,copy){
+  return '<div class="sc-over"></div>'
+    +'<div class="sc-top" style="position:absolute;top:14px;left:14px;right:14px;z-index:2">'
+    +'<div style="font-size:.5rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:20px;color:#fff;border:1px solid rgba(255,255,255,.3);background:'+a+'55;display:inline-block">'+(d.br||d.ag)+'</div></div>'
+    +'<div class="sc-content">'
+    +'<div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;color:'+a+';margin-bottom:.25rem">Just Listed &middot; '+d.ci+'</div>'
+    +'<div style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.15rem">'+fullAddr(d)+'</div>'
+    +'<div style="font-size:.9375rem;color:rgba(255,255,255,.9);margin-bottom:.5rem;font-weight:300">'+d.pr+'</div>'
+    +'<div style="display:flex;gap:.3rem;flex-wrap:wrap">'
+    +'<span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.bd+' bd</span>'
+    +'<span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.bt+' ba</span>'
+    +'<span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.sq+' sqft</span>'
+    +'</div></div>';
+}
+function scCard3lr(d,copy,a){
+  var ix=idxs(activePhoto,3);
+  return '<div class="sw-wrap"><div class="sc-card">'
+    +'<div class="sc-grid" style="grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr">'
+    +'<div class="sc-cell" style="grid-row:1/3">'+scell(ix[0]).replace('<div class="sc-cell">','')
+    +'<div class="sc-cell">'+scell(ix[1]).replace('<div class="sc-cell">','')
+    +'<div class="sc-cell">'+scell(ix[2]).replace('<div class="sc-cell">','')
+    +'</div>'
+    +scOvContent(d,a,copy)
+    +'</div></div>';
+}
+function scCard4(d,copy,a){
+  var ix=idxs(activePhoto,4);
+  return '<div class="sw-wrap"><div class="sc-card">'
+    +'<div class="sc-grid" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr">'
+    +scell(ix[0])+scell(ix[1])+scell(ix[2])+scell(ix[3])
+    +'</div>'
+    +scOvContent(d,a,copy)
+    +'</div></div>';
+}
+
 async function generate(){
   var btn=document.getElementById('genBtn');
   btn.disabled=true;btn.innerHTML='<div class="spin"></div> Writing copy...';
-  var d={a:v('fa')||'123 Peachtree St NE',ci:v('fci')||'Atlanta, GA',pr:v('fp')||'$849,000',bd:v('fb2')||'4',bt:v('fbt')||'3',sq:v('fsq')||'3,200',yr:v('fyr')||'2021',fe:v('ffe'),ag:v('fn')||'Your Name',ph:v('fph')||'',br:v('fbr')||'',ws:v('fws')||'',ohd:v('fohd')||'',oht:v('foht')||'',was:v('fwas')||'',now:v('fnow')||'',sp:v('fsp')||'',dm:v('fdom')||''};
+  var d={a:v('fa')||'123 Peachtree St NE',a2:v('fa2')||'',ci:v('fci')||'Atlanta, GA',pr:v('fp')||'$849,000',bd:v('fb2')||'4',bt:v('fbt')||'3',sq:v('fsq')||'3,200',yr:v('fyr')||'2021',fe:v('ffe'),ag:v('fn')||'Your Name',ph:v('fph')||'',br:v('fbr')||'',ws:v('fws')||'',ohd:v('fohd')||'',oht:v('foht')||'',was:v('fwas')||'',now:v('fnow')||'',sp:v('fsp')||'',dm:v('fdom')||''};
   lastD=d;
   var typeNote='';
   if(fmt==='openhouse')typeNote='Open house on '+(d.ohd||'this weekend')+(d.oht?' from '+d.oht:'');
@@ -673,15 +961,15 @@ function renderPreview(d,copy){
   // FLYER
   if(fmt==='flyer'){
     if(lay==='classic'){
-      tpl='<div class="tpl-white">'+photoBox(activePhoto,270,false)+'<div class="fc-bar" style="background:'+a+'"></div><div class="fc-body"><div class="fc-eyebrow" style="color:'+a+'">Just Listed &middot; '+(copy.tagline||'')+'</div><div class="fc-address">'+d.a+'</div><div class="fc-city">'+d.ci+'</div><div class="fc-stats"><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bd+'</span><span class="fc-sl">Beds</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bt+'</span><span class="fc-sl">Baths</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.sq+'</span><span class="fc-sl">Sq Ft</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.yr+'</span><span class="fc-sl">Built</span></div></div><div class="fc-desc">'+(copy.description||'')+'</div><div class="fc-hls">'+hlsHtml(copy.highlights,'fc',a)+'</div><div class="fc-bottom"><div class="fc-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fc-aname">'+d.ag+'</div>'+(d.ph?'<div class="fc-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fc-asub">'+d.br+'</div>':'')+(d.ws?'<div class="fc-asub">'+d.ws+'</div>':'')+'</div></div></div></div>';
+      tpl='<div class="tpl-white" style="position:relative">'+photoBox(activePhoto,270,false)+logoHtml('tr')+'<div class="fc-bar" style="background:'+a+'"></div><div class="fc-body"><div class="fc-eyebrow" style="color:'+a+'">Just Listed &middot; '+(copy.tagline||'')+'</div><div class="fc-address">'+fullAddr(d)+'</div><div class="fc-city">'+d.ci+'</div><div class="fc-stats"><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bd+'</span><span class="fc-sl">Beds</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bt+'</span><span class="fc-sl">Baths</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.sq+'</span><span class="fc-sl">Sq Ft</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.yr+'</span><span class="fc-sl">Built</span></div></div><div class="fc-desc">'+(copy.description||'')+'</div><div class="fc-hls">'+hlsHtml(copy.highlights,'fc',a)+'</div><div class="fc-bottom"><div class="fc-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fc-aname">'+d.ag+'</div>'+(d.ph?'<div class="fc-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fc-asub">'+d.br+'</div>':'')+(d.ws?'<div class="fc-asub">'+d.ws+'</div>':'')+'</div></div></div></div>';
     } else if(lay==='dark'){
-      tpl='<div class="tpl-dark">'+photoBox(activePhoto,255,true)+'<div class="fd-bar" style="background:'+a+'"></div><div class="fd-body"><div class="fd-eyebrow" style="color:'+a+'">Just Listed &middot; '+(copy.tagline||'')+'</div><div class="fd-address">'+d.a+'</div><div class="fd-city">'+d.ci+'</div><div class="fd-stats"><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bd+'</span><span class="fd-sl">Beds</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bt+'</span><span class="fd-sl">Baths</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.sq+'</span><span class="fd-sl">Sq Ft</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.yr+'</span><span class="fd-sl">Built</span></div></div><div class="fd-desc">'+(copy.description||'')+'</div><div class="fd-hls">'+hlsHtml(copy.highlights,'fd',a)+'</div><div class="fd-bottom"><div class="fd-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fd-aname">'+d.ag+'</div>'+(d.ph?'<div class="fd-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fd-asub">'+d.br+'</div>':'')+'</div></div></div></div>';
+      tpl='<div class="tpl-dark" style="position:relative">'+photoBox(activePhoto,255,true)+logoHtml('tr')+'<div class="fd-bar" style="background:'+a+'"></div><div class="fd-body"><div class="fd-eyebrow" style="color:'+a+'">Just Listed &middot; '+(copy.tagline||'')+'</div><div class="fd-address">'+fullAddr(d)+'</div><div class="fd-city">'+d.ci+'</div><div class="fd-stats"><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bd+'</span><span class="fd-sl">Beds</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bt+'</span><span class="fd-sl">Baths</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.sq+'</span><span class="fd-sl">Sq Ft</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.yr+'</span><span class="fd-sl">Built</span></div></div><div class="fd-desc">'+(copy.description||'')+'</div><div class="fd-hls">'+hlsHtml(copy.highlights,'fd',a)+'</div><div class="fd-bottom"><div class="fd-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fd-aname">'+d.ag+'</div>'+(d.ph?'<div class="fd-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fd-asub">'+d.br+'</div>':'')+'</div></div></div></div>';
     } else if(lay==='bold'){
       var s0=ph(activePhoto);
-      tpl='<div class="tpl-white"><div class="fb-top"><div class="fb-aline" style="background:'+a+'"></div><div class="fb-price" style="color:'+a+'">'+d.pr+'</div><div class="fb-address">'+d.a+'</div><div class="fb-city">'+d.ci+'</div></div><div class="fb-photobox">'+(s0?'<img src="'+s0+'" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'</div><div class="fb-body"><div class="fb-pills"><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' beds</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' baths</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">Built '+d.yr+'</span></div><div class="fb-desc">'+(copy.description||'')+'</div><div class="fb-hls">'+hlsHtml(copy.highlights,'fb',a)+'</div><div class="fb-footer"><div><div class="fb-aname">'+d.ag+'</div>'+(d.br?'<div class="fb-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fb-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
+      tpl='<div class="tpl-white"><div class="fb-top"><div class="fb-aline" style="background:'+a+'"></div><div class="fb-price" style="color:'+a+'">'+d.pr+'</div><div class="fb-address">'+fullAddr(d)+'</div><div class="fb-city">'+d.ci+'</div></div><div class="fb-photobox">'+(s0?'<img src="'+s0+'" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'</div><div class="fb-body"><div class="fb-pills"><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' beds</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' baths</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">Built '+d.yr+'</span></div><div class="fb-desc">'+(copy.description||'')+'</div><div class="fb-hls">'+hlsHtml(copy.highlights,'fb',a)+'</div><div class="fb-footer"><div><div class="fb-aname">'+d.ag+'</div>'+(d.br?'<div class="fb-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fb-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
     } else if(lay==='split'){
       var s1=ph(activePhoto);
-      tpl='<div class="tpl-white"><div class="fs-wrap"><div class="fs-photo">'+(s1?'<img src="'+s1+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'<div class="fs-badge" style="background:'+a+'">Just Listed</div></div><div class="fs-right"><div><div class="fs-eyebrow" style="color:'+a+'">'+(copy.tagline||'')+'</div><div class="fs-address">'+d.a+'</div><div class="fs-city">'+d.ci+'</div><div class="fs-price" style="color:'+a+'">'+d.pr+'</div></div><div class="fs-stats"><div class="fs-stat-row"><span>Bedrooms</span><strong>'+d.bd+'</strong></div><div class="fs-stat-row"><span>Bathrooms</span><strong>'+d.bt+'</strong></div><div class="fs-stat-row"><span>Sq Footage</span><strong>'+d.sq+'</strong></div><div class="fs-stat-row"><span>Year Built</span><strong>'+d.yr+'</strong></div></div><div class="fs-desc">'+(copy.description||'')+'</div><div class="fs-agent"><div class="fs-aname">'+d.ag+'</div>'+(d.br?'<div class="fs-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fs-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
+      tpl='<div class="tpl-white"><div class="fs-wrap"><div class="fs-photo">'+(s1?'<img src="'+s1+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'<div class="fs-badge" style="background:'+a+'">Just Listed</div></div><div class="fs-right"><div><div class="fs-eyebrow" style="color:'+a+'">'+(copy.tagline||'')+'</div><div class="fs-address">'+fullAddr(d)+'</div><div class="fs-city">'+d.ci+'</div><div class="fs-price" style="color:'+a+'">'+d.pr+'</div></div><div class="fs-stats"><div class="fs-stat-row"><span>Bedrooms</span><strong>'+d.bd+'</strong></div><div class="fs-stat-row"><span>Bathrooms</span><strong>'+d.bt+'</strong></div><div class="fs-stat-row"><span>Sq Footage</span><strong>'+d.sq+'</strong></div><div class="fs-stat-row"><span>Year Built</span><strong>'+d.yr+'</strong></div></div><div class="fs-desc">'+(copy.description||'')+'</div><div class="fs-agent"><div class="fs-aname">'+d.ag+'</div>'+(d.br?'<div class="fs-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fs-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
     } else if(lay==='grid2'){
       tpl='<div class="mg-wrap"><div class="mg-grid2"><div class="mg-cell">'+pImg(activePhoto)+'</div><div class="mg-cell">'+pImg(activePhoto+1>photos.length-1?0:activePhoto+1)+'</div></div><div class="mg-body"><div class="mg-addr">'+d.a+'</div><div class="mg-city">'+d.ci+'</div><div class="mg-row"><div class="mg-price" style="color:'+a+'">'+d.pr+'</div><div><div class="mg-pills"><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' bd</span><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' ba</span><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span></div></div></div><div style="margin-top:.75rem;font-size:.875rem;line-height:1.7;color:var(--ink-mid)">'+(copy.description||'')+'</div><div style="margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div><div class="mg-agent">'+d.ag+'</div>'+(d.br?'<div class="mg-asub">'+d.br+'</div>':'')+(d.ph?'<div class="mg-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
     } else if(lay==='grid3'){
@@ -695,28 +983,46 @@ function renderPreview(d,copy){
   // OPEN HOUSE
   } else if(fmt==='openhouse'){
     if(lay==='light'){
-      tpl='<div class="tpl-white"><div class="oh-photo">'+photoBox(activePhoto,260,false)+'</div><div class="oh-banner"><div class="oh-tag" style="color:'+a+'">Open House</div><div class="oh-event" style="color:'+a+'">'+(d.ohd||'This Saturday')+'</div><div class="oh-time">'+(d.oht||'1:00 PM - 4:00 PM')+'</div></div><div class="oh-body"><div class="oh-address">'+d.a+'</div><div class="oh-city">'+d.ci+'</div><div class="oh-stats"><div class="oh-stat"><strong>'+d.pr+'</strong></div><div class="oh-stat"><strong>'+d.bd+'</strong> bd</div><div class="oh-stat"><strong>'+d.bt+'</strong> ba</div><div class="oh-stat"><strong>'+d.sq+'</strong> sqft</div></div><div class="oh-desc">'+(copy.description||'')+'</div><span class="oh-cta" style="background:'+a+'">Walk-ins Welcome</span><div class="oh-agent"><div><div class="oh-aname">'+d.ag+'</div>'+(d.br?'<div class="oh-asub">'+d.br+'</div>':'')+(d.ph?'<div class="oh-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
-    } else {
+      tpl='<div class="tpl-white"><div class="oh-photo">'+photoBox(activePhoto,260,false)+'</div><div class="oh-banner"><div class="oh-tag" style="color:'+a+'">Open House</div><div class="oh-event" style="color:'+a+'">'+(d.ohd||'This Saturday')+'</div><div class="oh-time">'+(d.oht||'1:00 PM - 4:00 PM')+'</div></div><div class="oh-body"><div class="oh-address">'+d.a+'</div><div class="oh-city">'+d.ci+'</div><div class="oh-stats"><div class="oh-stat"><strong>'+d.pr+'</strong></div><div class="oh-stat"><strong>'+d.bd+'</strong> bd</div><div class="oh-stat"><strong>'+d.bt+'</strong> ba</div><div class="oh-stat"><strong>'+d.sq+'</strong> sqft</div></div><div class="oh-desc">'+(copy.description||'')+'</div><span class="oh-cta" style="background:'+a+'">Schedule a Private Tour</span><div class="oh-agent"><div><div class="oh-aname">'+d.ag+'</div>'+(d.br?'<div class="oh-asub">'+d.br+'</div>':'')+(d.ph?'<div class="oh-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
+    } else if(lay==='dark'){
       var s3=ph(activePhoto);
-      tpl='<div class="ohd-wrap"><div class="ohd-photo" style="height:240px">'+(s3?'<img src="'+s3+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="ohd-photo-ph" style="height:240px">Upload a photo</div>')+'<div class="ohd-grad"></div><div class="ohd-over"><div class="ohd-tag" style="color:'+a+'">Open House</div><div class="ohd-event">'+(d.ohd||'This Saturday')+'</div><div class="ohd-time">'+(d.oht||'1:00 PM - 4:00 PM')+'</div></div></div><div class="ohd-body"><div class="ohd-address">'+d.a+'</div><div class="ohd-city">'+d.ci+'</div><div class="ohd-stats"><div class="ohd-stat"><strong>'+d.pr+'</strong> list price</div><div class="ohd-stat"><strong>'+d.bd+'</strong> beds</div><div class="ohd-stat"><strong>'+d.bt+'</strong> baths</div><div class="ohd-stat"><strong>'+d.sq+'</strong> sqft</div></div><div class="ohd-desc">'+(copy.description||'')+'</div><div class="ohd-footer"><div><div class="ohd-aname">'+d.ag+'</div>'+(d.br?'<div class="ohd-asub">'+d.br+'</div>':'')+(d.ph?'<div class="ohd-asub">'+d.ph+'</div>':'')+'</div><span class="ohd-pill" style="background:'+a+'">Walk-ins Welcome</span></div></div></div>';
+      tpl='<div class="ohd-wrap"><div class="ohd-photo" style="height:240px">'+(s3?'<img src="'+s3+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="ohd-photo-ph" style="height:240px">Upload a photo</div>')+'<div class="ohd-grad"></div><div class="ohd-over"><div class="ohd-tag" style="color:'+a+'">Open House</div><div class="ohd-event">'+(d.ohd||'This Saturday')+'</div><div class="ohd-time">'+(d.oht||'1:00 PM - 4:00 PM')+'</div></div></div><div class="ohd-body"><div class="ohd-address">'+d.a+'</div><div class="ohd-city">'+d.ci+'</div><div class="ohd-stats"><div class="ohd-stat"><strong>'+d.pr+'</strong> list price</div><div class="ohd-stat"><strong>'+d.bd+'</strong> beds</div><div class="ohd-stat"><strong>'+d.bt+'</strong> baths</div><div class="ohd-stat"><strong>'+d.sq+'</strong> sqft</div></div><div class="ohd-desc">'+(copy.description||'')+'</div><div class="ohd-footer"><div><div class="ohd-aname">'+d.ag+'</div>'+(d.br?'<div class="ohd-asub">'+d.br+'</div>':'')+(d.ph?'<div class="ohd-asub">'+d.ph+'</div>':'')+'</div><span class="ohd-pill" style="background:'+a+'">Schedule a Private Tour</span></div></div></div>';
+    } else if(lay==='oh3'){
+      tpl='<div class="tpl-white">'+cgWrap3lr(d,copy,a,240).replace('class="cg-wrap"','class="cg-wrap" style="border:none;border-radius:0"').replace('class="cg-body"','class="cg-body" style="padding:1.25rem 1.75rem 1.25rem"')
+        +'<div style="padding:0 1.75rem .25rem 1.75rem;border-top:1px solid var(--border);margin-top:0">'
+        +'<div style="padding:.875rem 0;display:flex;justify-content:space-between;align-items:center">'
+        +'<div style="text-align:center;flex:1;border-right:1px solid var(--border);padding:.5rem 0"><div style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:'+a+'">'+(d.ohd||'This Saturday')+'</div><div style="font-size:.75rem;color:var(--ink-muted)">Open House</div></div>'
+        +'<div style="text-align:center;flex:1;padding:.5rem 0"><div style="font-size:.9375rem;font-weight:500">'+(d.oht||'1:00 - 4:00 PM')+'</div><div style="font-size:.75rem;color:var(--ink-muted)">All welcome</div></div>'
+        +'</div></div></div>';
+    } else if(lay==='oh4'){
+      tpl='<div class="tpl-white">'+cgWrap4(d,copy,a,240).replace('class="cg-wrap"','class="cg-wrap" style="border:none;border-radius:0"')
+        +'<div style="padding:0 1.75rem .25rem 1.75rem;border-top:1px solid var(--border);margin-top:0">'
+        +'<div style="padding:.875rem 0;display:flex;justify-content:space-between;align-items:center">'
+        +'<div style="text-align:center;flex:1;border-right:1px solid var(--border);padding:.5rem 0"><div style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:'+a+'">'+(d.ohd||'This Saturday')+'</div><div style="font-size:.75rem;color:var(--ink-muted)">Open House</div></div>'
+        +'<div style="text-align:center;flex:1;padding:.5rem 0"><div style="font-size:.9375rem;font-weight:500">'+(d.oht||'1:00 - 4:00 PM')+'</div><div style="font-size:.75rem;color:var(--ink-muted)">All welcome</div></div>'
+        +'</div></div></div>';
     }
 
-  // PRICE DROP
+  // PRICE IMPROVEMENT
   } else if(fmt==='price'){
     var wasP=d.was||'';var nowP=d.now||d.pr;var s4=ph(activePhoto);
     if(lay==='ribbon'){
-      tpl='<div class="pi-wrap"><div style="height:250px;position:relative;overflow:hidden;background:#e8e4de">'+(s4?'<img src="'+s4+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'<div class="pi-ribbon" style="background:'+a+'">Price Improved</div></div><div class="pi-body"><div class="pi-eyebrow" style="color:'+a+'">'+(copy.pi_headline||'Price Just Improved')+'</div><div class="pi-address">'+d.a+'</div><div class="pi-city">'+d.ci+'</div><div class="pi-prices">'+(wasP?'<span class="pi-was">'+wasP+'</span><span style="color:var(--ink-muted)">&#8594;</span>':'')+'<span class="pi-now" style="color:'+a+'">'+nowP+'</span>'+(wasP?'<span class="pi-save" style="background:rgba(0,0,0,.06);color:'+a+'">New Price</span>':'')+'</div><div class="pi-stats"><div class="pi-stat"><strong>'+d.bd+'</strong> beds</div><div class="pi-stat"><strong>'+d.bt+'</strong> baths</div><div class="pi-stat"><strong>'+d.sq+'</strong> sqft</div><div class="pi-stat">Built <strong>'+d.yr+'</strong></div></div><div class="pi-desc">'+(copy.description||'')+'</div><div class="pi-footer"><div><div class="pi-aname">'+d.ag+'</div>'+(d.br?'<div class="pi-asub">'+d.br+'</div>':'')+(d.ph?'<div class="pi-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
-    } else {
+      tpl='<div class="pi-wrap"><div style="height:250px;position:relative;overflow:hidden;background:#e8e4de">'+(s4?'<img src="'+s4+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'<div class="pi-ribbon" style="background:'+a+'">Price Improved</div></div><div class="pi-body"><div class="pi-eyebrow" style="color:'+a+'">'+(copy.pi_headline||'Price Just Improved')+'</div><div class="pi-address">'+fullAddr(d)+'</div><div class="pi-city">'+d.ci+'</div><div class="pi-prices">'+(wasP?'<span class="pi-was">'+wasP+'</span><span style="color:var(--ink-muted)">&#8594;</span>':'')+'<span class="pi-now" style="color:'+a+'">'+nowP+'</span>'+(wasP?'<span class="pi-save" style="background:rgba(0,0,0,.06);color:'+a+'">New Price</span>':'')+'</div><div class="pi-stats"><div class="pi-stat"><strong>'+d.bd+'</strong> beds</div><div class="pi-stat"><strong>'+d.bt+'</strong> baths</div><div class="pi-stat"><strong>'+d.sq+'</strong> sqft</div><div class="pi-stat">Built <strong>'+d.yr+'</strong></div></div><div class="pi-desc">'+(copy.description||'')+'</div><div class="pi-footer"><div><div class="pi-aname">'+d.ag+'</div>'+(d.br?'<div class="pi-asub">'+d.br+'</div>':'')+(d.ph?'<div class="pi-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
+    } else if(lay==='minimal'){
       tpl='<div class="pim-wrap"><div class="pim-top"><div class="pim-eyebrow" style="color:'+a+'">'+(copy.pi_headline||'Price just improved')+'</div><div class="pim-prices">'+(wasP?'<span class="pim-was">'+wasP+'</span><span style="color:var(--ink-muted);margin:0 .25rem">&#8594;</span>':'')+'<span class="pim-now" style="color:'+a+'">'+nowP+'</span></div><div class="pim-address">'+d.a+'</div><div class="pim-city">'+d.ci+'</div></div><div class="pim-photobox">'+(s4?'<img src="'+s4+'" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'</div><div class="pim-body"><div class="pim-pills"><span class="pim-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' beds</span><span class="pim-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' baths</span><span class="pim-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span></div><div class="pim-desc">'+(copy.description||'')+'</div><div class="pim-footer"><div><div class="pim-aname">'+d.ag+'</div>'+(d.br?'<div class="pim-asub">'+d.br+'</div>':'')+(d.ph?'<div class="pim-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
+    } else if(lay==='pi3'){
+      tpl=cgWrap3lr(d,copy,a,240);
+    } else if(lay==='pi4'){
+      tpl=cgWrap4(d,copy,a,240);
     }
 
   // SOCIAL
   } else if(fmt==='social'){
     var s5=ph(activePhoto);
     if(lay==='square'){
-      tpl='<div class="sw-wrap"><div class="sq-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="sq-ph">Upload a photo</div>')+'<div class="sq-grad"></div><div class="sq-top"><div class="sq-badge" style="background:'+a+'55;border-color:'+a+'88">'+(d.br||d.ag)+'</div></div><div class="sq-content"><div class="sq-tag" style="color:'+a+'">Just Listed &middot; '+d.ci+'</div><div class="sq-addr">'+d.a+'</div><div class="sq-price">'+d.pr+'</div><div class="sq-pills"><span class="sq-pill">'+d.bd+' bd</span><span class="sq-pill">'+d.bt+' ba</span><span class="sq-pill">'+d.sq+' sqft</span></div></div></div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
+      tpl='<div class="sw-wrap"><div class="sq-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="sq-ph">Upload a photo</div>')+'<div class="sq-grad"></div><div class="sq-top"><div class="sq-badge" style="background:'+a+'55;border-color:'+a+'88">'+(d.br||d.ag)+'</div></div><div class="sq-content"><div class="sq-tag" style="color:'+a+'">Just Listed &middot; '+d.ci+'</div><div class="sq-addr">'+fullAddr(d)+'</div><div class="sq-price">'+d.pr+'</div><div class="sq-pills"><span class="sq-pill">'+d.bd+' bd</span><span class="sq-pill">'+d.bt+' ba</span><span class="sq-pill">'+d.sq+' sqft</span></div></div></div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
     } else if(lay==='story'){
-      tpl='<div class="st-wrap"><div class="st-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="st-ph">Upload a photo</div>')+'<div class="st-grad"></div><div class="st-brand">'+d.ag+(d.br?' &middot; '+d.br:'')+'</div><div class="st-bottom"><div class="st-tag" style="color:'+a+'">Just Listed &middot; '+d.ci+'</div><div class="st-addr">'+d.a+'</div><div class="st-price">'+d.pr+'</div><div class="st-facts"><div class="st-fact">&#127765; '+d.bd+' bedrooms</div><div class="st-fact">&#128703; '+d.bt+' bathrooms</div><div class="st-fact">&#128208; '+d.sq+' sq ft</div></div><div class="st-cta" style="background:'+a+'">'+(d.ph||'Contact for showing')+'</div></div></div><div class="caption-box" style="max-width:280px"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
+      tpl='<div class="st-wrap"><div class="st-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="st-ph">Upload a photo</div>')+'<div class="st-grad"></div><div class="st-brand">'+d.ag+(d.br?' &middot; '+d.br:'')+'</div><div class="st-bottom"><div class="st-tag" style="color:'+a+'">Just Listed &middot; '+d.ci+'</div><div class="st-addr">'+fullAddr(d)+'</div><div class="st-price">'+d.pr+'</div><div class="st-facts"><div class="st-fact">&#127765; '+d.bd+' bedrooms</div><div class="st-fact">&#128703; '+d.bt+' bathrooms</div><div class="st-fact">&#128208; '+d.sq+' sq ft</div></div><div class="st-cta" style="background:'+a+'">'+(d.ph||'Contact for showing')+'</div></div></div><div class="caption-box" style="max-width:280px"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
     } else if(lay==='sq2'){
       var s5b=ph(photos.length>1?1:0);
       tpl='<div class="sw-wrap"><div style="aspect-ratio:1;position:relative;border-radius:var(--rl);overflow:hidden;background:#0f0f0f;display:grid;grid-template-columns:1fr 1fr;gap:2px">'+(s5?'<div style="overflow:hidden"><img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="photo 1"/></div>':'<div style="background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic">Photo 1</div>')+(s5b?'<div style="overflow:hidden"><img src="'+s5b+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="photo 2"/></div>':'<div style="background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic">Photo 2</div>')+'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 55%);pointer-events:none"></div><div style="position:absolute;top:14px;left:14px"><div style="font-size:.5rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:20px;color:#fff;border:1px solid rgba(255,255,255,.3);background:'+a+'55">'+(d.br||d.ag)+'</div></div><div style="position:absolute;bottom:0;left:0;right:0;padding:1.125rem"><div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;color:'+a+';margin-bottom:.2rem">Just Listed &middot; '+d.ci+'</div><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.2rem">'+d.a+'</div><div style="font-size:.9375rem;color:rgba(255,255,255,.9);margin-bottom:.5rem;font-weight:300">'+d.pr+'</div><div style="display:flex;gap:.3rem"><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.bd+' bd</span><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.bt+' ba</span><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.sq+' sqft</span></div></div></div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
@@ -725,7 +1031,23 @@ function renderPreview(d,copy){
   // EMAIL
   } else if(fmt==='email'){
     var s6=ph(activePhoto);
-    tpl='<div class="em-wrap"><div class="em-inner"><div class="em-hdr"><div class="em-aid"><div class="em-av" style="background:'+a+'">'+in2+'</div><div><div class="em-aname">'+d.ag+'</div><div class="em-abrok">'+(d.br||'Real Estate Agent')+'</div></div></div><div style="font-size:.6875rem;color:var(--ink-muted)">'+d.ph+'</div></div><div class="em-subj">Subject: <strong>'+(copy.email_subject||'')+'</strong></div><div class="em-photo">'+(s6?'<img src="'+s6+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="em-photo-ph">Upload a photo</div>')+'</div><div class="em-body"><div class="em-intro">'+(copy.email_body||'')+'</div><div class="em-dgrid"><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.pr+'</span><span class="em-dlbl">Price</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.bd+'</span><span class="em-dlbl">Beds</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.bt+'</span><span class="em-dlbl">Baths</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.sq+'</span><span class="em-dlbl">Sq Ft</span></div></div><div class="em-hls">'+(copy.highlights||[]).map(function(h){return'<div class="em-hl"><div class="em-hldot" style="background:'+a+'"></div>'+h+'</div>';}).join('')+'</div><div class="em-ctawrap"><a class="em-cta" style="background:'+a+'" href="#">View Full Listing &rarr;</a></div></div><div class="em-foot"><span>'+d.ag+(d.br?' &middot; '+d.br:'')+(d.ph?' &middot; '+d.ph:'')+'</span>'+(d.ws?'<span>'+d.ws+'</span>':'')+'</div></div></div>';
+    if(lay==='standard'){
+    tpl='<div class="em-wrap"><div class="em-inner"><div class="em-hdr"><div class="em-aid">'+(logoData?'<img src="'+logoData+'" style="max-height:28px;max-width:90px;object-fit:contain;border-radius:3px" alt="Logo"/>':'<div class="em-av" style="background:'+a+'">'+in2+'</div>')+'<div><div class="em-aname">'+d.ag+'</div><div class="em-abrok">'+(d.br||'Real Estate Agent')+'</div></div></div><div style="font-size:.6875rem;color:var(--ink-muted)">'+d.ph+'</div></div><div class="em-subj">Subject: <strong>'+(copy.email_subject||'')+'</strong></div><div class="em-photo">'+(s6?'<img src="'+s6+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="em-photo-ph">Upload a photo</div>')+'</div><div class="em-body"><div class="em-intro">'+(copy.email_body||'')+'</div><div class="em-dgrid"><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.pr+'</span><span class="em-dlbl">Price</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.bd+'</span><span class="em-dlbl">Beds</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.bt+'</span><span class="em-dlbl">Baths</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.sq+'</span><span class="em-dlbl">Sq Ft</span></div></div><div class="em-hls">'+(copy.highlights||[]).map(function(h){return'<div class="em-hl"><div class="em-hldot" style="background:'+a+'"></div>'+h+'</div>';}).join('')+'</div><div class="em-ctawrap"><a class="em-cta" style="background:'+a+'" href="#">View Full Listing &rarr;</a></div></div><div class="em-foot"><span>'+d.ag+(d.br?' &middot; '+d.br:'')+(d.ph?' &middot; '+d.ph:'')+'</span>'+(d.ws?'<span>'+d.ws+'</span>':'')+'</div></div></div>';
+    } else if(lay==='em2'){
+      var s6b=ph(photos.length>1?1:0);
+      tpl='<div class="em-wrap"><div class="em-inner"><div class="em-hdr"><div class="em-aid">'+(logoData?'<img src="'+logoData+'" style="max-height:28px;max-width:90px;object-fit:contain;border-radius:3px" alt="Logo"/>':'<div class="em-av" style="background:'+a+'">'+in2+'</div>')+'<div><div class="em-aname">'+d.ag+'</div><div class="em-abrok">'+(d.br||'Real Estate Agent')+'</div></div></div><div style="font-size:.6875rem;color:var(--ink-muted)">'+d.ph+'</div></div><div class="em-subj">Subject: <strong>'+(copy.email_subject||'')+'</strong></div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;height:180px;overflow:hidden">'
+        +(s6?'<div style="overflow:hidden;position:relative"><img src="'+s6+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" alt="photo 1"/></div>':'<div style="background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#aaa;font-style:italic">Photo 1</div>')
+        +(s6b?'<div style="overflow:hidden;position:relative"><img src="'+s6b+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" alt="photo 2"/></div>':'<div style="background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#aaa;font-style:italic">Photo 2</div>')
+        +'</div>'
+        +'<div class="em-body"><div class="em-intro">'+(copy.email_body||'')+'</div><div class="em-dgrid"><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.pr+'</span><span class="em-dlbl">Price</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.bd+'</span><span class="em-dlbl">Beds</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.bt+'</span><span class="em-dlbl">Baths</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.sq+'</span><span class="em-dlbl">Sq Ft</span></div></div><div class="em-hls">'+(copy.highlights||[]).map(function(h){return'<div class="em-hl"><div class="em-hldot" style="background:'+a+'"></div>'+h+'</div>';}).join('')+'</div><div class="em-ctawrap"><a class="em-cta" style="background:'+a+'" href="#">View Full Listing &rarr;</a></div></div><div class="em-foot"><span>'+d.ag+(d.br?' &middot; '+d.br:'')+(d.ph?' &middot; '+d.ph:'')+'</span>'+(d.ws?'<span>'+d.ws+'</span>':'')+'</div></div></div>';
+    } else if(lay==='em3'){
+      var ix3=idxs(activePhoto,3);
+      var emCell=function(i){var s2=ph(ix3[i]);return s2?'<div style="overflow:hidden;position:relative"><img src="'+s2+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" alt="photo '+(i+1)+'"/></div>':'<div style="background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#aaa;font-style:italic">Photo '+(i+1)+'</div>';};
+      tpl='<div class="em-wrap"><div class="em-inner"><div class="em-hdr"><div class="em-aid">'+(logoData?'<img src="'+logoData+'" style="max-height:28px;max-width:90px;object-fit:contain;border-radius:3px" alt="Logo"/>':'<div class="em-av" style="background:'+a+'">'+in2+'</div>')+'<div><div class="em-aname">'+d.ag+'</div><div class="em-abrok">'+(d.br||'Real Estate Agent')+'</div></div></div><div style="font-size:.6875rem;color:var(--ink-muted)">'+d.ph+'</div></div><div class="em-subj">Subject: <strong>'+(copy.email_subject||'')+'</strong></div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;height:160px;overflow:hidden">'+emCell(0)+emCell(1)+emCell(2)+'</div>'
+        +'<div class="em-body"><div class="em-intro">'+(copy.email_body||'')+'</div><div class="em-dgrid"><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.pr+'</span><span class="em-dlbl">Price</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.bd+'</span><span class="em-dlbl">Beds</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.bt+'</span><span class="em-dlbl">Baths</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.sq+'</span><span class="em-dlbl">Sq Ft</span></div></div><div class="em-hls">'+(copy.highlights||[]).map(function(h){return'<div class="em-hl"><div class="em-hldot" style="background:'+a+'"></div>'+h+'</div>';}).join('')+'</div><div class="em-ctawrap"><a class="em-cta" style="background:'+a+'" href="#">View Full Listing &rarr;</a></div></div><div class="em-foot"><span>'+d.ag+(d.br?' &middot; '+d.br:'')+(d.ph?' &middot; '+d.ph:'')+'</span>'+(d.ws?'<span>'+d.ws+'</span>':'')+'</div></div></div>';
+    }
 
   // MLS
   } else if(fmt==='mls'){
@@ -735,11 +1057,20 @@ function renderPreview(d,copy){
   // JUST SOLD
   } else if(fmt==='sold'){
     var s7=ph(activePhoto);
+    if(lay==='stamp'){
     tpl='<div class="js-wrap"><div class="js-photo" style="height:255px">'+(s7?'<img src="'+s7+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="js-photo-ph" style="height:255px">Upload a photo</div>')+'<div class="js-overlay"><div class="js-stamp" style="border-color:'+a+';color:'+a+'">SOLD</div></div></div><div class="js-body"><div class="js-eyebrow" style="color:'+a+'">Just Sold</div><div class="js-addr">'+d.a+'</div><div class="js-city">'+d.ci+'</div><div class="js-pricerow"><div><span class="js-plbl">Listed at</span><span class="js-pval">'+d.pr+'</span></div>'+(d.sp?'<div><span class="js-plbl">Sold for</span><span class="js-pval" style="color:'+a+'">'+d.sp+'</span></div>':'')+(d.dm?'<div><span class="js-plbl">Days on market</span><span class="js-pval">'+d.dm+'</span></div>':'')+'</div><div class="js-msg">'+(copy.sold_message||copy.description||'')+'</div><div class="js-footer"><div><div class="js-aname">'+d.ag+'</div>'+(d.br?'<div class="js-asub">'+d.br+'</div>':'')+(d.ph?'<div class="js-asub">'+d.ph+'</div>':'')+'</div><span class="js-pill" style="background:'+a+'">Results like this &rarr;</span></div></div></div>';
-  }
+    } else if(lay==='sold3'){
+      tpl=cgWrap3lr(d,copy,a,240);
+      // Add sold stamp overlay on the large cell - inject into first cg-cell via DOM post-render won't work, so use a wrapper approach
+      tpl='<div style="position:relative">'+tpl+'<div style="position:absolute;top:20px;left:20px;font-family:Cormorant Garamond,serif;font-size:2.5rem;font-weight:600;color:#fff;letter-spacing:.04em;border:3px solid '+a+';padding:.1rem .75rem .2rem;line-height:1;transform:rotate(-8deg);text-shadow:0 2px 10px rgba(0,0,0,.5);pointer-events:none">SOLD</div></div>';
+    } else if(lay==='sold4'){
+      tpl=cgWrap4(d,copy,a,240);
+      tpl='<div style="position:relative">'+tpl+'<div style="position:absolute;top:20px;left:20px;font-family:Cormorant Garamond,serif;font-size:2.5rem;font-weight:600;color:#fff;letter-spacing:.04em;border:3px solid '+a+';padding:.1rem .75rem .2rem;line-height:1;transform:rotate(-8deg);text-shadow:0 2px 10px rgba(0,0,0,.5);pointer-events:none">SOLD</div></div>';
+    }
 
   var lbls={flyer:'Copy description',openhouse:'Copy caption',price:'Copy description',social:'Copy caption',email:'Copy email text',mls:'Copy MLS description',sold:'Copy sold message'};
-  panel.innerHTML='<div class="preview-bar"><div class="preview-lbl">Preview</div><div class="act-row"><button class="act-btn" id="copyBtn" onclick="copyContent()">Copy text</button><button class="act-btn" onclick="saveToDevice()">Save to device</button><button class="act-btn" onclick="window.print()">Print / PDF</button></div></div><div id="tplWrap">'+tpl+'</div>';
+  panel.innerHTML='<div class="preview-bar"><div class="preview-lbl">Preview</div><div class="act-row"><button class="act-btn" id="copyBtn" onclick="copyContent()">Copy text</button><button class="act-btn" onclick="saveToDevice()">Save to device</button><button class="act-btn" onclick="window.print()">Print / PDF</button></div></div><div id="tplWrap" style="position:relative">'+tpl+(logoData?'<div style="position:absolute;top:16px;right:16px;z-index:20;pointer-events:none"><img src="'+logoData+'" style="max-height:40px;max-width:130px;object-fit:contain;border-radius:4px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.35))" alt="Logo"/></div>':'')+'</div>';
+}
 }
 
 function copyContent(){
@@ -763,11 +1094,11 @@ function saveToDevice(){
   overlay.classList.add('show');
   // render to canvas
   html2canvas(wrap.firstElementChild,{useCORS:true,scale:2,backgroundColor:'#ffffff',logging:false}).then(function(canvas){
-    var url=canvas.toDataURL('image/png');
+    var url=canvas.toDataURL('image/jpeg',0.92);
     document.getElementById('downloadBtn').onclick=function(){
       var a=document.createElement('a');
       a.href=url;
-      a.download='listing-marketing.png';
+      a.download='listing-marketing.jpg';
       a.click();
       overlay.classList.remove('show');
     };
