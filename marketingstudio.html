@@ -49,11 +49,14 @@ header{padding:1.25rem 2rem;border-bottom:1px solid var(--border);display:flex;a
 .fmt-btn.active .fmt-lbl{color:#fff}
 /* layout */
 .lay-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem}
-.lay-btn{border:1px solid var(--border-strong);border-radius:var(--r);padding:.5rem .625rem;background:#fff;cursor:pointer;text-align:left;transition:all .15s;font-family:'DM Sans',sans-serif}
-.lay-btn:hover{border-color:var(--accent)}
-.lay-btn.active{border-color:var(--accent);background:rgba(200,169,110,.07)}
+.lay-btn{border:1px solid var(--border-strong);border-radius:var(--r);padding:.5rem .625rem;background:#fff;cursor:pointer;text-align:left;transition:all .15s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:.5rem}
+.lay-btn:hover{border-color:var(--accent);background:rgba(200,169,110,.04)}
+.lay-btn.active{border-color:var(--accent);background:rgba(200,169,110,.1)}
+.lay-btn.active .lay-name{color:var(--ink)}
 .lay-name{font-size:.75rem;font-weight:500;color:var(--ink);display:block}
-.lay-desc{font-size:.625rem;color:var(--ink-muted);display:block;margin-top:.1rem}
+.lay-desc{font-size:.5625rem;color:var(--ink-muted);display:block;margin-top:.1rem}
+.lay-icon{flex-shrink:0;border:1.5px solid var(--border-strong);border-radius:2px;background:#e8e4de;display:flex;align-items:center;justify-content:center}
+.lay-btn.active .lay-icon{border-color:var(--accent);background:rgba(200,169,110,.15)}
 /* fields */
 .fields{display:flex;flex-direction:column;gap:.5rem}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
@@ -432,6 +435,17 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .sl2-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic;background:#1a1a1a}
 /* landscape 3-strip */
 .sl3-card{aspect-ratio:16/9;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl);display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px}
+
+/* Story vertical multi-photo */
+.stv-card{aspect-ratio:9/16;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl)}
+.stv-grid3{display:grid;grid-template-rows:1fr 1fr 1fr;gap:2px;height:100%}
+.stv-grid5{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:2px;height:100%}
+.stv-grid5 .stv-top{grid-column:1/3}
+.stv-cell{overflow:hidden;position:relative}
+.stv-cell img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.stv-ph{position:absolute;inset:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#555;font-style:italic}
+.stv-over{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 30%,transparent 65%);pointer-events:none;z-index:1}
+.stv-content{position:absolute;bottom:0;left:0;right:0;padding:1.25rem;z-index:2}
 </style>
 </head>
 <body>
@@ -503,7 +517,7 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
         <div class="field">
           <label>Street address</label>
           <div class="addr-wrap">
-            <input id="fa" type="text" placeholder="123 Peachtree St NE" autocomplete="off" oninput="addrInput(this)"/>
+            <input id="fa" oninput="livePreview()" type="text" placeholder="123 Peachtree St NE" autocomplete="off" oninput="addrInput(this)"/>
             <div class="addr-suggestions" id="addrSuggestions"></div>
           </div>
         </div>
@@ -511,40 +525,40 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
       <div class="frow full">
         <div class="field">
           <label>Unit / Suite / Floor (optional)</label>
-          <input id="fa2" type="text" placeholder="Unit 4B, Suite 200, Floor 12..."/>
+          <input id="fa2" oninput="livePreview()" type="text" placeholder="Unit 4B, Suite 200, Floor 12..."/>
         </div>
       </div>
       <div class="frow">
-        <div class="field"><label>City, State</label><input id="fci" type="text" placeholder="Atlanta, GA"/></div>
-        <div class="field"><label>List price</label><input id="fp" type="text" placeholder="$849,000"/></div>
+        <div class="field"><label>City, State</label><input id="fci" oninput="livePreview()" type="text" placeholder="Atlanta, GA"/></div>
+        <div class="field"><label>List price</label><input id="fp" oninput="livePreview()" type="text" placeholder="$849,000"/></div>
       </div>
       <div class="frow">
-        <div class="field"><label>Beds</label><input id="fb2" type="text" placeholder="4"/></div>
-        <div class="field"><label>Baths</label><input id="fbt" type="text" placeholder="3.5"/></div>
+        <div class="field"><label>Beds</label><input id="fb2" oninput="livePreview()" type="text" placeholder="4"/></div>
+        <div class="field"><label>Baths</label><input id="fbt" oninput="livePreview()" type="text" placeholder="3.5"/></div>
       </div>
       <div class="frow">
-        <div class="field"><label>Sq footage</label><input id="fsq" type="text" placeholder="3,200"/></div>
-        <div class="field"><label>Year built</label><input id="fyr" type="text" placeholder="2020"/></div>
+        <div class="field"><label>Sq footage</label><input id="fsq" oninput="livePreview()" type="text" placeholder="3,200"/></div>
+        <div class="field"><label>Year built</label><input id="fyr" oninput="livePreview()" type="text" placeholder="2020"/></div>
       </div>
       <div id="ohFlds" style="display:none">
         <div class="frow" style="margin-top:.5rem">
-          <div class="field"><label>Open house date</label><input id="fohd" type="text" placeholder="Saturday, June 7"/></div>
-          <div class="field"><label>Time</label><input id="foht" type="text" placeholder="1:00 - 4:00 PM"/></div>
+          <div class="field"><label>Open house date</label><input id="fohd" oninput="livePreview()" type="text" placeholder="Saturday, June 7"/></div>
+          <div class="field"><label>Time</label><input id="foht" oninput="livePreview()" type="text" placeholder="1:00 - 4:00 PM"/></div>
         </div>
       </div>
       <div id="piFlds" style="display:none">
         <div class="frow" style="margin-top:.5rem">
-          <div class="field"><label>Original price</label><input id="fwas" type="text" placeholder="$899,000"/></div>
-          <div class="field"><label>New price</label><input id="fnow" type="text" placeholder="$849,000"/></div>
+          <div class="field"><label>Original price</label><input id="fwas" oninput="livePreview()" type="text" placeholder="$899,000"/></div>
+          <div class="field"><label>New price</label><input id="fnow" oninput="livePreview()" type="text" placeholder="$849,000"/></div>
         </div>
       </div>
       <div id="soldFlds" style="display:none">
         <div class="frow" style="margin-top:.5rem">
-          <div class="field"><label>Sold price</label><input id="fsp" type="text" placeholder="$865,000"/></div>
-          <div class="field"><label>Days on market</label><input id="fdom" type="text" placeholder="6"/></div>
+          <div class="field"><label>Sold price</label><input id="fsp" oninput="livePreview()" type="text" placeholder="$865,000"/></div>
+          <div class="field"><label>Days on market</label><input id="fdom" oninput="livePreview()" type="text" placeholder="6"/></div>
         </div>
       </div>
-      <div class="frow full"><div class="field"><label>Key features (AI creates if blank)</label><textarea id="ffe" placeholder="Open kitchen, spa bath, screened porch..."></textarea></div></div>
+      <div class="frow full"><div class="field"><label>Key features (AI creates if blank)</label><textarea id="ffe" oninput="livePreview()" placeholder="Open kitchen, spa bath, screened porch..."></textarea></div></div>
     </div>
   </div>
 
@@ -565,14 +579,14 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
         </div>
       </div>
       <div class="frow">
-        <div class="field"><label>Name</label><input id="fn" type="text" placeholder="Alex Rivera"/></div>
+        <div class="field"><label>Name</label><input id="fn" oninput="livePreview()" type="text" placeholder="Alex Rivera"/></div>
         <div class="field"><label>Phone</label><input id="fph" type="tel" placeholder="(404) 555-0182" oninput="fmtPhone(this)" maxlength="14"/></div>
       </div>
-      <div class="frow full"><div class="field"><label>Brokerage</label><input id="fbr" type="text" placeholder="Compass Atlanta"/></div></div>
-      <div class="frow full"><div class="field"><label>Website</label><input id="fws" type="text" placeholder="alexrivera.com"/></div></div>
+      <div class="frow full"><div class="field"><label>Brokerage</label><input id="fbr" oninput="livePreview()" type="text" placeholder="Compass Atlanta"/></div></div>
+      <div class="frow full"><div class="field"><label>Website</label><input id="fws" oninput="livePreview()" type="text" placeholder="alexrivera.com"/></div></div>
       <div class="color-row">
         <label>Brand color</label>
-        <input type="color" id="fcol" value="#c8a96e" onchange="setAccent()" oninput="setAccent()"/>
+        <input type="color" id="fcol" value="#c8a96e" onchange="setAccent();livePreview();" oninput="setAccent();livePreview();"/>
       </div>
     </div>
   </div>
@@ -582,9 +596,29 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 
 <!-- RIGHT PANEL -->
 <div class="preview-panel" id="previewPanel">
-  <div class="empty-state">
-    <div class="empty-ico">&#10022;</div>
-    <div class="empty-txt">Fill in the details and generate</div>
+  <div class="empty-state" id="emptyState">
+    <div style="max-width:320px;text-align:center">
+      <div style="font-size:2rem;margin-bottom:1rem;opacity:.3">&#128247;</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:var(--ink);opacity:.5;margin-bottom:1.5rem">Your preview will appear here</div>
+      <div style="display:flex;flex-direction:column;gap:.625rem;text-align:left">
+        <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;background:rgba(200,169,110,.07);border-radius:var(--r);border:1px solid rgba(200,169,110,.2)">
+          <span style="font-size:1rem;width:24px;text-align:center">1</span>
+          <span style="font-size:.8125rem;color:var(--ink-mid)">Upload listing photos</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;background:rgba(200,169,110,.07);border-radius:var(--r);border:1px solid rgba(200,169,110,.2)">
+          <span style="font-size:1rem;width:24px;text-align:center">2</span>
+          <span style="font-size:.8125rem;color:var(--ink-mid)">Choose format, type &amp; layout</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;background:rgba(200,169,110,.07);border-radius:var(--r);border:1px solid rgba(200,169,110,.2)">
+          <span style="font-size:1rem;width:24px;text-align:center">3</span>
+          <span style="font-size:.8125rem;color:var(--ink-mid)">Fill in listing &amp; agent details</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;background:var(--ink);border-radius:var(--r)">
+          <span style="font-size:1rem;width:24px;text-align:center">&#9654;</span>
+          <span style="font-size:.8125rem;color:#fff;font-weight:500">Hit Generate — AI writes the copy</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 </div>
@@ -653,13 +687,6 @@ function loadFiles(files) {
   });
 }
 
-function slotLabel(i) {
-  // Returns slot number relative to activePhoto, wrapping around
-  if (photos.length === 0) return '';
-  var rel = ((i - activePhoto) % photos.length + photos.length) % photos.length;
-  return rel === 0 ? '★' : String(rel + 1);
-}
-
 function renderStrip() {
   var strip = document.getElementById('photoStrip');
   var zone  = document.getElementById('uploadZone');
@@ -672,24 +699,30 @@ function renderStrip() {
   if (zone) zone.style.display = 'none';
   strip.style.display = 'block';
 
-  var isMulti = ['grid2','grid3','grid4','strip3','feat2','sq2','sq3','sq4','land2','land3','em2','em3','oh3','oh4','pi3','pi4','sold3','sold4'].indexOf(lay) >= 0;
+  var multiLayouts = ['grid3','grid4','oh3light','oh3dark','pi3','story3','story5','em2','em3'];
+  var isMulti = multiLayouts.indexOf(lay) >= 0;
+  var n = photos.length;
 
   var header = '<div class="photo-strip-header">'
     + '<span class="photo-strip-label">'
-    + (isMulti
-        ? 'Tap ★ photo to change start slot &mdash; fills right in order'
-        : 'Tap a photo to use it')
-    + ' &nbsp;(' + photos.length + ')</span>'
+    + n + ' photo' + (n !== 1 ? 's' : '')
+    + (isMulti ? ' &mdash; numbers show slot order' : ' &mdash; tap to select')
+    + '</span>'
     + '<span style="font-size:.6875rem;color:var(--accent);cursor:pointer;text-decoration:underline" onclick="document.getElementById(&quot;fileInput&quot;).click()">+ Add more</span>'
     + '</div>';
 
-  var thumbs = '<div style="display:flex;gap:.375rem;flex-wrap:wrap">'
+  // Build ordered list: activePhoto is slot 1, next is slot 2, etc.
+  var thumbs = '<div style="display:flex;gap:.5rem;flex-wrap:wrap">'
     + photos.map(function(s, i) {
-      var slot = slotLabel(i);
-      var isActive = i === activePhoto;
-      return '<div class="photo-thumb' + (isActive ? ' active' : '') + '" onclick="selPhoto(' + i + ')" title="Click to make this the ' + (isMulti ? 'starting' : 'active') + ' photo">'
-        + '<img src="' + s + '" alt="photo ' + (i + 1) + '" />'
-        + '<span class="photo-num" style="background:' + (isActive ? 'rgba(200,169,110,.85)' : (isMulti ? 'rgba(0,0,0,.55)' : 'rgba(0,0,0,.45)')) + '">' + slot + '</span>'
+      var slot = ((i - activePhoto) % n + n) % n + 1; // 1-based slot
+      var isPrimary = (slot === 1);
+      return '<div class="photo-thumb' + (isPrimary ? ' active' : '') + '" onclick="selPhoto(' + i + ')" title="Tap to use as photo ' + slot + '">'
+        + '<img src="' + s + '" alt="photo ' + slot + '" />'
+        + '<span class="photo-num" style="'
+          + 'background:' + (isPrimary ? 'var(--accent)' : 'rgba(0,0,0,.6)') + ';'
+          + 'color:#fff;font-weight:700;font-size:' + (isPrimary ? '10px' : '9px') + '">'
+          + slot
+        + '</span>'
         + '<span class="del" onclick="delPhoto(event,' + i + ')">&#10005;</span>'
         + '</div>';
     }).join('')
@@ -767,48 +800,38 @@ var CAT_SUBS = {
 
 var LAYOUTS = {
   flyer:     [
-    {id:'classic',n:'Classic',d:'Single photo, stats below'},
+    {id:'classic',n:'Classic',d:'Photo top, stats below'},
     {id:'dark',n:'Dark luxury',d:'Moody dark background'},
     {id:'bold',n:'Bold minimal',d:'Price-first layout'},
     {id:'split',n:'Split panel',d:'Photo left, info right'},
-    {id:'grid2',n:'2-photo side',d:'Two equal photos'},
-    {id:'grid3',n:'3-photo collage',d:'Large left + two right'},
-    {id:'grid4',n:'4-photo mosaic',d:'2x2 grid'},
-    {id:'strip3',n:'3-photo strip',d:'Three horizontal photos'},
-    {id:'feat2',n:'Feature + 2',d:'Big top, two below'}
+    {id:'grid3',n:'3-photo collage',d:'Large left + two stacked'},
+    {id:'grid4',n:'4-photo mosaic',d:'2x2 photo grid'}
   ],
   openhouse: [
     {id:'light',n:'Light & clean',d:'Single photo, bright'},
     {id:'dark',n:'Dark & dramatic',d:'Single photo, dark'},
-    {id:'oh3',n:'3-photo collage',d:'Three photos'},
-    {id:'oh4',n:'4-photo mosaic',d:'Four photos'}
+    {id:'oh3light',n:'3-photo light',d:'Collage, bright style'},
+    {id:'oh3dark',n:'3-photo dark',d:'Collage, dark style'}
   ],
   price:     [
-    {id:'ribbon',n:'Ribbon badge',d:'Single photo + ribbon'},
+    {id:'ribbon',n:'Ribbon badge',d:'Photo with price ribbon'},
     {id:'minimal',n:'Minimal',d:'Price-forward layout'},
-    {id:'pi3',n:'3-photo collage',d:'Three photos'},
-    {id:'pi4',n:'4-photo mosaic',d:'Four photos'}
+    {id:'pi3',n:'3-photo collage',d:'Three photo collage'}
   ],
   social:    [
-    {id:'landscape',  n:'Landscape',      d:'Wide 16:9 single'},
-    {id:'land2',      n:'Landscape 2',    d:'Wide 2-photo split'},
-    {id:'land3',      n:'Landscape strip',d:'Wide 3-photo strip'},
-    {id:'square',     n:'Square',         d:'1:1 single photo'},
-    {id:'sq2',        n:'Square 2-photo', d:'Side-by-side split'},
-    {id:'sq3',        n:'Square 3-photo', d:'Large + two stacked'},
-    {id:'sq4',        n:'Square 4-photo', d:'2x2 mosaic'},
-    {id:'story',      n:'Story / Reel',   d:'Vertical 9:16'}
+    {id:'landscape',n:'Landscape',d:'Wide 16:9 · 1 photo'},
+    {id:'story',n:'Vertical · 1 photo',d:'9:16 portrait format'},
+    {id:'story3',n:'Vertical · 3 photos',d:'9:16 photo grid'},
+    {id:'story5',n:'Vertical · 5 photos',d:'9:16 mosaic grid'}
   ],
   email:     [
-    {id:'standard',n:'Standard',d:'Single hero photo'},
-    {id:'em2',n:'2-photo',d:'Two photos stacked'},
+    {id:'standard',n:'Single photo',d:'Hero photo + details'},
+    {id:'em2',n:'2-photo',d:'Two photos side by side'},
     {id:'em3',n:'3-photo strip',d:'Three photo strip'}
   ],
   mls:       [{id:'standard',n:'Standard',d:'MLS-ready description'}],
   sold:      [
-    {id:'stamp',n:'Just Sold',d:'Single photo stamp'},
-    {id:'sold3',n:'3-photo collage',d:'Three photos'},
-    {id:'sold4',n:'4-photo mosaic',d:'Four photos'}
+    {id:'stamp',n:'Just Sold',d:'Single photo + stamp'}
   ]
 };
 
@@ -816,6 +839,15 @@ setAccent();
 initUI();
 
 function setAccent(){var c=document.getElementById('fcol').value;document.documentElement.style.setProperty('--accent',c);}
+
+var liveTimer=null;
+function livePreview(){
+  // Debounce: wait 700ms after last keystroke before re-rendering
+  clearTimeout(liveTimer);
+  liveTimer=setTimeout(function(){
+    if(Object.keys(lastC).length) renderPreview(lastD,lastC);
+  },700);
+}
 
 function initUI(){
   initUpload();
@@ -871,13 +903,36 @@ function setSub(btn){
   if(Object.keys(lastC).length) renderPreview(lastD,lastC);
 }
 
+function layIcon(id){
+  // Returns a small SVG-like div showing the layout shape
+  var icons={
+    'classic':  '16/9','dark':'16/9','bold':'16/9','split':'16/9',
+    'grid3':'16/9m','grid4':'sq4',
+    'landscape':'16/9','story':'9/16','story3':'9/16x3','story5':'9/16x5',
+    'light':'16/9','dark2':'16/9','oh3light':'16/9m','oh3dark':'16/9m',
+    'ribbon':'16/9','minimal':'16/9','pi3':'16/9m',
+    'stamp':'16/9',
+    'standard':'16/9','em2':'16/9x2','em3':'16/9x3',
+    'oh3light':'16/9m','oh3dark':'16/9m',
+    'sq2':'sq2'
+  };
+  var t=icons[id]||'16/9';
+  var w=20,h=12;
+  if(t==='9/16'){w=10;h=18;}
+  else if(t==='9/16x3'){w=10;h=18;}
+  else if(t==='9/16x5'){w=10;h=18;}
+  return '<div class="lay-icon" style="width:'+(w+4)+'px;height:'+(h+4)+'px">'
+    +'<div style="width:'+w+'px;height:'+h+'px;background:rgba(0,0,0,.15);border-radius:1px"></div>'
+    +'</div>';
+}
 function renderLayouts(){
   var ls=LAYOUTS[fmt]||[];
   document.getElementById('layGrid').innerHTML=ls.map(function(l){
     return '<button class="lay-btn'+(l.id===lay?' active':'')
       +'" data-lid="'+l.id+'" onclick="setLay(this)">'
-      +'<span class="lay-name">'+l.n+'</span>'
-      +'<span class="lay-desc">'+l.d+'</span>'
+      +layIcon(l.id)
+      +'<div><span class="lay-name">'+l.n+'</span>'
+      +'<span class="lay-desc">'+l.d+'</span></div>'
       +'</button>';
   }).join('');
   document.getElementById('laySec').style.display=ls.length<=1?'none':'';
@@ -1120,7 +1175,16 @@ async function generate(){
     copy={tagline:'Modern living in '+d.ci,description:'This exceptional '+d.bd+'-bedroom home at '+d.a+' delivers '+d.sq+' sq ft of thoughtfully designed space in '+d.ci+'. Built in '+d.yr+', every detail reflects quality craftsmanship.',highlights:["Open-concept main floor with soaring ceilings","Chef's kitchen with premium appliances","Primary suite with spa-inspired bath"],mls_full:'Welcome to '+d.a+', an exceptional '+d.bd+'-bed, '+d.bt+'-bath residence offering '+d.sq+' sq ft of refined living in '+d.ci+'. Built in '+d.yr+', this home showcases impeccable craftsmanship. The open-concept living area flows seamlessly to outdoor entertaining. The gourmet kitchen features premium appliances. Retreat to the luxurious primary suite with spa bath. Priced at '+d.pr+' -- schedule your showing today.',caption:'Just listed at '+d.a+' in '+d.ci+' -- a stunning '+d.bd+'BR, '+d.bt+'BA home at '+d.sq+' sq ft for '+d.pr+'. Refined, move-in ready, and waiting for its next chapter.\n\n#JustListed #AtlantaRealEstate #LuxuryHomes #NewListing #RealEstate',email_subject:'New listing: '+d.a+' at '+d.pr,email_body:'Excited to share this stunning new listing at '+d.a+', '+d.ci+', offered at '+d.pr+'. With '+d.bd+' bedrooms and '+d.sq+' sq ft, your buyers will want to move quickly.',oh_headline:'You are invited to an exclusive open house',pi_headline:'Exceptional value -- price just improved',sold_message:'Thrilled to announce '+d.a+' is officially SOLD'+(d.dm?' in just '+d.dm+' days':'')+'. A testament to exceptional marketing and a strong Atlanta market.'};
   }
   lastC=copy;
-  try{renderPreview(d,copy);}catch(renderErr){console.error('Render error:',renderErr);}
+  try{
+    renderPreview(d,copy);
+    // On mobile, scroll preview into view
+    setTimeout(function(){
+      var panel=document.getElementById('previewPanel');
+      if(panel && window.innerWidth < 800){
+        panel.scrollIntoView({behavior:'smooth',block:'start'});
+      }
+    },100);
+  }catch(renderErr){console.error('Render error:',renderErr);}
   btn.disabled=false;btn.innerHTML='Generate';
 }
 
@@ -1156,20 +1220,18 @@ function renderPreview(d,copy){
     } else if(lay==='dark'){
       var s3=ph(activePhoto);
       tpl='<div class="ohd-wrap"><div class="ohd-photo" style="height:240px">'+(s3?'<img src="'+s3+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="ohd-photo-ph" style="height:240px">Upload a photo</div>')+'<div class="ohd-grad"></div><div class="ohd-over"><div class="ohd-tag" style="color:'+a+'">Open House</div><div class="ohd-event">'+(d.ohd||'This Saturday')+'</div><div class="ohd-time">'+(d.oht||'1:00 PM - 4:00 PM')+'</div></div></div><div class="ohd-body"><div class="ohd-address">'+d.a+'</div><div class="ohd-city">'+d.ci+'</div><div class="ohd-stats"><div class="ohd-stat"><strong>'+d.pr+'</strong> list price</div><div class="ohd-stat"><strong>'+d.bd+'</strong> beds</div><div class="ohd-stat"><strong>'+d.bt+'</strong> baths</div><div class="ohd-stat"><strong>'+d.sq+'</strong> sqft</div></div><div class="ohd-desc">'+(copy.description||'')+'</div><div class="ohd-footer"><div><div class="ohd-aname">'+d.ag+'</div>'+(d.br?'<div class="ohd-asub">'+d.br+'</div>':'')+(d.ph?'<div class="ohd-asub">'+d.ph+'</div>':'')+'</div><span class="ohd-pill" style="background:'+a+'">Schedule a Private Tour</span></div></div></div>';
-    } else if(lay==='oh3'){
-      tpl='<div class="tpl-white">'+cgWrap3lr(d,copy,a,240).replace('class="cg-wrap"','class="cg-wrap" style="border:none;border-radius:0"').replace('class="cg-body"','class="cg-body" style="padding:1.25rem 1.75rem 1.25rem"')
-        +'<div style="padding:0 1.75rem .25rem 1.75rem;border-top:1px solid var(--border);margin-top:0">'
-        +'<div style="padding:.875rem 0;display:flex;justify-content:space-between;align-items:center">'
-        +'<div style="text-align:center;flex:1;border-right:1px solid var(--border);padding:.5rem 0"><div style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:'+a+'">'+(d.ohd||'This Saturday')+'</div><div style="font-size:.75rem;color:var(--ink-muted)">Open House</div></div>'
-        +'<div style="text-align:center;flex:1;padding:.5rem 0"><div style="font-size:.9375rem;font-weight:500">'+(d.oht||'1:00 - 4:00 PM')+'</div><div style="font-size:.75rem;color:var(--ink-muted)">All welcome</div></div>'
-        +'</div></div></div>';
-    } else if(lay==='oh4'){
-      tpl='<div class="tpl-white">'+cgWrap4(d,copy,a,240).replace('class="cg-wrap"','class="cg-wrap" style="border:none;border-radius:0"')
-        +'<div style="padding:0 1.75rem .25rem 1.75rem;border-top:1px solid var(--border);margin-top:0">'
-        +'<div style="padding:.875rem 0;display:flex;justify-content:space-between;align-items:center">'
-        +'<div style="text-align:center;flex:1;border-right:1px solid var(--border);padding:.5rem 0"><div style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:'+a+'">'+(d.ohd||'This Saturday')+'</div><div style="font-size:.75rem;color:var(--ink-muted)">Open House</div></div>'
-        +'<div style="text-align:center;flex:1;padding:.5rem 0"><div style="font-size:.9375rem;font-weight:500">'+(d.oht||'1:00 - 4:00 PM')+'</div><div style="font-size:.75rem;color:var(--ink-muted)">All welcome</div></div>'
-        +'</div></div></div>';
+    } else if(lay==='oh3light'){
+      tpl='<div class="tpl-white">'+cgWrap3lr(d,copy,a,220).replace('class="cg-wrap"','class="cg-wrap" style="border:none;border-radius:0"')
+        +'<div style="border-top:1px solid var(--border);padding:1rem 1.75rem;display:flex">'
+        +'<div style="flex:1;text-align:center;border-right:1px solid var(--border)"><div style="font-family:Cormorant Garamond,serif;font-size:1.125rem;font-weight:600;color:'+a+'">'+(d.ohd||'This Saturday')+'</div><div style="font-size:.75rem;color:var(--ink-muted)">Open House</div></div>'
+        +'<div style="flex:1;text-align:center"><div style="font-size:.875rem;font-weight:500;margin-top:.25rem">'+(d.oht||'1:00 - 4:00 PM')+'</div><div style="font-size:.75rem;color:var(--ink-muted)">Schedule a tour</div></div>'
+        +'</div></div>';
+    } else if(lay==='oh3dark'){
+      tpl='<div class="tpl-dark">'+cgWrap3lr(d,copy,a,220).replace('class="cg-wrap"','class="tpl-dark" style="border:none;border-radius:0"')
+        +'<div style="border-top:1px solid rgba(255,255,255,.1);padding:1rem 1.75rem;display:flex">'
+        +'<div style="flex:1;text-align:center;border-right:1px solid rgba(255,255,255,.1)"><div style="font-family:Cormorant Garamond,serif;font-size:1.125rem;font-weight:600;color:'+a+'">'+(d.ohd||'This Saturday')+'</div><div style="font-size:.75rem;color:#777">Open House</div></div>'
+        +'<div style="flex:1;text-align:center"><div style="font-size:.875rem;font-weight:500;margin-top:.25rem;color:#fff">'+(d.oht||'1:00 - 4:00 PM')+'</div><div style="font-size:.75rem;color:#777">Schedule a tour</div></div>'
+        +'</div></div>';
     }
 
   // PRICE IMPROVEMENT
@@ -1211,6 +1273,28 @@ function renderPreview(d,copy){
       tpl='<div class="sw-wrap"><div class="sq-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="sq-ph">Upload a photo</div>')+'<div class="sq-grad"></div><div class="sq-top"><div class="sq-badge" style="background:'+a+'55;border-color:'+a+'88">'+(d.br||d.ag)+'</div></div><div class="sq-content"><div class="sq-tag" style="color:'+a+'">'+getTypeLabel()+' &middot; '+d.ci+'</div><div class="sq-addr">'+fullAddr(d)+'</div><div class="sq-price">'+d.pr+'</div><div class="sq-pills"><span class="sq-pill">'+d.bd+' bd</span><span class="sq-pill">'+d.bt+' ba</span><span class="sq-pill">'+d.sq+' sqft</span></div></div></div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
     } else if(lay==='story'){
       tpl='<div class="st-wrap"><div class="st-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="st-ph">Upload a photo</div>')+'<div class="st-grad"></div><div class="st-brand">'+d.ag+(d.br?' &middot; '+d.br:'')+'</div><div class="st-bottom"><div class="st-tag" style="color:'+a+'">'+getTypeLabel()+' &middot; '+d.ci+'</div><div class="st-addr">'+fullAddr(d)+'</div><div class="st-price">'+d.pr+'</div><div class="st-facts"><div class="st-fact">&#127765; '+d.bd+' bedrooms</div><div class="st-fact">&#128703; '+d.bt+' bathrooms</div><div class="st-fact">&#128208; '+d.sq+' sq ft</div></div><div class="st-cta" style="background:'+a+'">'+(d.ph||'Contact for showing')+'</div></div></div><div class="caption-box" style="max-width:280px"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
+    } else if(lay==='story3'){
+      var ix3s=idxs(activePhoto,3);
+      var stv3html='<div class="st-wrap" style="max-width:280px"><div class="stv-card"><div class="stv-grid3">'
+        +ix3s.map(function(i){var s2=ph(i);return '<div class="stv-cell">'+(s2?'<img src="'+s2+'" alt="p"/>':'<div class="stv-ph">Photo</div>')+'</div>';}).join('')
+        +'</div><div class="stv-over"></div>'
+        +'<div class="st-brand">'+d.ag+(d.br?' &middot; '+d.br:'')+'</div>'
+        +'<div class="stv-content"><div class="st-tag" style="color:'+a+'">'+getTypeLabel()+' &middot; '+d.ci+'</div>'
+        +'<div class="st-addr">'+fullAddr(d)+'</div><div class="st-price">'+d.pr+'</div>'
+        +'<div class="st-facts"><div class="st-fact">'+d.bd+' beds</div><div class="st-fact">'+d.bt+' baths</div><div class="st-fact">'+d.sq+' sqft</div></div>'
+        +'<div class="st-cta" style="background:'+a+'">'+(d.ph||'Schedule a tour')+'</div></div></div></div>';
+      tpl=stv3html+'<div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div>';
+    } else if(lay==='story5'){
+      var ix5s=idxs(activePhoto,5);
+      var stv5html='<div class="st-wrap" style="max-width:280px"><div class="stv-card"><div class="stv-grid5">'
+        +'<div class="stv-cell stv-top">'+(ph(ix5s[0])?'<img src="'+ph(ix5s[0])+'" alt="p1"/>':'<div class="stv-ph">Photo 1</div>')+'</div>'
+        +[1,2,3,4].map(function(n){var s2=ph(ix5s[n]);return '<div class="stv-cell">'+(s2?'<img src="'+s2+'" alt="p'+(n+1)+'"/>':'<div class="stv-ph">'+( n+1)+'</div>')+'</div>';}).join('')
+        +'</div><div class="stv-over"></div>'
+        +'<div class="st-brand">'+d.ag+(d.br?' &middot; '+d.br:'')+'</div>'
+        +'<div class="stv-content"><div class="st-tag" style="color:'+a+'">'+getTypeLabel()+' &middot; '+d.ci+'</div>'
+        +'<div class="st-addr">'+fullAddr(d)+'</div><div class="st-price">'+d.pr+'</div>'
+        +'<div class="st-cta" style="background:'+a+'">'+(d.ph||'Schedule a tour')+'</div></div></div></div>';
+      tpl=stv5html+'<div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div>';
     } else if(lay==='sq2'){
       var s5b=ph(photos.length>1?1:0);
       tpl='<div class="sw-wrap"><div style="aspect-ratio:1;position:relative;border-radius:var(--rl);overflow:hidden;background:#0f0f0f;display:grid;grid-template-columns:1fr 1fr;gap:2px">'+(s5?'<div style="overflow:hidden"><img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="photo 1"/></div>':'<div style="background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic">Photo 1</div>')+(s5b?'<div style="overflow:hidden"><img src="'+s5b+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="photo 2"/></div>':'<div style="background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic">Photo 2</div>')+'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 55%);pointer-events:none"></div><div style="position:absolute;top:14px;left:14px"><div style="font-size:.5rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:20px;color:#fff;border:1px solid rgba(255,255,255,.3);background:'+a+'55">'+(d.br||d.ag)+'</div></div><div style="position:absolute;bottom:0;left:0;right:0;padding:1.125rem"><div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;color:'+a+';margin-bottom:.2rem">'+getTypeLabel()+' &middot; '+d.ci+'</div><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.2rem">'+d.a+'</div><div style="font-size:.9375rem;color:rgba(255,255,255,.9);margin-bottom:.5rem;font-weight:300">'+d.pr+'</div><div style="display:flex;gap:.3rem"><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.bd+' bd</span><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.bt+' ba</span><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.sq+' sqft</span></div></div></div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
