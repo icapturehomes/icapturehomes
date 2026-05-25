@@ -405,6 +405,29 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 
 .logo-upload-zone{border:1px solid var(--border-strong);border-radius:var(--r);padding:.5rem .75rem;background:#fff;cursor:pointer;display:flex;align-items:center;min-height:44px;transition:border-color .15s}
 .logo-upload-zone:hover{border-color:var(--accent)}
+
+.upload-zone.drag-over{border-color:var(--accent);background:rgba(200,169,110,.08);border-style:solid}
+
+/* Social landscape layouts */
+.sl-wrap{max-width:580px}
+.sl-card{aspect-ratio:16/9;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl)}
+.sl-card img{width:100%;height:100%;object-fit:cover;display:block}
+.sl-ph{width:100%;height:100%;background:#222;display:flex;align-items:center;justify-content:center;color:#555;font-size:.8rem;font-style:italic}
+.sl-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 50%,rgba(0,0,0,.05) 85%,transparent)}
+.sl-content{position:absolute;bottom:0;left:0;right:0;padding:1.25rem 1.5rem}
+.sl-badge{position:absolute;top:14px;left:16px;font-size:.5rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:20px;color:#fff;border:1px solid rgba(255,255,255,.3)}
+.sl-tag{font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;margin-bottom:.2rem}
+.sl-addr{font-family:'Cormorant Garamond',serif;font-size:1.375rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.15rem}
+.sl-price{font-size:.9375rem;color:rgba(255,255,255,.9);margin-bottom:.5rem;font-weight:300}
+.sl-pills{display:flex;gap:.3rem;flex-wrap:wrap}
+.sl-pill{font-size:.5rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)}
+/* landscape 2-photo */
+.sl2-card{aspect-ratio:16/9;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl);display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.sl2-cell{overflow:hidden;position:relative}
+.sl2-cell img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.sl2-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic;background:#1a1a1a}
+/* landscape 3-strip */
+.sl3-card{aspect-ratio:16/9;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl);display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px}
 </style>
 </head>
 <body>
@@ -454,6 +477,12 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
   <div id="subSec">
     <div class="sec-lbl">Type</div>
     <div class="lay-grid" id="subGrid"></div>
+    <div style="margin-top:.5rem">
+      <div class="field">
+        <label>Custom type label (optional)</label>
+        <input id="customType" type="text" placeholder="e.g. Coming Soon, New Price, Grand Opening..." oninput="updateCustomType(this.value)" style="font-size:.8125rem"/>
+      </div>
+    </div>
   </div>
 
   <!-- Layout -->
@@ -568,6 +597,99 @@ var lastD = {};
 var addrTimer = null;
 var logoData = null;
 
+// ── Photo upload & drag-drop ─────────────────────────────────────
+function initUpload() {
+  var zone = document.getElementById('uploadZone');
+  var input = document.getElementById('fileInput');
+  if (!zone || !input) return;
+
+  // Click to upload
+  zone.addEventListener('click', function() { input.click(); });
+
+  // File input change
+  input.addEventListener('change', function(e) {
+    loadFiles(Array.from(e.target.files));
+    // reset so same files can be re-selected
+    e.target.value = '';
+  });
+
+  // Drag and drop
+  zone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    zone.classList.add('drag-over');
+  });
+  zone.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+  });
+  zone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    var files = Array.from(e.dataTransfer.files).filter(function(f) {
+      return f.type.startsWith('image/');
+    });
+    loadFiles(files);
+  });
+}
+
+function loadFiles(files) {
+  if (!files.length) return;
+  var start = photos.length;
+  var promises = files.map(function(f) {
+    return new Promise(function(res) {
+      var r = new FileReader();
+      r.onload = function(ev) { res(ev.target.result); };
+      r.readAsDataURL(f);
+    });
+  });
+  Promise.all(promises).then(function(results) {
+    results.forEach(function(s) { photos.push(s); });
+    activePhoto = start;
+    renderStrip();
+  });
+}
+
+function renderStrip() {
+  var strip = document.getElementById('photoStrip');
+  var zone  = document.getElementById('uploadZone');
+  if (!strip) return;
+  if (!photos.length) {
+    strip.style.display = 'none';
+    if (zone) zone.style.display = '';
+    return;
+  }
+  // After first photo hide the big zone, show compact strip + add-more
+  if (zone) zone.style.display = 'none';
+  strip.style.display = 'flex';
+  strip.innerHTML = photos.map(function(s, i) {
+    return '<div class="photo-thumb' + (i === activePhoto ? ' active' : '') + '" onclick="selPhoto(' + i + ')">'
+      + '<img src="' + s + '" alt="photo ' + (i + 1) + '" />'
+      + '<span class="del" onclick="delPhoto(event,' + i + ')">&#10005;</span>'
+      + '</div>';
+  }).join('')
+  + '<div class="add-more" title="Add more photos" onclick="document.getElementById(&quot;fileInput&quot;).click()">+</div>';
+}
+
+function selPhoto(i) {
+  activePhoto = i;
+  renderStrip();
+  if (Object.keys(lastC).length) renderPreview(lastD, lastC);
+}
+
+function delPhoto(e, i) {
+  e.stopPropagation();
+  photos.splice(i, 1);
+  if (!photos.length) {
+    activePhoto = 0;
+    renderStrip();
+    return;
+  }
+  activePhoto = Math.min(activePhoto, photos.length - 1);
+  renderStrip();
+  if (Object.keys(lastC).length) renderPreview(lastD, lastC);
+}
+
+
 // Logo handlers
 function handleLogo(input) {
   var file = input.files[0]; if (!file) return;
@@ -639,11 +761,14 @@ var LAYOUTS = {
     {id:'pi4',n:'4-photo mosaic',d:'Four photos'}
   ],
   social:    [
-    {id:'square',n:'Square',d:'Single photo'},
-    {id:'story',n:'Story / Reel',d:'Vertical 9:16'},
-    {id:'sq2',n:'2-photo square',d:'Split collage'},
-    {id:'sq3',n:'3-photo square',d:'Large + two stacked'},
-    {id:'sq4',n:'4-photo square',d:'2x2 mosaic'}
+    {id:'landscape',  n:'Landscape',      d:'Wide 16:9 single'},
+    {id:'land2',      n:'Landscape 2',    d:'Wide 2-photo split'},
+    {id:'land3',      n:'Landscape strip',d:'Wide 3-photo strip'},
+    {id:'square',     n:'Square',         d:'1:1 single photo'},
+    {id:'sq2',        n:'Square 2-photo', d:'Side-by-side split'},
+    {id:'sq3',        n:'Square 3-photo', d:'Large + two stacked'},
+    {id:'sq4',        n:'Square 4-photo', d:'2x2 mosaic'},
+    {id:'story',      n:'Story / Reel',   d:'Vertical 9:16'}
   ],
   email:     [
     {id:'standard',n:'Standard',d:'Single hero photo'},
@@ -664,6 +789,7 @@ initUI();
 function setAccent(){var c=document.getElementById('fcol').value;document.documentElement.style.setProperty('--accent',c);}
 
 function initUI(){
+  initUpload();
   renderSubGrid();
   renderLayouts();
 }
@@ -737,6 +863,18 @@ function setLay(btn){
 
 // Legacy setFmt kept for any internal calls
 function setFmt(f){ fmt=f; }
+
+// Custom type label
+var customTypeLabel = '';
+function updateCustomType(val) {
+  customTypeLabel = val.trim();
+}
+function getTypeLabel() {
+  if (customTypeLabel) return customTypeLabel;
+  var subs = CAT_SUBS[cat] || [];
+  var found = subs.filter(function(s){ return s.id===sub; })[0];
+  return found ? found.n : 'Just Listed';
+}
 
 // Phone formatter
 function fmtPhone(el){
@@ -902,7 +1040,7 @@ function scOvContent(d,a,copy){
     +'<div class="sc-top" style="position:absolute;top:14px;left:14px;right:14px;z-index:2">'
     +'<div style="font-size:.5rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:20px;color:#fff;border:1px solid rgba(255,255,255,.3);background:'+a+'55;display:inline-block">'+(d.br||d.ag)+'</div></div>'
     +'<div class="sc-content">'
-    +'<div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;color:'+a+';margin-bottom:.25rem">Just Listed &middot; '+d.ci+'</div>'
+    +'<div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;color:'+a+';margin-bottom:.25rem">'+getTypeLabel()+' &middot; '+d.ci+'</div>'
     +'<div style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.15rem">'+fullAddr(d)+'</div>'
     +'<div style="font-size:.9375rem;color:rgba(255,255,255,.9);margin-bottom:.5rem;font-weight:300">'+d.pr+'</div>'
     +'<div style="display:flex;gap:.3rem;flex-wrap:wrap">'
@@ -961,15 +1099,15 @@ function renderPreview(d,copy){
   // FLYER
   if(fmt==='flyer'){
     if(lay==='classic'){
-      tpl='<div class="tpl-white" style="position:relative">'+photoBox(activePhoto,270,false)+logoHtml('tr')+'<div class="fc-bar" style="background:'+a+'"></div><div class="fc-body"><div class="fc-eyebrow" style="color:'+a+'">Just Listed &middot; '+(copy.tagline||'')+'</div><div class="fc-address">'+fullAddr(d)+'</div><div class="fc-city">'+d.ci+'</div><div class="fc-stats"><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bd+'</span><span class="fc-sl">Beds</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bt+'</span><span class="fc-sl">Baths</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.sq+'</span><span class="fc-sl">Sq Ft</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.yr+'</span><span class="fc-sl">Built</span></div></div><div class="fc-desc">'+(copy.description||'')+'</div><div class="fc-hls">'+hlsHtml(copy.highlights,'fc',a)+'</div><div class="fc-bottom"><div class="fc-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fc-aname">'+d.ag+'</div>'+(d.ph?'<div class="fc-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fc-asub">'+d.br+'</div>':'')+(d.ws?'<div class="fc-asub">'+d.ws+'</div>':'')+'</div></div></div></div>';
+      tpl='<div class="tpl-white" style="position:relative">'+photoBox(activePhoto,270,false)+logoHtml('tr')+'<div class="fc-bar" style="background:'+a+'"></div><div class="fc-body"><div class="fc-eyebrow" style="color:'+a+'">'+getTypeLabel()+' &middot; '+(copy.tagline||'')+'</div><div class="fc-address">'+fullAddr(d)+'</div><div class="fc-city">'+d.ci+'</div><div class="fc-stats"><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bd+'</span><span class="fc-sl">Beds</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bt+'</span><span class="fc-sl">Baths</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.sq+'</span><span class="fc-sl">Sq Ft</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.yr+'</span><span class="fc-sl">Built</span></div></div><div class="fc-desc">'+(copy.description||'')+'</div><div class="fc-hls">'+hlsHtml(copy.highlights,'fc',a)+'</div><div class="fc-bottom"><div class="fc-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fc-aname">'+d.ag+'</div>'+(d.ph?'<div class="fc-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fc-asub">'+d.br+'</div>':'')+(d.ws?'<div class="fc-asub">'+d.ws+'</div>':'')+'</div></div></div></div>';
     } else if(lay==='dark'){
-      tpl='<div class="tpl-dark" style="position:relative">'+photoBox(activePhoto,255,true)+logoHtml('tr')+'<div class="fd-bar" style="background:'+a+'"></div><div class="fd-body"><div class="fd-eyebrow" style="color:'+a+'">Just Listed &middot; '+(copy.tagline||'')+'</div><div class="fd-address">'+fullAddr(d)+'</div><div class="fd-city">'+d.ci+'</div><div class="fd-stats"><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bd+'</span><span class="fd-sl">Beds</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bt+'</span><span class="fd-sl">Baths</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.sq+'</span><span class="fd-sl">Sq Ft</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.yr+'</span><span class="fd-sl">Built</span></div></div><div class="fd-desc">'+(copy.description||'')+'</div><div class="fd-hls">'+hlsHtml(copy.highlights,'fd',a)+'</div><div class="fd-bottom"><div class="fd-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fd-aname">'+d.ag+'</div>'+(d.ph?'<div class="fd-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fd-asub">'+d.br+'</div>':'')+'</div></div></div></div>';
+      tpl='<div class="tpl-dark" style="position:relative">'+photoBox(activePhoto,255,true)+logoHtml('tr')+'<div class="fd-bar" style="background:'+a+'"></div><div class="fd-body"><div class="fd-eyebrow" style="color:'+a+'">'+getTypeLabel()+' &middot; '+(copy.tagline||'')+'</div><div class="fd-address">'+fullAddr(d)+'</div><div class="fd-city">'+d.ci+'</div><div class="fd-stats"><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bd+'</span><span class="fd-sl">Beds</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bt+'</span><span class="fd-sl">Baths</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.sq+'</span><span class="fd-sl">Sq Ft</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.yr+'</span><span class="fd-sl">Built</span></div></div><div class="fd-desc">'+(copy.description||'')+'</div><div class="fd-hls">'+hlsHtml(copy.highlights,'fd',a)+'</div><div class="fd-bottom"><div class="fd-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fd-aname">'+d.ag+'</div>'+(d.ph?'<div class="fd-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fd-asub">'+d.br+'</div>':'')+'</div></div></div></div>';
     } else if(lay==='bold'){
       var s0=ph(activePhoto);
       tpl='<div class="tpl-white"><div class="fb-top"><div class="fb-aline" style="background:'+a+'"></div><div class="fb-price" style="color:'+a+'">'+d.pr+'</div><div class="fb-address">'+fullAddr(d)+'</div><div class="fb-city">'+d.ci+'</div></div><div class="fb-photobox">'+(s0?'<img src="'+s0+'" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'</div><div class="fb-body"><div class="fb-pills"><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' beds</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' baths</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">Built '+d.yr+'</span></div><div class="fb-desc">'+(copy.description||'')+'</div><div class="fb-hls">'+hlsHtml(copy.highlights,'fb',a)+'</div><div class="fb-footer"><div><div class="fb-aname">'+d.ag+'</div>'+(d.br?'<div class="fb-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fb-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
     } else if(lay==='split'){
       var s1=ph(activePhoto);
-      tpl='<div class="tpl-white"><div class="fs-wrap"><div class="fs-photo">'+(s1?'<img src="'+s1+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'<div class="fs-badge" style="background:'+a+'">Just Listed</div></div><div class="fs-right"><div><div class="fs-eyebrow" style="color:'+a+'">'+(copy.tagline||'')+'</div><div class="fs-address">'+fullAddr(d)+'</div><div class="fs-city">'+d.ci+'</div><div class="fs-price" style="color:'+a+'">'+d.pr+'</div></div><div class="fs-stats"><div class="fs-stat-row"><span>Bedrooms</span><strong>'+d.bd+'</strong></div><div class="fs-stat-row"><span>Bathrooms</span><strong>'+d.bt+'</strong></div><div class="fs-stat-row"><span>Sq Footage</span><strong>'+d.sq+'</strong></div><div class="fs-stat-row"><span>Year Built</span><strong>'+d.yr+'</strong></div></div><div class="fs-desc">'+(copy.description||'')+'</div><div class="fs-agent"><div class="fs-aname">'+d.ag+'</div>'+(d.br?'<div class="fs-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fs-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
+      tpl='<div class="tpl-white"><div class="fs-wrap"><div class="fs-photo">'+(s1?'<img src="'+s1+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'<div class="fs-badge" style="background:'+a+'">'+getTypeLabel()+'</div></div><div class="fs-right"><div><div class="fs-eyebrow" style="color:'+a+'">'+(copy.tagline||'')+'</div><div class="fs-address">'+fullAddr(d)+'</div><div class="fs-city">'+d.ci+'</div><div class="fs-price" style="color:'+a+'">'+d.pr+'</div></div><div class="fs-stats"><div class="fs-stat-row"><span>Bedrooms</span><strong>'+d.bd+'</strong></div><div class="fs-stat-row"><span>Bathrooms</span><strong>'+d.bt+'</strong></div><div class="fs-stat-row"><span>Sq Footage</span><strong>'+d.sq+'</strong></div><div class="fs-stat-row"><span>Year Built</span><strong>'+d.yr+'</strong></div></div><div class="fs-desc">'+(copy.description||'')+'</div><div class="fs-agent"><div class="fs-aname">'+d.ag+'</div>'+(d.br?'<div class="fs-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fs-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
     } else if(lay==='grid2'){
       tpl='<div class="mg-wrap"><div class="mg-grid2"><div class="mg-cell">'+pImg(activePhoto)+'</div><div class="mg-cell">'+pImg(activePhoto+1>photos.length-1?0:activePhoto+1)+'</div></div><div class="mg-body"><div class="mg-addr">'+d.a+'</div><div class="mg-city">'+d.ci+'</div><div class="mg-row"><div class="mg-price" style="color:'+a+'">'+d.pr+'</div><div><div class="mg-pills"><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' bd</span><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' ba</span><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span></div></div></div><div style="margin-top:.75rem;font-size:.875rem;line-height:1.7;color:var(--ink-mid)">'+(copy.description||'')+'</div><div style="margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div><div class="mg-agent">'+d.ag+'</div>'+(d.br?'<div class="mg-asub">'+d.br+'</div>':'')+(d.ph?'<div class="mg-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
     } else if(lay==='grid3'){
@@ -1019,13 +1157,32 @@ function renderPreview(d,copy){
   // SOCIAL
   } else if(fmt==='social'){
     var s5=ph(activePhoto);
-    if(lay==='square'){
-      tpl='<div class="sw-wrap"><div class="sq-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="sq-ph">Upload a photo</div>')+'<div class="sq-grad"></div><div class="sq-top"><div class="sq-badge" style="background:'+a+'55;border-color:'+a+'88">'+(d.br||d.ag)+'</div></div><div class="sq-content"><div class="sq-tag" style="color:'+a+'">Just Listed &middot; '+d.ci+'</div><div class="sq-addr">'+fullAddr(d)+'</div><div class="sq-price">'+d.pr+'</div><div class="sq-pills"><span class="sq-pill">'+d.bd+' bd</span><span class="sq-pill">'+d.bt+' ba</span><span class="sq-pill">'+d.sq+' sqft</span></div></div></div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
+    var lbadge = logoData ? '<div style="position:absolute;top:14px;left:14px;z-index:10"><img src="'+logoData+'" style="max-height:32px;max-width:100px;object-fit:contain;border-radius:3px" alt="Logo"/></div>' : '<div class="sl-badge" style="background:'+a+'55;border-color:'+a+'88">'+(d.br||d.ag)+'</div>';
+    var sovContent = '<div class="sl-content"><div class="sl-tag" style="color:'+a+'">'+getTypeLabel()+' &middot; '+d.ci+'</div><div class="sl-addr">'+fullAddr(d)+'</div><div class="sl-price">'+d.pr+'</div><div class="sl-pills"><span class="sl-pill">'+d.bd+' bd</span><span class="sl-pill">'+d.bt+' ba</span><span class="sl-pill">'+d.sq+' sqft</span></div></div>';
+    if(lay==='landscape'){
+      tpl='<div class="sl-wrap"><div class="sl-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="sl-ph">Upload a photo</div>')+'<div class="sl-grad"></div>'+lbadge+sovContent+'</div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(lastC.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
+    } else if(lay==='land2'){
+      var sl2b=ph(photos.length>1?1:0);
+      tpl='<div class="sl-wrap"><div class="sl2-card">'
+        +(s5?'<div class="sl2-cell"><img src="'+s5+'" alt="p1"/></div>':'<div class="sl2-cell"><div class="sl2-ph">Photo 1</div></div>')
+        +(sl2b?'<div class="sl2-cell"><img src="'+sl2b+'" alt="p2"/></div>':'<div class="sl2-cell"><div class="sl2-ph">Photo 2</div></div>')
+        +'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.82) 45%,transparent 75%);pointer-events:none"></div>'
+        +lbadge+sovContent
+        +'</div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(lastC.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
+    } else if(lay==='land3'){
+      var ix3l=idxs(activePhoto,3);
+      tpl='<div class="sl-wrap"><div class="sl3-card">'
+        +ix3l.map(function(i,n){var s2=ph(i);return s2?'<div style="overflow:hidden;position:relative"><img src="'+s2+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" alt="p'+(n+1)+'"/></div>':'<div style="background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#555;font-style:italic">Photo '+(n+1)+'</div>';}).join('')
+        +'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.82) 40%,transparent 70%);pointer-events:none"></div>'
+        +lbadge+sovContent
+        +'</div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(lastC.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
+    } else if(lay==='square'){
+      tpl='<div class="sw-wrap"><div class="sq-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="sq-ph">Upload a photo</div>')+'<div class="sq-grad"></div><div class="sq-top"><div class="sq-badge" style="background:'+a+'55;border-color:'+a+'88">'+(d.br||d.ag)+'</div></div><div class="sq-content"><div class="sq-tag" style="color:'+a+'">'+getTypeLabel()+' &middot; '+d.ci+'</div><div class="sq-addr">'+fullAddr(d)+'</div><div class="sq-price">'+d.pr+'</div><div class="sq-pills"><span class="sq-pill">'+d.bd+' bd</span><span class="sq-pill">'+d.bt+' ba</span><span class="sq-pill">'+d.sq+' sqft</span></div></div></div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
     } else if(lay==='story'){
-      tpl='<div class="st-wrap"><div class="st-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="st-ph">Upload a photo</div>')+'<div class="st-grad"></div><div class="st-brand">'+d.ag+(d.br?' &middot; '+d.br:'')+'</div><div class="st-bottom"><div class="st-tag" style="color:'+a+'">Just Listed &middot; '+d.ci+'</div><div class="st-addr">'+fullAddr(d)+'</div><div class="st-price">'+d.pr+'</div><div class="st-facts"><div class="st-fact">&#127765; '+d.bd+' bedrooms</div><div class="st-fact">&#128703; '+d.bt+' bathrooms</div><div class="st-fact">&#128208; '+d.sq+' sq ft</div></div><div class="st-cta" style="background:'+a+'">'+(d.ph||'Contact for showing')+'</div></div></div><div class="caption-box" style="max-width:280px"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
+      tpl='<div class="st-wrap"><div class="st-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="st-ph">Upload a photo</div>')+'<div class="st-grad"></div><div class="st-brand">'+d.ag+(d.br?' &middot; '+d.br:'')+'</div><div class="st-bottom"><div class="st-tag" style="color:'+a+'">'+getTypeLabel()+' &middot; '+d.ci+'</div><div class="st-addr">'+fullAddr(d)+'</div><div class="st-price">'+d.pr+'</div><div class="st-facts"><div class="st-fact">&#127765; '+d.bd+' bedrooms</div><div class="st-fact">&#128703; '+d.bt+' bathrooms</div><div class="st-fact">&#128208; '+d.sq+' sq ft</div></div><div class="st-cta" style="background:'+a+'">'+(d.ph||'Contact for showing')+'</div></div></div><div class="caption-box" style="max-width:280px"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
     } else if(lay==='sq2'){
       var s5b=ph(photos.length>1?1:0);
-      tpl='<div class="sw-wrap"><div style="aspect-ratio:1;position:relative;border-radius:var(--rl);overflow:hidden;background:#0f0f0f;display:grid;grid-template-columns:1fr 1fr;gap:2px">'+(s5?'<div style="overflow:hidden"><img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="photo 1"/></div>':'<div style="background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic">Photo 1</div>')+(s5b?'<div style="overflow:hidden"><img src="'+s5b+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="photo 2"/></div>':'<div style="background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic">Photo 2</div>')+'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 55%);pointer-events:none"></div><div style="position:absolute;top:14px;left:14px"><div style="font-size:.5rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:20px;color:#fff;border:1px solid rgba(255,255,255,.3);background:'+a+'55">'+(d.br||d.ag)+'</div></div><div style="position:absolute;bottom:0;left:0;right:0;padding:1.125rem"><div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;color:'+a+';margin-bottom:.2rem">Just Listed &middot; '+d.ci+'</div><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.2rem">'+d.a+'</div><div style="font-size:.9375rem;color:rgba(255,255,255,.9);margin-bottom:.5rem;font-weight:300">'+d.pr+'</div><div style="display:flex;gap:.3rem"><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.bd+' bd</span><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.bt+' ba</span><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.sq+' sqft</span></div></div></div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
+      tpl='<div class="sw-wrap"><div style="aspect-ratio:1;position:relative;border-radius:var(--rl);overflow:hidden;background:#0f0f0f;display:grid;grid-template-columns:1fr 1fr;gap:2px">'+(s5?'<div style="overflow:hidden"><img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="photo 1"/></div>':'<div style="background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic">Photo 1</div>')+(s5b?'<div style="overflow:hidden"><img src="'+s5b+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="photo 2"/></div>':'<div style="background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic">Photo 2</div>')+'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 55%);pointer-events:none"></div><div style="position:absolute;top:14px;left:14px"><div style="font-size:.5rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:20px;color:#fff;border:1px solid rgba(255,255,255,.3);background:'+a+'55">'+(d.br||d.ag)+'</div></div><div style="position:absolute;bottom:0;left:0;right:0;padding:1.125rem"><div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;color:'+a+';margin-bottom:.2rem">'+getTypeLabel()+' &middot; '+d.ci+'</div><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.2rem">'+d.a+'</div><div style="font-size:.9375rem;color:rgba(255,255,255,.9);margin-bottom:.5rem;font-weight:300">'+d.pr+'</div><div style="display:flex;gap:.3rem"><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.bd+' bd</span><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.bt+' ba</span><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.sq+' sqft</span></div></div></div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
     }
 
   // EMAIL
