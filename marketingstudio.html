@@ -653,6 +653,13 @@ function loadFiles(files) {
   });
 }
 
+function slotLabel(i) {
+  // Returns slot number relative to activePhoto, wrapping around
+  if (photos.length === 0) return '';
+  var rel = ((i - activePhoto) % photos.length + photos.length) % photos.length;
+  return rel === 0 ? '★' : String(rel + 1);
+}
+
 function renderStrip() {
   var strip = document.getElementById('photoStrip');
   var zone  = document.getElementById('uploadZone');
@@ -664,25 +671,37 @@ function renderStrip() {
   }
   if (zone) zone.style.display = 'none';
   strip.style.display = 'block';
+
+  var isMulti = ['grid2','grid3','grid4','strip3','feat2','sq2','sq3','sq4','land2','land3','em2','em3','oh3','oh4','pi3','pi4','sold3','sold4'].indexOf(lay) >= 0;
+
   var header = '<div class="photo-strip-header">'
-    + '<span class="photo-strip-label">' + photos.length + ' photo' + (photos.length!==1?'s':'') + ' &mdash; tap to select active</span>'
+    + '<span class="photo-strip-label">'
+    + (isMulti
+        ? 'Tap ★ photo to change start slot &mdash; fills right in order'
+        : 'Tap a photo to use it')
+    + ' &nbsp;(' + photos.length + ')</span>'
     + '<span style="font-size:.6875rem;color:var(--accent);cursor:pointer;text-decoration:underline" onclick="document.getElementById(&quot;fileInput&quot;).click()">+ Add more</span>'
     + '</div>';
+
   var thumbs = '<div style="display:flex;gap:.375rem;flex-wrap:wrap">'
     + photos.map(function(s, i) {
-      return '<div class="photo-thumb' + (i === activePhoto ? ' active' : '') + '" onclick="selPhoto(' + i + ')">'
+      var slot = slotLabel(i);
+      var isActive = i === activePhoto;
+      return '<div class="photo-thumb' + (isActive ? ' active' : '') + '" onclick="selPhoto(' + i + ')" title="Click to make this the ' + (isMulti ? 'starting' : 'active') + ' photo">'
         + '<img src="' + s + '" alt="photo ' + (i + 1) + '" />'
-        + '<span class="photo-num">' + (i + 1) + '</span>'
+        + '<span class="photo-num" style="background:' + (isActive ? 'rgba(200,169,110,.85)' : (isMulti ? 'rgba(0,0,0,.55)' : 'rgba(0,0,0,.45)')) + '">' + slot + '</span>'
         + '<span class="del" onclick="delPhoto(event,' + i + ')">&#10005;</span>'
         + '</div>';
     }).join('')
     + '</div>';
+
   strip.innerHTML = header + thumbs;
 }
 
 function selPhoto(i) {
   activePhoto = i;
   renderStrip();
+  // Re-render preview with updated photo selection
   if (Object.keys(lastC).length) renderPreview(lastD, lastC);
 }
 
@@ -868,6 +887,7 @@ function setLay(btn){
   document.querySelectorAll('#layGrid .lay-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
   lay=btn.dataset.lid;
+  renderStrip(); // update slot labels for new layout
   if(Object.keys(lastC).length)renderPreview(lastD,lastC);
 }
 
@@ -1236,9 +1256,10 @@ function renderPreview(d,copy){
       tpl='<div style="position:relative">'+tpl+'<div style="position:absolute;top:20px;left:20px;font-family:Cormorant Garamond,serif;font-size:2.5rem;font-weight:600;color:#fff;letter-spacing:.04em;border:3px solid '+a+';padding:.1rem .75rem .2rem;line-height:1;transform:rotate(-8deg);text-shadow:0 2px 10px rgba(0,0,0,.5);pointer-events:none">SOLD</div></div>';
     }
 
+  } // end fmt chain
+
   var lbls={flyer:'Copy description',openhouse:'Copy caption',price:'Copy description',social:'Copy caption',email:'Copy email text',mls:'Copy MLS description',sold:'Copy sold message'};
   panel.innerHTML='<div class="preview-bar"><div class="preview-lbl">Preview</div><div class="act-row"><button class="act-btn" id="copyBtn" onclick="copyContent()">Copy text</button><button class="act-btn" onclick="saveToDevice()">Save to device</button><button class="act-btn" onclick="window.print()">Print / PDF</button></div></div><div id="tplWrap" style="position:relative">'+tpl+(logoData?'<div style="position:absolute;top:16px;right:16px;z-index:20;pointer-events:none"><img src="'+logoData+'" style="max-height:40px;max-width:130px;object-fit:contain;border-radius:4px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.35))" alt="Logo"/></div>':'')+'</div>';
-}
 }
 
 function copyContent(){
