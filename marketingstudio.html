@@ -3,52 +3,39 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Listing Marketing Studio</title>
+<title>iCaptureHomes Marketing Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --cream:#f8f5f0;--ink:#18181a;--ink-mid:#3d3d3f;--ink-muted:#8a8a8d;
-  --border:rgba(24,24,26,.10);--border-med:rgba(24,24,26,.16);--border-strong:rgba(24,24,26,.22);
-  --r:4px;--rl:8px;--accent:#c8a96e;
-}
+:root{--cream:#f8f5f0;--ink:#18181a;--ink-mid:#3d3d3f;--ink-muted:#8a8a8d;--border:rgba(24,24,26,.10);--border-med:rgba(24,24,26,.16);--border-strong:rgba(24,24,26,.22);--r:4px;--rl:8px;--accent:#c8a96e}
 html{font-size:16px}
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
-
-/* HEADER */
 header{padding:1.25rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:1.25rem;background:var(--cream)}
 .site-title{font-family:'Cormorant Garamond',serif;font-size:1.625rem;font-weight:600;letter-spacing:.01em}
 .site-sub{font-size:.8rem;color:var(--ink-muted);letter-spacing:.03em}
-
-/* LAYOUT */
 .app{display:grid;grid-template-columns:350px 1fr;min-height:calc(100vh - 62px)}
-
-/* LEFT PANEL */
 .panel{border-right:1px solid var(--border);overflow-y:auto;padding:1.5rem 1.5rem 3rem;display:flex;flex-direction:column;gap:1.5rem}
 .sec-lbl{font-size:.625rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.625rem;display:flex;align-items:center;gap:.5rem}
 .sec-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
-
-/* Multi-photo upload */
-.upload-zone{border:1.5px dashed var(--border-strong);border-radius:var(--rl);padding:1.5rem 1rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
+/* upload */
+.upload-zone{border:1.5px dashed var(--border-strong);border-radius:var(--rl);padding:1.5rem 1rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
 .upload-zone:hover{border-color:var(--accent);background:rgba(200,169,110,.04)}
 .up-icon{font-size:1.25rem;opacity:.4;margin-bottom:.3rem}
 .up-txt{font-size:.8125rem;color:var(--ink-muted)}
 .up-hint{font-size:.6875rem;color:var(--ink-muted);opacity:.7;margin-top:.2rem}
 #fileInput{display:none}
-
-/* Photo strip */
 .photo-strip{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.625rem}
-.photo-thumb{width:64px;height:64px;border-radius:var(--r);overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .15s;flex-shrink:0;position:relative}
+.photo-thumb{width:58px;height:58px;border-radius:var(--r);overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .15s;flex-shrink:0;position:relative}
 .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .photo-thumb.active{border-color:var(--accent)}
-.photo-thumb .del{position:absolute;top:2px;right:2px;width:16px;height:16px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;opacity:0;transition:opacity .15s;cursor:pointer;line-height:1}
+.photo-thumb .del{position:absolute;top:2px;right:2px;width:15px;height:15px;background:rgba(0,0,0,.65);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;opacity:0;transition:opacity .15s;cursor:pointer;line-height:1}
 .photo-thumb:hover .del{opacity:1}
-.add-more{width:64px;height:64px;border-radius:var(--r);border:1.5px dashed var(--border-strong);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.25rem;color:var(--ink-muted);transition:border-color .15s;flex-shrink:0}
+.add-more{width:58px;height:58px;border-radius:var(--r);border:1.5px dashed var(--border-strong);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.25rem;color:var(--ink-muted);transition:border-color .15s;flex-shrink:0}
 .add-more:hover{border-color:var(--accent)}
-
-/* Format grid */
+/* format */
 .fmt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem}
 .fmt-btn{border:1px solid var(--border-strong);border-radius:var(--r);padding:.5rem .25rem .4rem;background:#fff;cursor:pointer;text-align:center;transition:all .15s;font-family:'DM Sans',sans-serif}
 .fmt-btn:hover{border-color:var(--accent)}
@@ -56,16 +43,14 @@ header{padding:1.25rem 2rem;border-bottom:1px solid var(--border);display:flex;a
 .fmt-icon{font-size:1rem;display:block;margin-bottom:.15rem}
 .fmt-lbl{font-size:.625rem;font-weight:500;color:var(--ink-mid);display:block}
 .fmt-btn.active .fmt-lbl{color:#fff}
-
-/* Layout grid */
+/* layout */
 .lay-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem}
 .lay-btn{border:1px solid var(--border-strong);border-radius:var(--r);padding:.5rem .625rem;background:#fff;cursor:pointer;text-align:left;transition:all .15s;font-family:'DM Sans',sans-serif}
 .lay-btn:hover{border-color:var(--accent)}
 .lay-btn.active{border-color:var(--accent);background:rgba(200,169,110,.07)}
 .lay-name{font-size:.75rem;font-weight:500;color:var(--ink);display:block}
 .lay-desc{font-size:.625rem;color:var(--ink-muted);display:block;margin-top:.1rem}
-
-/* Fields */
+/* fields */
 .fields{display:flex;flex-direction:column;gap:.5rem}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
 .frow.full{grid-template-columns:1fr}
@@ -74,55 +59,53 @@ header{padding:1.25rem 2rem;border-bottom:1px solid var(--border);display:flex;a
 .field input,.field textarea{font-family:'DM Sans',sans-serif;font-size:.875rem;color:var(--ink);background:#fff;border:1px solid var(--border-strong);border-radius:var(--r);padding:.4rem .575rem;outline:none;transition:border-color .15s;width:100%}
 .field input:focus,.field textarea:focus{border-color:var(--accent)}
 .field textarea{resize:vertical;min-height:60px;line-height:1.5}
-
-/* Color + generate */
+/* address autocomplete */
+.addr-wrap{position:relative}
+.addr-suggestions{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border-strong);border-top:none;border-radius:0 0 var(--r) var(--r);z-index:100;max-height:200px;overflow-y:auto;display:none}
+.addr-suggestions.open{display:block}
+.addr-sug-item{padding:.5rem .625rem;font-size:.8125rem;color:var(--ink-mid);cursor:pointer;border-bottom:1px solid var(--border)}
+.addr-sug-item:last-child{border-bottom:none}
+.addr-sug-item:hover{background:var(--cream);color:var(--ink)}
+/* color + gen */
 .color-row{display:flex;align-items:center;gap:.625rem}
 .color-row label{font-size:.75rem;color:var(--ink-muted);flex:1}
 input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);border-radius:var(--r);padding:2px;cursor:pointer;background:#fff}
 .gen-btn{width:100%;padding:.8rem;background:var(--ink);color:#fff;border:none;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:.9375rem;font-weight:500;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:.5rem}
 .gen-btn:hover{opacity:.85}
 .gen-btn:disabled{opacity:.4;cursor:not-allowed}
-
-/* RIGHT PANEL */
+/* preview panel */
 .preview-panel{padding:1.5rem 1.75rem 3rem;overflow-y:auto;display:flex;flex-direction:column;gap:1rem}
 .preview-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
 .preview-lbl{font-size:.625rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
 .act-row{display:flex;gap:.375rem;flex-wrap:wrap}
 .act-btn{display:flex;align-items:center;gap:.3rem;padding:.375rem .7rem;border:1px solid var(--border-strong);border-radius:var(--r);background:#fff;font-family:'DM Sans',sans-serif;font-size:.8125rem;color:var(--ink-mid);cursor:pointer;transition:all .15s}
 .act-btn:hover{border-color:var(--accent);color:var(--ink)}
+.act-btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.act-btn.primary:hover{opacity:.85}
 .empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;color:var(--ink-muted);text-align:center;opacity:.4}
 .empty-ico{font-size:2rem}
 .empty-txt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9375rem}
-
-/* SPINNER */
+/* spinner */
 .spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:rot .65s linear infinite;flex-shrink:0}
 @keyframes rot{to{transform:rotate(360deg)}}
-
-/* Photo nav (when multiple photos) */
-.photo-nav{display:flex;gap:.375rem;margin-bottom:.625rem;flex-wrap:wrap}
-.photo-nav-btn{width:44px;height:44px;border-radius:var(--r);overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .15s;flex-shrink:0}
-.photo-nav-btn img{width:100%;height:100%;object-fit:cover;display:block}
-.photo-nav-btn.active{border-color:var(--accent)}
-
-/* ============================================
-   TEMPLATE CSS
-============================================ */
-
-/* Shared */
+/* save overlay */
+.save-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}
+.save-overlay.show{display:flex}
+.save-modal{background:#fff;border-radius:var(--rl);padding:1.5rem;max-width:320px;width:90%;text-align:center}
+.save-modal h3{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;margin-bottom:.5rem}
+.save-modal p{font-size:.8125rem;color:var(--ink-muted);line-height:1.6;margin-bottom:1.25rem}
+.save-modal .save-btns{display:flex;flex-direction:column;gap:.5rem}
+.save-modal .sbtn{padding:.7rem;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:500;cursor:pointer;border:1px solid var(--border-strong);background:#fff;color:var(--ink);transition:all .15s}
+.save-modal .sbtn.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+.save-modal .sbtn:hover{opacity:.85}
+.save-modal .close-modal{margin-top:.75rem;font-size:.75rem;color:var(--ink-muted);cursor:pointer;text-decoration:underline}
+/* ============ TEMPLATE STYLES ============ */
 .tpl-white{background:#fff;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;max-width:580px}
 .tpl-dark{background:#0f0f0f;border:1px solid #2a2a2a;border-radius:var(--rl);overflow:hidden;max-width:580px;color:#fff}
 .caption-box{background:#fff;border:1px solid var(--border);border-radius:var(--rl);padding:.75rem .875rem;margin-top:.5rem}
 .cap-lbl{font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);font-weight:500;margin-bottom:.3rem}
 .cap-txt{font-size:.875rem;color:var(--ink-mid);line-height:1.65}
-
-/* Photo area helpers */
-.tpl-photo{overflow:hidden;background:#e8e4de}
-.tpl-photo img{width:100%;height:100%;object-fit:cover;display:block}
-.tpl-photo-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic}
-.tpl-photo-ph-dark{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#555;font-style:italic;background:#1a1a1a}
-
-/* -- FLYER: Classic -- */
-.fc-photo{height:270px}
+/* flyer classic */
 .fc-bar{height:4px}
 .fc-body{padding:1.5rem 1.75rem 1.375rem}
 .fc-eyebrow{font-size:.5625rem;letter-spacing:.13em;text-transform:uppercase;font-weight:500;margin-bottom:.35rem}
@@ -141,9 +124,7 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .fc-price{font-family:'Cormorant Garamond',serif;font-size:1.625rem;font-weight:600}
 .fc-aname{font-size:.875rem;font-weight:500;text-align:right}
 .fc-asub{font-size:.6875rem;color:var(--ink-muted);text-align:right;margin-top:2px}
-
-/* -- FLYER: Dark -- */
-.fd-photo{height:255px}
+/* flyer dark */
 .fd-bar{height:3px}
 .fd-body{padding:1.375rem 1.75rem 1.25rem}
 .fd-eyebrow{font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500;margin-bottom:.35rem}
@@ -162,8 +143,7 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .fd-price{font-family:'Cormorant Garamond',serif;font-size:1.625rem;font-weight:600;color:#fff}
 .fd-aname{font-size:.875rem;font-weight:500;text-align:right;color:#fff}
 .fd-asub{font-size:.6875rem;color:#666;text-align:right;margin-top:2px}
-
-/* -- FLYER: Bold Minimal -- */
+/* flyer bold */
 .fb-top{padding:1.5rem 1.75rem 0}
 .fb-aline{height:3px;border-radius:2px;margin-bottom:.35rem;width:36px}
 .fb-price{font-family:'Cormorant Garamond',serif;font-size:2.625rem;font-weight:600;line-height:1;margin-bottom:.2rem}
@@ -181,112 +161,42 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .fb-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:.875rem}
 .fb-aname{font-size:.875rem;font-weight:500}
 .fb-asub{font-size:.6875rem;color:var(--ink-muted);margin-top:2px}
-
-/* -- FLYER: Split (photo left) -- */
+/* flyer split */
 .fs-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:380px}
 .fs-photo{overflow:hidden;background:#e8e4de;position:relative}
 .fs-photo img{width:100%;height:100%;object-fit:cover;display:block}
-.fs-photo-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem;text-align:center}
 .fs-badge{position:absolute;bottom:16px;left:16px;padding:5px 12px;border-radius:20px;font-size:.5625rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#fff}
 .fs-right{padding:1.5rem 1.375rem;display:flex;flex-direction:column;justify-content:space-between}
 .fs-eyebrow{font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;font-weight:500;margin-bottom:.35rem}
-.fs-address{font-family:'Cormorant Garamond',serif;font-size:1.375rem;font-weight:600;line-height:1.15;margin-bottom:.2rem}
-.fs-city{font-size:.8125rem;color:var(--ink-muted);margin-bottom:.875rem}
-.fs-price{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;margin-bottom:.875rem}
-.fs-stats{display:flex;flex-direction:column;gap:.3rem;margin-bottom:.875rem}
-.fs-stat-row{display:flex;justify-content:space-between;font-size:.8125rem;color:var(--ink-mid);border-bottom:1px solid var(--border);padding-bottom:.25rem}
+.fs-address{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;line-height:1.15;margin-bottom:.2rem}
+.fs-city{font-size:.8125rem;color:var(--ink-muted);margin-bottom:.75rem}
+.fs-price{font-family:'Cormorant Garamond',serif;font-size:1.375rem;font-weight:600;margin-bottom:.75rem}
+.fs-stats{display:flex;flex-direction:column;gap:.25rem;margin-bottom:.75rem}
+.fs-stat-row{display:flex;justify-content:space-between;font-size:.8125rem;color:var(--ink-mid);border-bottom:1px solid var(--border);padding-bottom:.2rem}
 .fs-stat-row strong{color:var(--ink);font-weight:500}
-.fs-desc{font-size:.8125rem;line-height:1.65;color:var(--ink-mid);margin-bottom:.875rem;flex:1}
-.fs-agent{border-top:1px solid var(--border);padding-top:.75rem}
+.fs-desc{font-size:.8125rem;line-height:1.65;color:var(--ink-mid);margin-bottom:.75rem;flex:1}
+.fs-agent{border-top:1px solid var(--border);padding-top:.625rem}
 .fs-aname{font-size:.8125rem;font-weight:500}
 .fs-asub{font-size:.6875rem;color:var(--ink-muted);margin-top:2px}
-
-/* -- OPEN HOUSE banner -- */
-.oh-photo{height:260px;position:relative}
-.oh-photo img{width:100%;height:100%;object-fit:cover;display:block}
-.oh-photo-ph{width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic}
-.oh-banner{padding:1.25rem 1.75rem 1rem;text-align:center;border-bottom:1px solid var(--border)}
-.oh-tag{font-size:.625rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.375rem}
-.oh-event{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:600;line-height:1.1;margin-bottom:.25rem}
-.oh-time{font-size:.9375rem;font-weight:300;color:var(--ink-mid)}
-.oh-body{padding:1.125rem 1.75rem 1.375rem}
-.oh-address{font-family:'Cormorant Garamond',serif;font-size:1.375rem;font-weight:600;margin-bottom:.2rem}
-.oh-city{font-size:.875rem;color:var(--ink-muted);margin-bottom:.875rem}
-.oh-stats{display:flex;gap:1.5rem;margin-bottom:.875rem}
-.oh-stat{font-size:.8125rem;color:var(--ink-mid)}
-.oh-stat strong{color:var(--ink);font-weight:500}
-.oh-desc{font-size:.875rem;line-height:1.7;color:var(--ink-mid);margin-bottom:1rem}
-.oh-cta{display:inline-block;padding:.625rem 1.5rem;border-radius:20px;font-size:.8125rem;font-weight:500;color:#fff;letter-spacing:.03em}
-.oh-agent{margin-top:1rem;padding-top:.875rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.oh-aname{font-size:.875rem;font-weight:500}
-.oh-asub{font-size:.6875rem;color:var(--ink-muted);margin-top:2px}
-
-/* -- OPEN HOUSE: Dark -- */
-.ohd-wrap{background:#0c0c0c;color:#fff;border:1px solid #222;border-radius:var(--rl);overflow:hidden;max-width:580px}
-.ohd-photo{height:240px;position:relative}
-.ohd-photo img{width:100%;height:100%;object-fit:cover;display:block}
-.ohd-photo-ph{width:100%;height:100%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#555;font-style:italic}
-.ohd-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(12,12,12,1) 0%,transparent 60%)}
-.ohd-over{position:absolute;bottom:0;left:0;right:0;padding:1.25rem 1.75rem;text-align:center}
-.ohd-tag{font-size:.5625rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.3rem}
-.ohd-event{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:#fff;line-height:1.1;margin-bottom:.2rem}
-.ohd-time{font-size:.9375rem;font-weight:300;color:rgba(255,255,255,.75)}
-.ohd-body{padding:1.125rem 1.75rem 1.375rem}
-.ohd-address{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:#fff;margin-bottom:.2rem}
-.ohd-city{font-size:.8125rem;color:#777;margin-bottom:.75rem}
-.ohd-stats{display:flex;gap:1.5rem;margin-bottom:.875rem;padding-bottom:.875rem;border-bottom:1px solid rgba(255,255,255,.08)}
-.ohd-stat{font-size:.8125rem;color:#999}
-.ohd-stat strong{color:#fff;font-weight:500}
-.ohd-desc{font-size:.875rem;line-height:1.7;color:#bbb;margin-bottom:1rem}
-.ohd-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.08);padding-top:.875rem}
-.ohd-aname{font-size:.875rem;font-weight:500;color:#fff}
-.ohd-asub{font-size:.6875rem;color:#666;margin-top:2px}
-.ohd-pill{display:inline-block;padding:.5rem 1.25rem;border-radius:20px;font-size:.75rem;font-weight:500;color:#fff;letter-spacing:.04em}
-
-/* -- PRICE IMPROVEMENT -- */
-.pi-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;max-width:580px}
-.pi-photo{height:250px;position:relative}
-.pi-photo img{width:100%;height:100%;object-fit:cover;display:block}
-.pi-photo-ph{width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic}
-.pi-ribbon{position:absolute;top:20px;right:0;padding:.5rem 1.25rem .5rem .875rem;font-size:.625rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#fff;border-radius:3px 0 0 3px}
-.pi-body{padding:1.375rem 1.75rem 1.25rem}
-.pi-eyebrow{font-size:.5625rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin-bottom:.35rem}
-.pi-address{font-family:'Cormorant Garamond',serif;font-size:1.625rem;font-weight:600;line-height:1.1;margin-bottom:.2rem}
-.pi-city{font-size:.875rem;color:var(--ink-muted);margin-bottom:1rem}
-.pi-prices{display:flex;align-items:baseline;gap:1rem;margin-bottom:1rem;padding:.75rem 1rem;border-radius:var(--r);background:var(--cream)}
-.pi-was{font-size:.875rem;color:var(--ink-muted);text-decoration:line-through}
-.pi-arrow{font-size:1rem;color:var(--ink-muted)}
-.pi-now{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:600}
-.pi-save{font-size:.75rem;font-weight:500;padding:3px 8px;border-radius:var(--r)}
-.pi-stats{display:flex;gap:1.5rem;margin-bottom:.875rem}
-.pi-stat{font-size:.8125rem;color:var(--ink-mid)}
-.pi-stat strong{color:var(--ink);font-weight:500}
-.pi-desc{font-size:.875rem;line-height:1.7;color:var(--ink-mid);margin-bottom:1rem}
-.pi-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:1rem}
-.pi-aname{font-size:.875rem;font-weight:500}
-.pi-asub{font-size:.6875rem;color:var(--ink-muted);margin-top:2px}
-
-/* -- PRICE IMPROVEMENT: Minimal -- */
-.pim-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;max-width:580px}
-.pim-top{padding:1.75rem 1.75rem 0}
-.pim-eyebrow{font-size:.5625rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin-bottom:.5rem}
-.pim-prices{display:flex;align-items:baseline;gap:.875rem;margin-bottom:.375rem}
-.pim-was{font-size:1.125rem;color:var(--ink-muted);text-decoration:line-through;font-family:'Cormorant Garamond',serif}
-.pim-arr{color:var(--ink-muted);font-size:.875rem}
-.pim-now{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:600;line-height:1}
-.pim-address{font-size:.9375rem;font-weight:500;color:var(--ink-mid);margin-bottom:.1rem}
-.pim-city{font-size:.875rem;color:var(--ink-muted);margin-bottom:1.125rem}
-.pim-photo{height:230px;overflow:hidden;margin:0 1.75rem;border-radius:var(--r);background:#e8e4de}
-.pim-photo img{width:100%;height:100%;object-fit:cover;border-radius:var(--r)}
-.pim-body{padding:1.125rem 1.75rem 1.375rem}
-.pim-pills{display:flex;gap:.375rem;flex-wrap:wrap;margin-bottom:.875rem}
-.pim-pill{font-size:.6875rem;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid}
-.pim-desc{font-size:.875rem;line-height:1.7;color:var(--ink-mid);margin-bottom:.875rem}
-.pim-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:.875rem}
-.pim-aname{font-size:.875rem;font-weight:500}
-.pim-asub{font-size:.6875rem;color:var(--ink-muted);margin-top:2px}
-
-/* -- SOCIAL: Square -- */
+/* multi-photo grid layouts */
+.mg-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;max-width:580px}
+.mg-grid2{display:grid;grid-template-columns:1fr 1fr;gap:3px;height:260px}
+.mg-grid3{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:3px;height:260px}
+.mg-grid4{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;height:260px}
+.mg-cell{overflow:hidden;background:#e8e4de;position:relative}
+.mg-cell img{width:100%;height:100%;object-fit:cover;display:block}
+.mg-cell-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:.6875rem;color:#aaa;font-style:italic}
+.mg-cell.span2{grid-row:1/3}
+.mg-body{padding:1.375rem 1.75rem 1.25rem}
+.mg-addr{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;line-height:1.1;margin-bottom:.2rem}
+.mg-city{font-size:.875rem;color:var(--ink-muted);margin-bottom:.75rem}
+.mg-row{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem}
+.mg-price{font-family:'Cormorant Garamond',serif;font-size:1.625rem;font-weight:600}
+.mg-pills{display:flex;gap:.375rem;flex-wrap:wrap}
+.mg-pill{font-size:.6875rem;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid}
+.mg-agent{font-size:.8125rem;font-weight:500;text-align:right}
+.mg-asub{font-size:.6875rem;color:var(--ink-muted);text-align:right;margin-top:2px}
+/* social square/story */
 .sw-wrap{max-width:460px}
 .sq-card{aspect-ratio:1;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl)}
 .sq-card img{width:100%;height:100%;object-fit:cover;display:block}
@@ -300,8 +210,7 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .sq-price{font-size:.9375rem;color:rgba(255,255,255,.9);margin-bottom:.625rem;font-weight:300}
 .sq-pills{display:flex;gap:.3rem;flex-wrap:wrap}
 .sq-pill{font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)}
-
-/* -- SOCIAL: Story -- */
+/* social story */
 .st-wrap{max-width:280px}
 .st-card{aspect-ratio:9/16;position:relative;overflow:hidden;background:#111;border-radius:var(--rl)}
 .st-card img{width:100%;height:100%;object-fit:cover;display:block}
@@ -315,8 +224,14 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .st-facts{display:flex;flex-direction:column;gap:.25rem;margin-bottom:1rem}
 .st-fact{font-size:.6875rem;color:rgba(255,255,255,.75)}
 .st-cta{display:inline-block;padding:.4375rem 1.125rem;border-radius:20px;font-size:.6875rem;font-weight:500;color:#fff;letter-spacing:.04em}
-
-/* -- EMAIL -- */
+/* social 2-photo */
+.s2-card{aspect-ratio:1;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl);display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.s2-cell{overflow:hidden;position:relative}
+.s2-cell img{width:100%;height:100%;object-fit:cover;display:block}
+.s2-cell-ph{width:100%;height:100%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.6875rem;color:#555;font-style:italic}
+.s2-over{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 60%);pointer-events:none;grid-column:1/3}
+.s2-content{position:absolute;bottom:0;left:0;right:0;padding:1.125rem;grid-column:1/3}
+/* email */
 .em-wrap{background:#f0ece6;border-radius:var(--rl);padding:1rem;max-width:560px}
 .em-inner{background:#fff;border-radius:var(--r);overflow:hidden}
 .em-hdr{padding:.875rem 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
@@ -342,8 +257,81 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .em-ctawrap{margin-bottom:.75rem}
 .em-cta{display:inline-block;padding:.6875rem 1.5rem;color:#fff;font-size:.875rem;font-weight:500;border-radius:var(--r);text-decoration:none}
 .em-foot{padding:.625rem 1.25rem;background:#f8f5f0;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:.625rem;color:var(--ink-muted)}
-
-/* -- MLS -- */
+/* open house */
+.oh-photo{position:relative}
+.oh-banner{padding:1.25rem 1.75rem 1rem;text-align:center;border-bottom:1px solid var(--border)}
+.oh-tag{font-size:.625rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.375rem}
+.oh-event{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:600;line-height:1.1;margin-bottom:.25rem}
+.oh-time{font-size:.9375rem;font-weight:300;color:var(--ink-mid)}
+.oh-body{padding:1.125rem 1.75rem 1.375rem}
+.oh-address{font-family:'Cormorant Garamond',serif;font-size:1.375rem;font-weight:600;margin-bottom:.2rem}
+.oh-city{font-size:.875rem;color:var(--ink-muted);margin-bottom:.875rem}
+.oh-stats{display:flex;gap:1.5rem;margin-bottom:.875rem}
+.oh-stat{font-size:.8125rem;color:var(--ink-mid)}
+.oh-stat strong{color:var(--ink);font-weight:500}
+.oh-desc{font-size:.875rem;line-height:1.7;color:var(--ink-mid);margin-bottom:1rem}
+.oh-cta{display:inline-block;padding:.625rem 1.5rem;border-radius:20px;font-size:.8125rem;font-weight:500;color:#fff;letter-spacing:.03em}
+.oh-agent{margin-top:1rem;padding-top:.875rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.oh-aname{font-size:.875rem;font-weight:500}
+.oh-asub{font-size:.6875rem;color:var(--ink-muted);margin-top:2px}
+/* open house dark */
+.ohd-wrap{background:#0c0c0c;color:#fff;border:1px solid #222;border-radius:var(--rl);overflow:hidden;max-width:580px}
+.ohd-photo{position:relative}
+.ohd-photo img{display:block;width:100%;object-fit:cover}
+.ohd-photo-ph{display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#555;font-style:italic;background:#1a1a1a}
+.ohd-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(12,12,12,1) 0%,transparent 60%)}
+.ohd-over{position:absolute;bottom:0;left:0;right:0;padding:1.25rem 1.75rem;text-align:center}
+.ohd-tag{font-size:.5625rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.3rem}
+.ohd-event{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:#fff;line-height:1.1;margin-bottom:.2rem}
+.ohd-time{font-size:.9375rem;font-weight:300;color:rgba(255,255,255,.75)}
+.ohd-body{padding:1.125rem 1.75rem 1.375rem}
+.ohd-address{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:#fff;margin-bottom:.2rem}
+.ohd-city{font-size:.8125rem;color:#777;margin-bottom:.75rem}
+.ohd-stats{display:flex;gap:1.5rem;margin-bottom:.875rem;padding-bottom:.875rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.ohd-stat{font-size:.8125rem;color:#999}
+.ohd-stat strong{color:#fff;font-weight:500}
+.ohd-desc{font-size:.875rem;line-height:1.7;color:#bbb;margin-bottom:1rem}
+.ohd-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.08);padding-top:.875rem}
+.ohd-aname{font-size:.875rem;font-weight:500;color:#fff}
+.ohd-asub{font-size:.6875rem;color:#666;margin-top:2px}
+.ohd-pill{display:inline-block;padding:.5rem 1.25rem;border-radius:20px;font-size:.75rem;font-weight:500;color:#fff;letter-spacing:.04em}
+/* price improvement */
+.pi-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;max-width:580px}
+.pi-ribbon{position:absolute;top:20px;right:0;padding:.5rem 1.25rem .5rem .875rem;font-size:.625rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#fff;border-radius:3px 0 0 3px}
+.pi-body{padding:1.375rem 1.75rem 1.25rem}
+.pi-eyebrow{font-size:.5625rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin-bottom:.35rem}
+.pi-address{font-family:'Cormorant Garamond',serif;font-size:1.625rem;font-weight:600;line-height:1.1;margin-bottom:.2rem}
+.pi-city{font-size:.875rem;color:var(--ink-muted);margin-bottom:1rem}
+.pi-prices{display:flex;align-items:baseline;gap:1rem;margin-bottom:1rem;padding:.75rem 1rem;border-radius:var(--r);background:var(--cream)}
+.pi-was{font-size:.875rem;color:var(--ink-muted);text-decoration:line-through}
+.pi-now{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:600}
+.pi-save{font-size:.75rem;font-weight:500;padding:3px 8px;border-radius:var(--r)}
+.pi-stats{display:flex;gap:1.5rem;margin-bottom:.875rem}
+.pi-stat{font-size:.8125rem;color:var(--ink-mid)}
+.pi-stat strong{color:var(--ink);font-weight:500}
+.pi-desc{font-size:.875rem;line-height:1.7;color:var(--ink-mid);margin-bottom:1rem}
+.pi-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:1rem}
+.pi-aname{font-size:.875rem;font-weight:500}
+.pi-asub{font-size:.6875rem;color:var(--ink-muted);margin-top:2px}
+/* price minimal */
+.pim-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;max-width:580px}
+.pim-top{padding:1.75rem 1.75rem 0}
+.pim-eyebrow{font-size:.5625rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin-bottom:.5rem}
+.pim-prices{display:flex;align-items:baseline;gap:.875rem;margin-bottom:.375rem}
+.pim-was{font-size:1.125rem;color:var(--ink-muted);text-decoration:line-through;font-family:'Cormorant Garamond',serif}
+.pim-now{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:600;line-height:1}
+.pim-address{font-size:.9375rem;font-weight:500;color:var(--ink-mid);margin-bottom:.1rem}
+.pim-city{font-size:.875rem;color:var(--ink-muted);margin-bottom:1.125rem}
+.pim-photobox{height:230px;overflow:hidden;margin:0 1.75rem;border-radius:var(--r);background:#e8e4de}
+.pim-photobox img{width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--r)}
+.pim-body{padding:1.125rem 1.75rem 1.375rem}
+.pim-pills{display:flex;gap:.375rem;flex-wrap:wrap;margin-bottom:.875rem}
+.pim-pill{font-size:.6875rem;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid}
+.pim-desc{font-size:.875rem;line-height:1.7;color:var(--ink-mid);margin-bottom:.875rem}
+.pim-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:.875rem}
+.pim-aname{font-size:.875rem;font-weight:500}
+.pim-asub{font-size:.6875rem;color:var(--ink-muted);margin-top:2px}
+/* mls */
 .mls-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--rl);padding:1.625rem;max-width:580px}
 .mls-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.125rem}
 .mls-addr{font-family:'Cormorant Garamond',serif;font-size:1.375rem;font-weight:600;line-height:1.15}
@@ -358,12 +346,11 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .mls-hls{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:.3rem .625rem}
 .mls-hl{font-size:.8125rem;color:var(--ink-mid);display:flex;align-items:baseline;gap:.375rem}
 .mls-hldot{width:4px;height:4px;border-radius:50%;flex-shrink:0;margin-top:6px;background:var(--border-strong)}
-
-/* -- JUST SOLD -- */
+/* just sold */
 .js-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;max-width:540px}
-.js-photo{height:255px;overflow:hidden;position:relative;background:#e8e4de}
+.js-photo{overflow:hidden;position:relative;background:#e8e4de}
 .js-photo img{width:100%;height:100%;object-fit:cover;display:block}
-.js-photo-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic}
+.js-photo-ph{display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic}
 .js-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4)}
 .js-stamp{font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:600;color:#fff;letter-spacing:.04em;border:3px solid #fff;padding:.1rem .875rem .2rem;line-height:1;transform:rotate(-8deg);text-shadow:0 2px 10px rgba(0,0,0,.35)}
 .js-body{padding:1.375rem 1.75rem}
@@ -378,26 +365,29 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .js-aname{font-size:.875rem;font-weight:500}
 .js-asub{font-size:.6875rem;color:var(--ink-muted);margin-top:2px}
 .js-pill{display:inline-block;padding:.375rem 1rem;border-radius:20px;font-size:.6875rem;font-weight:500;color:#fff;letter-spacing:.03em}
-
-@media(max-width:800px){
-  .app{grid-template-columns:1fr}
-  .panel{border-right:none;border-bottom:1px solid var(--border);padding:1.25rem 1.25rem 2rem}
-  header{padding:1rem 1.25rem}
-  .preview-panel{padding:1.25rem 1.25rem 2rem}
-  .fs-wrap{grid-template-columns:1fr}
-}
+@media(max-width:800px){.app{grid-template-columns:1fr}.panel{border-right:none;border-bottom:1px solid var(--border);padding:1.25rem 1.25rem 2rem}header{padding:1rem 1.25rem}.preview-panel{padding:1.25rem 1.25rem 2rem}.fs-wrap{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="site-title">Listing Marketing Studio</div>
-  <div class="site-sub">Flyers &middot; Social &middot; Email &middot; MLS &middot; Open House &middot; Price Improvement &middot; Just Sold</div>
+  <div class="site-title">iCaptureHomes Marketing Studio</div>
+  <div class="site-sub">Flyers &middot; Social &middot; Email &middot; MLS &middot; Open House &middot; Price Drop &middot; Just Sold</div>
 </header>
 
-<div class="app">
+<!-- Save overlay -->
+<div class="save-overlay" id="saveOverlay">
+  <div class="save-modal">
+    <h3>Save to device</h3>
+    <p>Your image is ready. Tap below to download it to your camera roll or downloads folder.</p>
+    <div class="save-btns">
+      <button class="sbtn dark" id="downloadBtn">Download image</button>
+      <button class="sbtn" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+    <div class="close-modal" onclick="document.getElementById('saveOverlay').classList.remove('show')">Cancel</div>
+  </div>
+</div>
 
-<!-- LEFT PANEL -->
+<div class="app">
 <div class="panel">
 
   <!-- Photos -->
@@ -406,9 +396,9 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
     <div class="upload-zone" id="uploadZone">
       <div class="up-icon">&#128247;</div>
       <div class="up-txt">Click to upload photos</div>
-      <div class="up-hint">JPG or PNG &middot; upload multiple at once</div>
+      <div class="up-hint">Select one or multiple at once</div>
     </div>
-    <input type="file" id="fileInput" accept="image/*" multiple />
+    <input type="file" id="fileInput" accept="image/*" multiple/>
     <div class="photo-strip" id="photoStrip" style="display:none"></div>
   </div>
 
@@ -432,11 +422,19 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
     <div class="lay-grid" id="layGrid"></div>
   </div>
 
-  <!-- Listing Details -->
+  <!-- Details -->
   <div>
     <div class="sec-lbl">Listing details</div>
     <div class="fields">
-      <div class="frow full"><div class="field"><label>Street address</label><input id="fa" type="text" placeholder="123 Peachtree St NE"/></div></div>
+      <div class="frow full">
+        <div class="field">
+          <label>Street address</label>
+          <div class="addr-wrap">
+            <input id="fa" type="text" placeholder="123 Peachtree St NE" autocomplete="off" oninput="addrInput(this)"/>
+            <div class="addr-suggestions" id="addrSuggestions"></div>
+          </div>
+        </div>
+      </div>
       <div class="frow">
         <div class="field"><label>City, State</label><input id="fci" type="text" placeholder="Atlanta, GA"/></div>
         <div class="field"><label>List price</label><input id="fp" type="text" placeholder="$849,000"/></div>
@@ -449,23 +447,20 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
         <div class="field"><label>Sq footage</label><input id="fsq" type="text" placeholder="3,200"/></div>
         <div class="field"><label>Year built</label><input id="fyr" type="text" placeholder="2020"/></div>
       </div>
-      <!-- Open house fields -->
       <div id="ohFlds" style="display:none">
-        <div class="frow">
+        <div class="frow" style="margin-top:.5rem">
           <div class="field"><label>Open house date</label><input id="fohd" type="text" placeholder="Saturday, June 7"/></div>
-          <div class="field"><label>Time</label><input id="foht" type="text" placeholder="1:00 PM - 4:00 PM"/></div>
+          <div class="field"><label>Time</label><input id="foht" type="text" placeholder="1:00 - 4:00 PM"/></div>
         </div>
       </div>
-      <!-- Price drop fields -->
       <div id="piFlds" style="display:none">
-        <div class="frow">
+        <div class="frow" style="margin-top:.5rem">
           <div class="field"><label>Original price</label><input id="fwas" type="text" placeholder="$899,000"/></div>
           <div class="field"><label>New price</label><input id="fnow" type="text" placeholder="$849,000"/></div>
         </div>
       </div>
-      <!-- Sold fields -->
       <div id="soldFlds" style="display:none">
-        <div class="frow">
+        <div class="frow" style="margin-top:.5rem">
           <div class="field"><label>Sold price</label><input id="fsp" type="text" placeholder="$865,000"/></div>
           <div class="field"><label>Days on market</label><input id="fdom" type="text" placeholder="6"/></div>
         </div>
@@ -474,13 +469,13 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
     </div>
   </div>
 
-  <!-- Agent Info -->
+  <!-- Agent info -->
   <div>
     <div class="sec-lbl">Your info</div>
     <div class="fields">
       <div class="frow">
         <div class="field"><label>Name</label><input id="fn" type="text" placeholder="Alex Rivera"/></div>
-        <div class="field"><label>Phone</label><input id="fph" type="text" placeholder="(404) 555-0182"/></div>
+        <div class="field"><label>Phone</label><input id="fph" type="tel" placeholder="(404) 555-0182" oninput="fmtPhone(this)" maxlength="14"/></div>
       </div>
       <div class="frow full"><div class="field"><label>Brokerage</label><input id="fbr" type="text" placeholder="Compass Atlanta"/></div></div>
       <div class="frow full"><div class="field"><label>Website</label><input id="fws" type="text" placeholder="alexrivera.com"/></div></div>
@@ -501,8 +496,7 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
     <div class="empty-txt">Fill in the details and generate</div>
   </div>
 </div>
-
-</div><!-- /app -->
+</div>
 
 <script>
 var photos = [];
@@ -511,12 +505,13 @@ var fmt = 'flyer';
 var lay = 'classic';
 var lastC = {};
 var lastD = {};
+var addrTimer = null;
 
 var LAYOUTS = {
-  flyer:     [{id:'classic',n:'Classic',d:'Photo top, stats below'},{id:'dark',n:'Dark luxury',d:'Moody dark background'},{id:'bold',n:'Bold minimal',d:'Price-first layout'},{id:'split',n:'Split panel',d:'Photo left, details right'}],
+  flyer:     [{id:'classic',n:'Classic',d:'Photo top, stats below'},{id:'dark',n:'Dark luxury',d:'Moody dark background'},{id:'bold',n:'Bold minimal',d:'Price-first layout'},{id:'split',n:'Split panel',d:'Photo left, info right'},{id:'grid2',n:'2-photo grid',d:'Two photos side by side'},{id:'grid3',n:'3-photo collage',d:'Large + two stacked'},{id:'grid4',n:'4-photo grid',d:'Four-photo mosaic'}],
   openhouse: [{id:'light',n:'Light & clean',d:'Bright editorial style'},{id:'dark',n:'Dark & dramatic',d:'Moody dark background'}],
   price:     [{id:'ribbon',n:'Ribbon badge',d:'Bold photo with ribbon'},{id:'minimal',n:'Minimal',d:'Price-forward layout'}],
-  social:    [{id:'square',n:'Square',d:'Instagram / Facebook'},{id:'story',n:'Story / Reel',d:'Vertical 9:16'}],
+  social:    [{id:'square',n:'Square',d:'Instagram / Facebook'},{id:'story',n:'Story / Reel',d:'Vertical 9:16'},{id:'sq2',n:'2-photo square',d:'Split image collage'}],
   email:     [{id:'standard',n:'Standard',d:'Agent outreach email'}],
   mls:       [{id:'standard',n:'Standard',d:'MLS-ready description'}],
   sold:      [{id:'stamp',n:'Just Sold',d:'Celebratory sold graphic'}]
@@ -525,391 +520,261 @@ var LAYOUTS = {
 setAccent();
 renderLayouts();
 
-function setAccent() {
-  var c = document.getElementById('fcol').value;
-  document.documentElement.style.setProperty('--accent', c);
-}
+function setAccent(){var c=document.getElementById('fcol').value;document.documentElement.style.setProperty('--accent',c);}
 
-function renderLayouts() {
-  var ls = LAYOUTS[fmt] || [];
-  var grid = document.getElementById('layGrid');
-  grid.innerHTML = ls.map(function(l) {
-    return '<button class="lay-btn' + (l.id === lay ? ' active' : '') + '" data-lid="' + l.id + '" onclick="setLay(this)"><span class="lay-name">' + l.n + '</span><span class="lay-desc">' + l.d + '</span></button>';
+function renderLayouts(){
+  var ls=LAYOUTS[fmt]||[];
+  document.getElementById('layGrid').innerHTML=ls.map(function(l){
+    return '<button class="lay-btn'+(l.id===lay?' active':'')+'" data-lid="'+l.id+'" onclick="setLay(this)"><span class="lay-name">'+l.n+'</span><span class="lay-desc">'+l.d+'</span></button>';
   }).join('');
-  document.getElementById('laySec').style.display = ls.length <= 1 ? 'none' : '';
+  document.getElementById('laySec').style.display=ls.length<=1?'none':'';
 }
 
 // Upload
-document.getElementById('uploadZone').addEventListener('click', function() {
-  document.getElementById('fileInput').click();
-});
-
-document.getElementById('fileInput').addEventListener('change', function(e) {
-  var files = Array.from(e.target.files);
-  if (!files.length) return;
-  var promises = files.map(function(f) {
-    return new Promise(function(res) {
-      var r = new FileReader();
-      r.onload = function(ev) { res(ev.target.result); };
-      r.readAsDataURL(f);
-    });
-  });
-  Promise.all(promises).then(function(results) {
-    results.forEach(function(src) { photos.push(src); });
-    activePhoto = photos.length - results.length;
-    renderPhotoStrip();
+document.getElementById('uploadZone').addEventListener('click',function(){document.getElementById('fileInput').click();});
+document.getElementById('fileInput').addEventListener('change',function(e){
+  var files=Array.from(e.target.files);if(!files.length)return;
+  var ps=files.map(function(f){return new Promise(function(res){var r=new FileReader();r.onload=function(ev){res(ev.target.result);};r.readAsDataURL(f);});});
+  Promise.all(ps).then(function(results){
+    results.forEach(function(s){photos.push(s);});
+    activePhoto=photos.length-results.length;
+    renderStrip();
   });
 });
 
-function renderPhotoStrip() {
-  var strip = document.getElementById('photoStrip');
-  if (!photos.length) { strip.style.display = 'none'; return; }
-  strip.style.display = 'flex';
-  strip.innerHTML = photos.map(function(src, i) {
-    return '<div class="photo-thumb' + (i === activePhoto ? ' active' : '') + '" onclick="selectPhoto(' + i + ')">' +
-      '<img src="' + src + '" alt="photo ' + (i+1) + '" />' +
-      '<span class="del" onclick="removePhoto(event,' + i + ')">x</span>' +
-      '</div>';
-  }).join('') + '<div class="add-more" onclick="document.getElementById(\'fileInput\').click()">+</div>';
+function renderStrip(){
+  var strip=document.getElementById('photoStrip');
+  if(!photos.length){strip.style.display='none';return;}
+  strip.style.display='flex';
+  strip.innerHTML=photos.map(function(s,i){
+    return '<div class="photo-thumb'+(i===activePhoto?' active':'')+'" onclick="selPhoto('+i+')">'
+      +'<img src="'+s+'" alt="photo '+(i+1)+'" />'
+      +'<span class="del" onclick="delPhoto(event,'+i+')">x</span>'
+      +'</div>';
+  }).join('')+'<div class="add-more" onclick="document.getElementById(\'fileInput\').click()">+</div>';
 }
 
-function selectPhoto(i) {
-  activePhoto = i;
-  renderPhotoStrip();
-  if (Object.keys(lastC).length) renderPreview(lastD, lastC);
-}
+function selPhoto(i){activePhoto=i;renderStrip();if(Object.keys(lastC).length)renderPreview(lastD,lastC);}
+function delPhoto(e,i){e.stopPropagation();photos.splice(i,1);if(activePhoto>=photos.length)activePhoto=Math.max(0,photos.length-1);renderStrip();if(Object.keys(lastC).length)renderPreview(lastD,lastC);}
 
-function removePhoto(e, i) {
-  e.stopPropagation();
-  photos.splice(i, 1);
-  if (activePhoto >= photos.length) activePhoto = Math.max(0, photos.length - 1);
-  renderPhotoStrip();
-  if (Object.keys(lastC).length) renderPreview(lastD, lastC);
-}
-
-function setFmt(btn) {
-  document.querySelectorAll('.fmt-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-  fmt = btn.dataset.fmt;
-  lay = (LAYOUTS[fmt] || [])[0] ? LAYOUTS[fmt][0].id : 'standard';
+function setFmt(btn){
+  document.querySelectorAll('.fmt-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');fmt=btn.dataset.fmt;
+  lay=(LAYOUTS[fmt]||[])[0]?LAYOUTS[fmt][0].id:'standard';
   renderLayouts();
-  document.getElementById('ohFlds').style.display = fmt === 'openhouse' ? '' : 'none';
-  document.getElementById('piFlds').style.display = fmt === 'price' ? '' : 'none';
-  document.getElementById('soldFlds').style.display = fmt === 'sold' ? '' : 'none';
+  document.getElementById('ohFlds').style.display=fmt==='openhouse'?'':'none';
+  document.getElementById('piFlds').style.display=fmt==='price'?'':'none';
+  document.getElementById('soldFlds').style.display=fmt==='sold'?'':'none';
 }
 
-function setLay(btn) {
-  document.querySelectorAll('.lay-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-  lay = btn.dataset.lid;
-  if (Object.keys(lastC).length) renderPreview(lastD, lastC);
+function setLay(btn){
+  document.querySelectorAll('.lay-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');lay=btn.dataset.lid;
+  if(Object.keys(lastC).length)renderPreview(lastD,lastC);
 }
 
-function v(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
-function ac() { return document.getElementById('fcol').value || '#888'; }
-function ini(n) { if (!n) return 'AB'; var p = n.trim().split(' '); return p.length >= 2 ? p[0][0] + p[p.length-1][0] : p[0].slice(0,2); }
-function curImg() { return photos[activePhoto] || null; }
-function imgEl(cls) { var s = curImg(); return s ? '<img src="' + s + '" class="' + cls + '" alt="Property"/>' : ''; }
-function phEl(cls, dark) { return '<div class="' + cls + (dark ? '-dark' : '') + '"><span style="font-size:.8rem;color:' + (dark ? '#555' : '#aaa') + ';font-style:italic">Upload a photo</span></div>'; }
-function photoArea(cls, h, dark) {
-  var s = curImg();
-  return '<div class="' + cls + '" style="height:' + h + 'px">' + (s ? '<img src="' + s + '" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>' : '<div style="width:100%;height:100%;background:' + (dark ? '#1a1a1a' : '#e8e4de') + ';display:flex;align-items:center;justify-content:center;font-size:.8rem;color:' + (dark ? '#555' : '#aaa') + ';font-style:italic">Upload a photo</div>') + '</div>';
+// Phone formatter
+function fmtPhone(el){
+  var d=el.value.replace(/\D/g,'').slice(0,10);
+  if(d.length===0){el.value='';return;}
+  if(d.length<=3){el.value='('+d;}
+  else if(d.length<=6){el.value='('+d.slice(0,3)+') '+d.slice(3);}
+  else{el.value='('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6);}
 }
 
-async function generate() {
-  var btn = document.getElementById('genBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spin"></div> Writing copy...';
+// Address autocomplete via Nominatim
+function addrInput(el){
+  var q=el.value.trim();
+  var sug=document.getElementById('addrSuggestions');
+  if(addrTimer)clearTimeout(addrTimer);
+  if(q.length<4){sug.classList.remove('open');sug.innerHTML='';return;}
+  addrTimer=setTimeout(function(){
+    fetch('https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=us&addressdetails=1&q='+encodeURIComponent(q),{headers:{'Accept-Language':'en'}})
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(!data||!data.length){sug.classList.remove('open');return;}
+        sug.innerHTML=data.map(function(item){
+          var disp=item.display_name;
+          return '<div class="addr-sug-item" onclick="pickAddr(\''+disp.replace(/'/g,"\\'")+'\')">'+(disp.length>80?disp.slice(0,80)+'...':disp)+'</div>';
+        }).join('');
+        sug.classList.add('open');
+      }).catch(function(){sug.classList.remove('open');});
+  },350);
+}
 
-  var d = {
-    a: v('fa') || '123 Peachtree St NE',
-    ci: v('fci') || 'Atlanta, GA',
-    pr: v('fp') || '$849,000',
-    bd: v('fb2') || '4',
-    bt: v('fbt') || '3',
-    sq: v('fsq') || '3,200',
-    yr: v('fyr') || '2021',
-    fe: v('ffe'),
-    ag: v('fn') || 'Your Name',
-    ph: v('fph') || '',
-    br: v('fbr') || '',
-    ws: v('fws') || '',
-    ohd: v('fohd') || '',
-    oht: v('foht') || '',
-    was: v('fwas') || '',
-    now: v('fnow') || '',
-    sp: v('fsp') || '',
-    dm: v('fdom') || ''
-  };
-  lastD = d;
-
-  var typeNote = '';
-  if (fmt === 'openhouse') typeNote = 'Open house event on ' + (d.ohd || 'this weekend') + (d.oht ? ' from ' + d.oht : '');
-  else if (fmt === 'price') typeNote = 'Price improvement from ' + (d.was || 'previous price') + ' to ' + (d.now || d.pr);
-  else if (fmt === 'sold') typeNote = 'Just sold' + (d.sp ? ' for ' + d.sp : '') + (d.dm ? ' in ' + d.dm + ' days' : '');
-
-  var prompt = 'You are a real estate copywriter for Atlanta. Write compelling marketing copy.\n\n' +
-    'Property: ' + d.a + ', ' + d.ci + '\n' +
-    'Price: ' + d.pr + '\n' +
-    (typeNote ? 'Note: ' + typeNote + '\n' : '') +
-    'Beds: ' + d.bd + ' | Baths: ' + d.bt + ' | Sqft: ' + d.sq + ' | Built: ' + d.yr + '\n' +
-    'Agent: ' + d.ag + (d.br ? ', ' + d.br : '') + '\n' +
-    'Known features: ' + (d.fe || 'none -- invent 3 compelling ones') + '\n\n' +
-    'Return ONLY valid JSON with no markdown:\n' +
-    '{"tagline":"5-7 word evocative tagline",' +
-    '"description":"Two polished sentences 35-50 words no cliches like nestled or boasts",' +
-    '"highlights":["phrase max 7 words","phrase max 7 words","phrase max 7 words"],' +
-    '"mls_full":"Full MLS description 120-150 words professional ends with call to action",' +
-    '"caption":"Instagram caption 55-70 words warm ends with 5 hashtags on new line",' +
-    '"email_subject":"Subject line max 9 words",' +
-    '"email_body":"Two sentences agent-to-agent 35-45 words",' +
-    '"oh_headline":"Open house invitation headline 6-8 words",' +
-    '"pi_headline":"Price improvement announcement 6-8 words compelling",' +
-    '"sold_message":"Two sentences celebrating sale 30-40 words warm achievement-focused"}';
-
-  var copy;
-  try {
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1400,
-        messages: [{role: 'user', content: prompt}]
-      })
-    });
-    var data = await res.json();
-    var txt = (data.content || []).map(function(i) { return i.text || ''; }).join('');
-    copy = JSON.parse(txt.replace(/```json|```/g, '').trim());
-  } catch(e) {
-    copy = {
-      tagline: 'Modern living in ' + d.ci,
-      description: 'This exceptional ' + d.bd + '-bedroom home at ' + d.a + ' delivers ' + d.sq + ' sq ft of thoughtfully designed space in ' + d.ci + '. Built in ' + d.yr + ', every detail reflects quality craftsmanship and refined taste.',
-      highlights: ['Open-concept main floor with soaring ceilings', "Chef's kitchen with premium appliances", 'Primary suite with spa-inspired bath'],
-      mls_full: 'Welcome to ' + d.a + ', an exceptional ' + d.bd + '-bed, ' + d.bt + '-bath residence offering ' + d.sq + ' sq ft of refined living in ' + d.ci + '. Built in ' + d.yr + ', this home showcases impeccable craftsmanship throughout. The open-concept living area flows seamlessly to outdoor entertaining. The gourmet kitchen features premium appliances and generous workspace. Retreat to the luxurious primary suite with spa bath. Priced at ' + d.pr + ' -- schedule your showing today.',
-      caption: 'Just listed at ' + d.a + ' in ' + d.ci + ' -- a stunning ' + d.bd + 'BR, ' + d.bt + 'BA home at ' + d.sq + ' sq ft for ' + d.pr + '. Refined, move-in ready, and waiting for its next chapter.\n\n#JustListed #AtlantaRealEstate #LuxuryHomes #NewListing #RealEstate',
-      email_subject: 'New listing: ' + d.a + ' at ' + d.pr,
-      email_body: 'Excited to share this stunning new listing at ' + d.a + ', ' + d.ci + ', offered at ' + d.pr + '. With ' + d.bd + ' bedrooms and ' + d.sq + ' sq ft, your buyers will want to move quickly.',
-      oh_headline: 'You are invited to an open house',
-      pi_headline: 'Exceptional value -- price just improved',
-      sold_message: 'Thrilled to announce ' + d.a + ' is officially SOLD' + (d.dm ? ' in just ' + d.dm + ' days' : '') + '. A testament to exceptional marketing and a strong Atlanta market -- congratulations to my clients on this outstanding result.'
-    };
+function pickAddr(full){
+  var sug=document.getElementById('addrSuggestions');
+  // split: first part is street, rest becomes city/state
+  var parts=full.split(', ');
+  document.getElementById('fa').value=parts[0]||full;
+  // build city,state from parts
+  if(parts.length>=3){
+    var city=parts[1];
+    var state=parts[2];
+    // if state looks like a full state name try to abbreviate
+    document.getElementById('fci').value=city+', '+state;
   }
-
-  lastC = copy;
-  renderPreview(d, copy);
-  btn.disabled = false;
-  btn.innerHTML = 'Generate';
+  sug.classList.remove('open');
+  sug.innerHTML='';
 }
 
-function hlsHtml(hls, dotClass, dotColor) {
-  return (hls || []).map(function(h) {
-    return '<div class="' + dotClass + '-hl"><div class="' + dotClass + '-dot" style="background:' + dotColor + '"></div>' + h + '</div>';
-  }).join('');
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.addr-wrap')){
+    document.getElementById('addrSuggestions').classList.remove('open');
+  }
+});
+
+// helpers
+function v(id){var el=document.getElementById(id);return el?el.value.trim():'';}
+function ac(){return document.getElementById('fcol').value||'#888';}
+function ini(n){if(!n)return'AB';var p=n.trim().split(' ');return p.length>=2?p[0][0]+p[p.length-1][0]:p[0].slice(0,2);}
+function ph(i){return photos[i]||null;}
+function pImg(i,cls,w,h){
+  var s=ph(i);
+  return s
+    ?'<img src="'+s+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="photo" />'
+    :'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#aaa;font-style:italic">Photo '+(i+1)+'</div>';
+}
+function pImgDark(i){
+  var s=ph(i);
+  return s
+    ?'<img src="'+s+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="photo" />'
+    :'<div style="width:100%;height:100%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic">Photo '+(i+1)+'</div>';
+}
+function photoBox(i,h,dark){return '<div style="height:'+h+'px;overflow:hidden;background:'+(dark?'#1a1a1a':'#e8e4de')+'">'+(dark?pImgDark(i):pImg(i))+'</div>';}
+function hlsHtml(hls,cls,a){return(hls||[]).map(function(h){return'<div class="'+cls+'-hl"><div class="'+cls+'-dot" style="background:'+a+'"></div>'+h+'</div>';}).join('');}
+
+async function generate(){
+  var btn=document.getElementById('genBtn');
+  btn.disabled=true;btn.innerHTML='<div class="spin"></div> Writing copy...';
+  var d={a:v('fa')||'123 Peachtree St NE',ci:v('fci')||'Atlanta, GA',pr:v('fp')||'$849,000',bd:v('fb2')||'4',bt:v('fbt')||'3',sq:v('fsq')||'3,200',yr:v('fyr')||'2021',fe:v('ffe'),ag:v('fn')||'Your Name',ph:v('fph')||'',br:v('fbr')||'',ws:v('fws')||'',ohd:v('fohd')||'',oht:v('foht')||'',was:v('fwas')||'',now:v('fnow')||'',sp:v('fsp')||'',dm:v('fdom')||''};
+  lastD=d;
+  var typeNote='';
+  if(fmt==='openhouse')typeNote='Open house on '+(d.ohd||'this weekend')+(d.oht?' from '+d.oht:'');
+  else if(fmt==='price')typeNote='Price improvement from '+(d.was||'previous price')+' to '+(d.now||d.pr);
+  else if(fmt==='sold')typeNote='Just sold'+(d.sp?' for '+d.sp:'')+(d.dm?' in '+d.dm+' days':'');
+  var prompt='You are a real estate copywriter for Atlanta. Write compelling marketing copy.\n\nProperty: '+d.a+', '+d.ci+'\nPrice: '+d.pr+'\n'+(typeNote?'Note: '+typeNote+'\n':'')+'Beds: '+d.bd+' | Baths: '+d.bt+' | Sqft: '+d.sq+' | Built: '+d.yr+'\nAgent: '+d.ag+(d.br?', '+d.br:'')+'\nFeatures: '+(d.fe||'none -- invent 3 compelling ones')+'\n\nReturn ONLY valid JSON no markdown:\n{"tagline":"5-7 word evocative tagline","description":"Two polished sentences 35-50 words no cliches","highlights":["phrase max 7 words","phrase max 7 words","phrase max 7 words"],"mls_full":"Full MLS description 120-150 words professional ends with call to action","caption":"Instagram caption 55-70 words warm ends with 5 hashtags on new line","email_subject":"Subject line max 9 words","email_body":"Two sentences agent-to-agent 35-45 words","oh_headline":"Open house invitation headline 6-8 words","pi_headline":"Price improvement announcement 6-8 words compelling","sold_message":"Two sentences celebrating sale 30-40 words warm achievement-focused"}';
+  var copy;
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1400,messages:[{role:'user',content:prompt}]})});
+    var data=await res.json();
+    var txt=(data.content||[]).map(function(i){return i.text||'';}).join('');
+    copy=JSON.parse(txt.replace(/```json|```/g,'').trim());
+  }catch(e){
+    copy={tagline:'Modern living in '+d.ci,description:'This exceptional '+d.bd+'-bedroom home at '+d.a+' delivers '+d.sq+' sq ft of thoughtfully designed space in '+d.ci+'. Built in '+d.yr+', every detail reflects quality craftsmanship.',highlights:["Open-concept main floor with soaring ceilings","Chef's kitchen with premium appliances","Primary suite with spa-inspired bath"],mls_full:'Welcome to '+d.a+', an exceptional '+d.bd+'-bed, '+d.bt+'-bath residence offering '+d.sq+' sq ft of refined living in '+d.ci+'. Built in '+d.yr+', this home showcases impeccable craftsmanship. The open-concept living area flows seamlessly to outdoor entertaining. The gourmet kitchen features premium appliances. Retreat to the luxurious primary suite with spa bath. Priced at '+d.pr+' -- schedule your showing today.',caption:'Just listed at '+d.a+' in '+d.ci+' -- a stunning '+d.bd+'BR, '+d.bt+'BA home at '+d.sq+' sq ft for '+d.pr+'. Refined, move-in ready, and waiting for its next chapter.\n\n#JustListed #AtlantaRealEstate #LuxuryHomes #NewListing #RealEstate',email_subject:'New listing: '+d.a+' at '+d.pr,email_body:'Excited to share this stunning new listing at '+d.a+', '+d.ci+', offered at '+d.pr+'. With '+d.bd+' bedrooms and '+d.sq+' sq ft, your buyers will want to move quickly.',oh_headline:'You are invited to an exclusive open house',pi_headline:'Exceptional value -- price just improved',sold_message:'Thrilled to announce '+d.a+' is officially SOLD'+(d.dm?' in just '+d.dm+' days':'')+'. A testament to exceptional marketing and a strong Atlanta market.'};
+  }
+  lastC=copy;renderPreview(d,copy);
+  btn.disabled=false;btn.innerHTML='Generate';
 }
 
-function renderPreview(d, copy) {
-  var a = ac();
-  var panel = document.getElementById('previewPanel');
-  var tpl = '';
-  var in2 = ini(d.ag);
+function renderPreview(d,copy){
+  var a=ac();var panel=document.getElementById('previewPanel');var tpl='';var in2=ini(d.ag);
 
   // FLYER
-  if (fmt === 'flyer') {
-    var hls = hlsHtml(copy.highlights, 'fc', a);
-    if (lay === 'classic') {
-      tpl = '<div class="tpl-white">' +
-        photoArea('tpl-photo', 270, false) +
-        '<div class="fc-bar" style="background:' + a + '"></div>' +
-        '<div class="fc-body">' +
-        '<div class="fc-eyebrow" style="color:' + a + '">Just Listed &middot; ' + (copy.tagline || '') + '</div>' +
-        '<div class="fc-address">' + d.a + '</div><div class="fc-city">' + d.ci + '</div>' +
-        '<div class="fc-stats"><div class="fc-stat"><span class="fc-sv" style="color:' + a + '">' + d.bd + '</span><span class="fc-sl">Beds</span></div><div class="fc-stat"><span class="fc-sv" style="color:' + a + '">' + d.bt + '</span><span class="fc-sl">Baths</span></div><div class="fc-stat"><span class="fc-sv" style="color:' + a + '">' + d.sq + '</span><span class="fc-sl">Sq Ft</span></div><div class="fc-stat"><span class="fc-sv" style="color:' + a + '">' + d.yr + '</span><span class="fc-sl">Built</span></div></div>' +
-        '<div class="fc-desc">' + (copy.description || '') + '</div>' +
-        '<div class="fc-hls">' + hlsHtml(copy.highlights, 'fc', a) + '</div>' +
-        '<div class="fc-bottom"><div class="fc-price" style="color:' + a + '">' + d.pr + '</div><div><div class="fc-aname">' + d.ag + '</div>' + (d.ph ? '<div class="fc-asub">' + d.ph + '</div>' : '') + (d.br ? '<div class="fc-asub">' + d.br + '</div>' : '') + (d.ws ? '<div class="fc-asub">' + d.ws + '</div>' : '') + '</div></div>' +
-        '</div></div>';
-    } else if (lay === 'dark') {
-      tpl = '<div class="tpl-dark">' +
-        photoArea('tpl-photo', 255, true) +
-        '<div class="fd-bar" style="background:' + a + '"></div>' +
-        '<div class="fd-body">' +
-        '<div class="fd-eyebrow" style="color:' + a + '">Just Listed &middot; ' + (copy.tagline || '') + '</div>' +
-        '<div class="fd-address">' + d.a + '</div><div class="fd-city">' + d.ci + '</div>' +
-        '<div class="fd-stats"><div class="fd-stat"><span class="fd-sv" style="color:' + a + '">' + d.bd + '</span><span class="fd-sl">Beds</span></div><div class="fd-stat"><span class="fd-sv" style="color:' + a + '">' + d.bt + '</span><span class="fd-sl">Baths</span></div><div class="fd-stat"><span class="fd-sv" style="color:' + a + '">' + d.sq + '</span><span class="fd-sl">Sq Ft</span></div><div class="fd-stat"><span class="fd-sv" style="color:' + a + '">' + d.yr + '</span><span class="fd-sl">Built</span></div></div>' +
-        '<div class="fd-desc">' + (copy.description || '') + '</div>' +
-        '<div class="fd-hls">' + hlsHtml(copy.highlights, 'fd', a) + '</div>' +
-        '<div class="fd-bottom"><div class="fd-price" style="color:' + a + '">' + d.pr + '</div><div><div class="fd-aname">' + d.ag + '</div>' + (d.ph ? '<div class="fd-asub">' + d.ph + '</div>' : '') + (d.br ? '<div class="fd-asub">' + d.br + '</div>' : '') + '</div></div>' +
-        '</div></div>';
-    } else if (lay === 'bold') {
-      var s = curImg();
-      tpl = '<div class="tpl-white">' +
-        '<div class="fb-top"><div class="fb-aline" style="background:' + a + '"></div><div class="fb-price" style="color:' + a + '">' + d.pr + '</div><div class="fb-address">' + d.a + '</div><div class="fb-city">' + d.ci + '</div></div>' +
-        '<div class="fb-photobox">' + (s ? '<img src="' + s + '" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px" alt="Property"/>' : '<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>') + '</div>' +
-        '<div class="fb-body">' +
-        '<div class="fb-pills"><span class="fb-pill" style="border-color:' + a + ';color:' + a + '">' + d.bd + ' beds</span><span class="fb-pill" style="border-color:' + a + ';color:' + a + '">' + d.bt + ' baths</span><span class="fb-pill" style="border-color:' + a + ';color:' + a + '">' + d.sq + ' sqft</span><span class="fb-pill" style="border-color:' + a + ';color:' + a + '">Built ' + d.yr + '</span></div>' +
-        '<div class="fb-desc">' + (copy.description || '') + '</div>' +
-        '<div class="fb-hls">' + hlsHtml(copy.highlights, 'fb', a) + '</div>' +
-        '<div class="fb-footer"><div><div class="fb-aname">' + d.ag + '</div>' + (d.br ? '<div class="fb-asub">' + d.br + '</div>' : '') + (d.ph ? '<div class="fb-asub">' + d.ph + '</div>' : '') + '</div>' + (d.ws ? '<div style="font-size:.75rem;color:var(--ink-muted)">' + d.ws + '</div>' : '') + '</div>' +
-        '</div></div>';
-    } else if (lay === 'split') {
-      var s2 = curImg();
-      tpl = '<div class="tpl-white"><div class="fs-wrap">' +
-        '<div class="fs-photo">' + (s2 ? '<img src="' + s2 + '" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>' : '<div class="fs-photo-ph"><span style="font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</span></div>') +
-        '<div class="fs-badge" style="background:' + a + '">Just Listed</div></div>' +
-        '<div class="fs-right">' +
-        '<div><div class="fs-eyebrow" style="color:' + a + '">' + (copy.tagline || '') + '</div><div class="fs-address">' + d.a + '</div><div class="fs-city">' + d.ci + '</div><div class="fs-price" style="color:' + a + '">' + d.pr + '</div></div>' +
-        '<div class="fs-stats"><div class="fs-stat-row"><span>Bedrooms</span><strong>' + d.bd + '</strong></div><div class="fs-stat-row"><span>Bathrooms</span><strong>' + d.bt + '</strong></div><div class="fs-stat-row"><span>Sq Footage</span><strong>' + d.sq + '</strong></div><div class="fs-stat-row"><span>Year Built</span><strong>' + d.yr + '</strong></div></div>' +
-        '<div class="fs-desc">' + (copy.description || '') + '</div>' +
-        '<div class="fs-agent"><div class="fs-aname">' + d.ag + '</div>' + (d.br ? '<div class="fs-asub">' + d.br + '</div>' : '') + (d.ph ? '<div class="fs-asub">' + d.ph + '</div>' : '') + '</div>' +
-        '</div></div></div>';
+  if(fmt==='flyer'){
+    if(lay==='classic'){
+      tpl='<div class="tpl-white">'+photoBox(activePhoto,270,false)+'<div class="fc-bar" style="background:'+a+'"></div><div class="fc-body"><div class="fc-eyebrow" style="color:'+a+'">Just Listed &middot; '+(copy.tagline||'')+'</div><div class="fc-address">'+d.a+'</div><div class="fc-city">'+d.ci+'</div><div class="fc-stats"><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bd+'</span><span class="fc-sl">Beds</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.bt+'</span><span class="fc-sl">Baths</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.sq+'</span><span class="fc-sl">Sq Ft</span></div><div class="fc-stat"><span class="fc-sv" style="color:'+a+'">'+d.yr+'</span><span class="fc-sl">Built</span></div></div><div class="fc-desc">'+(copy.description||'')+'</div><div class="fc-hls">'+hlsHtml(copy.highlights,'fc',a)+'</div><div class="fc-bottom"><div class="fc-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fc-aname">'+d.ag+'</div>'+(d.ph?'<div class="fc-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fc-asub">'+d.br+'</div>':'')+(d.ws?'<div class="fc-asub">'+d.ws+'</div>':'')+'</div></div></div></div>';
+    } else if(lay==='dark'){
+      tpl='<div class="tpl-dark">'+photoBox(activePhoto,255,true)+'<div class="fd-bar" style="background:'+a+'"></div><div class="fd-body"><div class="fd-eyebrow" style="color:'+a+'">Just Listed &middot; '+(copy.tagline||'')+'</div><div class="fd-address">'+d.a+'</div><div class="fd-city">'+d.ci+'</div><div class="fd-stats"><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bd+'</span><span class="fd-sl">Beds</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.bt+'</span><span class="fd-sl">Baths</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.sq+'</span><span class="fd-sl">Sq Ft</span></div><div class="fd-stat"><span class="fd-sv" style="color:'+a+'">'+d.yr+'</span><span class="fd-sl">Built</span></div></div><div class="fd-desc">'+(copy.description||'')+'</div><div class="fd-hls">'+hlsHtml(copy.highlights,'fd',a)+'</div><div class="fd-bottom"><div class="fd-price" style="color:'+a+'">'+d.pr+'</div><div><div class="fd-aname">'+d.ag+'</div>'+(d.ph?'<div class="fd-asub">'+d.ph+'</div>':'')+(d.br?'<div class="fd-asub">'+d.br+'</div>':'')+'</div></div></div></div>';
+    } else if(lay==='bold'){
+      var s0=ph(activePhoto);
+      tpl='<div class="tpl-white"><div class="fb-top"><div class="fb-aline" style="background:'+a+'"></div><div class="fb-price" style="color:'+a+'">'+d.pr+'</div><div class="fb-address">'+d.a+'</div><div class="fb-city">'+d.ci+'</div></div><div class="fb-photobox">'+(s0?'<img src="'+s0+'" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'</div><div class="fb-body"><div class="fb-pills"><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' beds</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' baths</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span><span class="fb-pill" style="border-color:'+a+';color:'+a+'">Built '+d.yr+'</span></div><div class="fb-desc">'+(copy.description||'')+'</div><div class="fb-hls">'+hlsHtml(copy.highlights,'fb',a)+'</div><div class="fb-footer"><div><div class="fb-aname">'+d.ag+'</div>'+(d.br?'<div class="fb-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fb-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
+    } else if(lay==='split'){
+      var s1=ph(activePhoto);
+      tpl='<div class="tpl-white"><div class="fs-wrap"><div class="fs-photo">'+(s1?'<img src="'+s1+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'<div class="fs-badge" style="background:'+a+'">Just Listed</div></div><div class="fs-right"><div><div class="fs-eyebrow" style="color:'+a+'">'+(copy.tagline||'')+'</div><div class="fs-address">'+d.a+'</div><div class="fs-city">'+d.ci+'</div><div class="fs-price" style="color:'+a+'">'+d.pr+'</div></div><div class="fs-stats"><div class="fs-stat-row"><span>Bedrooms</span><strong>'+d.bd+'</strong></div><div class="fs-stat-row"><span>Bathrooms</span><strong>'+d.bt+'</strong></div><div class="fs-stat-row"><span>Sq Footage</span><strong>'+d.sq+'</strong></div><div class="fs-stat-row"><span>Year Built</span><strong>'+d.yr+'</strong></div></div><div class="fs-desc">'+(copy.description||'')+'</div><div class="fs-agent"><div class="fs-aname">'+d.ag+'</div>'+(d.br?'<div class="fs-asub">'+d.br+'</div>':'')+(d.ph?'<div class="fs-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
+    } else if(lay==='grid2'){
+      tpl='<div class="mg-wrap"><div class="mg-grid2"><div class="mg-cell">'+pImg(activePhoto)+'</div><div class="mg-cell">'+pImg(activePhoto+1>photos.length-1?0:activePhoto+1)+'</div></div><div class="mg-body"><div class="mg-addr">'+d.a+'</div><div class="mg-city">'+d.ci+'</div><div class="mg-row"><div class="mg-price" style="color:'+a+'">'+d.pr+'</div><div><div class="mg-pills"><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' bd</span><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' ba</span><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span></div></div></div><div style="margin-top:.75rem;font-size:.875rem;line-height:1.7;color:var(--ink-mid)">'+(copy.description||'')+'</div><div style="margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div><div class="mg-agent">'+d.ag+'</div>'+(d.br?'<div class="mg-asub">'+d.br+'</div>':'')+(d.ph?'<div class="mg-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
+    } else if(lay==='grid3'){
+      var i2=photos.length>1?1:0;var i3=photos.length>2?2:0;
+      tpl='<div class="mg-wrap"><div class="mg-grid3"><div class="mg-cell span2">'+pImg(activePhoto)+'</div><div class="mg-cell">'+pImg(i2)+'</div><div class="mg-cell">'+pImg(i3)+'</div></div><div class="mg-body"><div class="mg-addr">'+d.a+'</div><div class="mg-city">'+d.ci+'</div><div class="mg-row"><div class="mg-price" style="color:'+a+'">'+d.pr+'</div><div class="mg-pills"><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' bd</span><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' ba</span><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span></div></div><div style="margin-top:.75rem;font-size:.875rem;line-height:1.7;color:var(--ink-mid)">'+(copy.description||'')+'</div><div style="margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div><div class="mg-agent">'+d.ag+'</div>'+(d.br?'<div class="mg-asub">'+d.br+'</div>':'')+(d.ph?'<div class="mg-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
+    } else if(lay==='grid4'){
+      var idx=[activePhoto,photos.length>1?1:0,photos.length>2?2:0,photos.length>3?3:0];
+      tpl='<div class="mg-wrap"><div class="mg-grid4"><div class="mg-cell">'+pImg(idx[0])+'</div><div class="mg-cell">'+pImg(idx[1])+'</div><div class="mg-cell">'+pImg(idx[2])+'</div><div class="mg-cell">'+pImg(idx[3])+'</div></div><div class="mg-body"><div class="mg-addr">'+d.a+'</div><div class="mg-city">'+d.ci+'</div><div class="mg-row"><div class="mg-price" style="color:'+a+'">'+d.pr+'</div><div class="mg-pills"><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' bd</span><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' ba</span><span class="mg-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span></div></div><div style="margin-top:.75rem;font-size:.875rem;line-height:1.7;color:var(--ink-mid)">'+(copy.description||'')+'</div><div style="margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div><div class="mg-agent">'+d.ag+'</div>'+(d.br?'<div class="mg-asub">'+d.br+'</div>':'')+(d.ph?'<div class="mg-asub">'+d.ph+'</div>':'')+'</div></div></div></div>';
     }
 
   // OPEN HOUSE
-  } else if (fmt === 'openhouse') {
-    var ohHead = copy.oh_headline || 'You are invited to tour this home';
-    var s3 = curImg();
-    if (lay === 'light') {
-      tpl = '<div class="tpl-white">' +
-        '<div class="oh-photo">' + (s3 ? '<img src="' + s3 + '" style="width:100%;height:260px;object-fit:cover;display:block" alt="Property"/>' : '<div class="oh-photo-ph" style="height:260px">Upload a photo</div>') + '</div>' +
-        '<div class="oh-banner"><div class="oh-tag" style="color:' + a + '">Open House</div><div class="oh-event" style="color:' + a + '">' + (d.ohd || 'This Saturday') + '</div><div class="oh-time">' + (d.oht || '1:00 PM - 4:00 PM') + '</div></div>' +
-        '<div class="oh-body"><div class="oh-address">' + d.a + '</div><div class="oh-city">' + d.ci + '</div>' +
-        '<div class="oh-stats"><div class="oh-stat"><strong>' + d.pr + '</strong></div><div class="oh-stat"><strong>' + d.bd + '</strong> bd</div><div class="oh-stat"><strong>' + d.bt + '</strong> ba</div><div class="oh-stat"><strong>' + d.sq + '</strong> sqft</div></div>' +
-        '<div class="oh-desc">' + (copy.description || '') + '</div>' +
-        '<div><span class="oh-cta" style="background:' + a + '">RSVP or Walk In Welcome</span></div>' +
-        '<div class="oh-agent"><div><div class="oh-aname">' + d.ag + '</div>' + (d.br ? '<div class="oh-asub">' + d.br + '</div>' : '') + (d.ph ? '<div class="oh-asub">' + d.ph + '</div>' : '') + '</div>' + (d.ws ? '<div style="font-size:.75rem;color:var(--ink-muted)">' + d.ws + '</div>' : '') + '</div>' +
-        '</div></div>';
+  } else if(fmt==='openhouse'){
+    if(lay==='light'){
+      tpl='<div class="tpl-white"><div class="oh-photo">'+photoBox(activePhoto,260,false)+'</div><div class="oh-banner"><div class="oh-tag" style="color:'+a+'">Open House</div><div class="oh-event" style="color:'+a+'">'+(d.ohd||'This Saturday')+'</div><div class="oh-time">'+(d.oht||'1:00 PM - 4:00 PM')+'</div></div><div class="oh-body"><div class="oh-address">'+d.a+'</div><div class="oh-city">'+d.ci+'</div><div class="oh-stats"><div class="oh-stat"><strong>'+d.pr+'</strong></div><div class="oh-stat"><strong>'+d.bd+'</strong> bd</div><div class="oh-stat"><strong>'+d.bt+'</strong> ba</div><div class="oh-stat"><strong>'+d.sq+'</strong> sqft</div></div><div class="oh-desc">'+(copy.description||'')+'</div><span class="oh-cta" style="background:'+a+'">Walk-ins Welcome</span><div class="oh-agent"><div><div class="oh-aname">'+d.ag+'</div>'+(d.br?'<div class="oh-asub">'+d.br+'</div>':'')+(d.ph?'<div class="oh-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
     } else {
-      tpl = '<div class="ohd-wrap">' +
-        '<div class="ohd-photo">' + (s3 ? '<img src="' + s3 + '" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>' : '<div class="ohd-photo-ph">Upload a photo</div>') +
-        '<div class="ohd-grad"></div>' +
-        '<div class="ohd-over"><div class="ohd-tag" style="color:' + a + '">Open House</div><div class="ohd-event">' + (d.ohd || 'This Saturday') + '</div><div class="ohd-time">' + (d.oht || '1:00 PM - 4:00 PM') + '</div></div>' +
-        '</div>' +
-        '<div class="ohd-body"><div class="ohd-address">' + d.a + '</div><div class="ohd-city">' + d.ci + '</div>' +
-        '<div class="ohd-stats"><div class="ohd-stat"><strong>' + d.pr + '</strong> list price</div><div class="ohd-stat"><strong>' + d.bd + '</strong> beds</div><div class="ohd-stat"><strong>' + d.bt + '</strong> baths</div><div class="ohd-stat"><strong>' + d.sq + '</strong> sqft</div></div>' +
-        '<div class="ohd-desc">' + (copy.description || '') + '</div>' +
-        '<div class="ohd-footer"><div><div class="ohd-aname">' + d.ag + '</div>' + (d.br ? '<div class="ohd-asub">' + d.br + '</div>' : '') + (d.ph ? '<div class="ohd-asub">' + d.ph + '</div>' : '') + '</div><span class="ohd-pill" style="background:' + a + '">Walk-ins Welcome</span></div>' +
-        '</div></div>';
+      var s3=ph(activePhoto);
+      tpl='<div class="ohd-wrap"><div class="ohd-photo" style="height:240px">'+(s3?'<img src="'+s3+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="ohd-photo-ph" style="height:240px">Upload a photo</div>')+'<div class="ohd-grad"></div><div class="ohd-over"><div class="ohd-tag" style="color:'+a+'">Open House</div><div class="ohd-event">'+(d.ohd||'This Saturday')+'</div><div class="ohd-time">'+(d.oht||'1:00 PM - 4:00 PM')+'</div></div></div><div class="ohd-body"><div class="ohd-address">'+d.a+'</div><div class="ohd-city">'+d.ci+'</div><div class="ohd-stats"><div class="ohd-stat"><strong>'+d.pr+'</strong> list price</div><div class="ohd-stat"><strong>'+d.bd+'</strong> beds</div><div class="ohd-stat"><strong>'+d.bt+'</strong> baths</div><div class="ohd-stat"><strong>'+d.sq+'</strong> sqft</div></div><div class="ohd-desc">'+(copy.description||'')+'</div><div class="ohd-footer"><div><div class="ohd-aname">'+d.ag+'</div>'+(d.br?'<div class="ohd-asub">'+d.br+'</div>':'')+(d.ph?'<div class="ohd-asub">'+d.ph+'</div>':'')+'</div><span class="ohd-pill" style="background:'+a+'">Walk-ins Welcome</span></div></div></div>';
     }
 
-  // PRICE IMPROVEMENT
-  } else if (fmt === 'price') {
-    var wasP = d.was || '';
-    var nowP = d.now || d.pr;
-    var s4 = curImg();
-    if (lay === 'ribbon') {
-      tpl = '<div class="pi-wrap">' +
-        '<div class="pi-photo">' + (s4 ? '<img src="' + s4 + '" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>' : '<div class="pi-photo-ph" style="height:250px">Upload a photo</div>') +
-        '<div class="pi-ribbon" style="background:' + a + '">Price Improved</div></div>' +
-        '<div class="pi-body">' +
-        '<div class="pi-eyebrow" style="color:' + a + '">' + (copy.pi_headline || 'Price Just Improved') + '</div>' +
-        '<div class="pi-address">' + d.a + '</div><div class="pi-city">' + d.ci + '</div>' +
-        '<div class="pi-prices">' + (wasP ? '<span class="pi-was">' + wasP + '</span><span class="pi-arrow">&#8594;</span>' : '') + '<span class="pi-now" style="color:' + a + '">' + nowP + '</span>' + (wasP ? '<span class="pi-save" style="background:rgba(0,0,0,.06);color:' + a + '">New Price</span>' : '') + '</div>' +
-        '<div class="pi-stats"><div class="pi-stat"><strong>' + d.bd + '</strong> beds</div><div class="pi-stat"><strong>' + d.bt + '</strong> baths</div><div class="pi-stat"><strong>' + d.sq + '</strong> sqft</div><div class="pi-stat">Built <strong>' + d.yr + '</strong></div></div>' +
-        '<div class="pi-desc">' + (copy.description || '') + '</div>' +
-        '<div class="pi-footer"><div><div class="pi-aname">' + d.ag + '</div>' + (d.br ? '<div class="pi-asub">' + d.br + '</div>' : '') + (d.ph ? '<div class="pi-asub">' + d.ph + '</div>' : '') + '</div>' + (d.ws ? '<div style="font-size:.75rem;color:var(--ink-muted)">' + d.ws + '</div>' : '') + '</div>' +
-        '</div></div>';
+  // PRICE DROP
+  } else if(fmt==='price'){
+    var wasP=d.was||'';var nowP=d.now||d.pr;var s4=ph(activePhoto);
+    if(lay==='ribbon'){
+      tpl='<div class="pi-wrap"><div style="height:250px;position:relative;overflow:hidden;background:#e8e4de">'+(s4?'<img src="'+s4+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'<div class="pi-ribbon" style="background:'+a+'">Price Improved</div></div><div class="pi-body"><div class="pi-eyebrow" style="color:'+a+'">'+(copy.pi_headline||'Price Just Improved')+'</div><div class="pi-address">'+d.a+'</div><div class="pi-city">'+d.ci+'</div><div class="pi-prices">'+(wasP?'<span class="pi-was">'+wasP+'</span><span style="color:var(--ink-muted)">&#8594;</span>':'')+'<span class="pi-now" style="color:'+a+'">'+nowP+'</span>'+(wasP?'<span class="pi-save" style="background:rgba(0,0,0,.06);color:'+a+'">New Price</span>':'')+'</div><div class="pi-stats"><div class="pi-stat"><strong>'+d.bd+'</strong> beds</div><div class="pi-stat"><strong>'+d.bt+'</strong> baths</div><div class="pi-stat"><strong>'+d.sq+'</strong> sqft</div><div class="pi-stat">Built <strong>'+d.yr+'</strong></div></div><div class="pi-desc">'+(copy.description||'')+'</div><div class="pi-footer"><div><div class="pi-aname">'+d.ag+'</div>'+(d.br?'<div class="pi-asub">'+d.br+'</div>':'')+(d.ph?'<div class="pi-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
     } else {
-      tpl = '<div class="pim-wrap">' +
-        '<div class="pim-top">' +
-        '<div class="pim-eyebrow" style="color:' + a + '">' + (copy.pi_headline || 'Price just improved') + '</div>' +
-        '<div class="pim-prices">' + (wasP ? '<span class="pim-was">' + wasP + '</span><span class="pim-arr">&#8594;</span>' : '') + '<span class="pim-now" style="color:' + a + '">' + nowP + '</span></div>' +
-        '<div class="pim-address">' + d.a + '</div><div class="pim-city">' + d.ci + '</div>' +
-        '</div>' +
-        '<div class="pim-photo">' + (s4 ? '<img src="' + s4 + '" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>' : '<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>') + '</div>' +
-        '<div class="pim-body">' +
-        '<div class="pim-pills"><span class="pim-pill" style="border-color:' + a + ';color:' + a + '">' + d.bd + ' beds</span><span class="pim-pill" style="border-color:' + a + ';color:' + a + '">' + d.bt + ' baths</span><span class="pim-pill" style="border-color:' + a + ';color:' + a + '">' + d.sq + ' sqft</span></div>' +
-        '<div class="pim-desc">' + (copy.description || '') + '</div>' +
-        '<div class="pim-footer"><div><div class="pim-aname">' + d.ag + '</div>' + (d.br ? '<div class="pim-asub">' + d.br + '</div>' : '') + (d.ph ? '<div class="pim-asub">' + d.ph + '</div>' : '') + '</div>' + (d.ws ? '<div style="font-size:.75rem;color:var(--ink-muted)">' + d.ws + '</div>' : '') + '</div>' +
-        '</div></div>';
+      tpl='<div class="pim-wrap"><div class="pim-top"><div class="pim-eyebrow" style="color:'+a+'">'+(copy.pi_headline||'Price just improved')+'</div><div class="pim-prices">'+(wasP?'<span class="pim-was">'+wasP+'</span><span style="color:var(--ink-muted);margin:0 .25rem">&#8594;</span>':'')+'<span class="pim-now" style="color:'+a+'">'+nowP+'</span></div><div class="pim-address">'+d.a+'</div><div class="pim-city">'+d.ci+'</div></div><div class="pim-photobox">'+(s4?'<img src="'+s4+'" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px" alt="Property"/>':'<div style="width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#aaa;font-style:italic">Upload a photo</div>')+'</div><div class="pim-body"><div class="pim-pills"><span class="pim-pill" style="border-color:'+a+';color:'+a+'">'+d.bd+' beds</span><span class="pim-pill" style="border-color:'+a+';color:'+a+'">'+d.bt+' baths</span><span class="pim-pill" style="border-color:'+a+';color:'+a+'">'+d.sq+' sqft</span></div><div class="pim-desc">'+(copy.description||'')+'</div><div class="pim-footer"><div><div class="pim-aname">'+d.ag+'</div>'+(d.br?'<div class="pim-asub">'+d.br+'</div>':'')+(d.ph?'<div class="pim-asub">'+d.ph+'</div>':'')+'</div>'+(d.ws?'<div style="font-size:.75rem;color:var(--ink-muted)">'+d.ws+'</div>':'')+'</div></div></div>';
     }
 
   // SOCIAL
-  } else if (fmt === 'social') {
-    var s5 = curImg();
-    if (lay === 'square') {
-      tpl = '<div class="sw-wrap">' +
-        '<div class="sq-card">' +
-        (s5 ? '<img src="' + s5 + '" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>' : '<div class="sq-ph">Upload a photo</div>') +
-        '<div class="sq-grad"></div>' +
-        '<div class="sq-top"><div class="sq-badge" style="background:' + a + '55;border-color:' + a + '88">' + (d.br || d.ag) + '</div></div>' +
-        '<div class="sq-content"><div class="sq-tag" style="color:' + a + '">Just Listed &middot; ' + d.ci + '</div><div class="sq-addr">' + d.a + '</div><div class="sq-price">' + d.pr + '</div><div class="sq-pills"><span class="sq-pill">' + d.bd + ' bd</span><span class="sq-pill">' + d.bt + ' ba</span><span class="sq-pill">' + d.sq + ' sqft</span></div></div>' +
-        '</div>' +
-        '<div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">' + (copy.caption || '').replace(/\n/g, '<br>') + '</div></div>' +
-        '</div>';
-    } else {
-      tpl = '<div class="st-wrap">' +
-        '<div class="st-card">' +
-        (s5 ? '<img src="' + s5 + '" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>' : '<div class="st-ph">Upload a photo</div>') +
-        '<div class="st-grad"></div>' +
-        '<div class="st-brand">' + d.ag + (d.br ? ' &middot; ' + d.br : '') + '</div>' +
-        '<div class="st-bottom"><div class="st-tag" style="color:' + a + '">Just Listed &middot; ' + d.ci + '</div><div class="st-addr">' + d.a + '</div><div class="st-price">' + d.pr + '</div>' +
-        '<div class="st-facts"><div class="st-fact">&#127765; ' + d.bd + ' bedrooms</div><div class="st-fact">&#128703; ' + d.bt + ' bathrooms</div><div class="st-fact">&#128208; ' + d.sq + ' sq ft</div></div>' +
-        '<div class="st-cta" style="background:' + a + '">' + (d.ph || 'Contact for showing') + '</div></div>' +
-        '</div>' +
-        '<div class="caption-box" style="max-width:280px"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">' + (copy.caption || '').replace(/\n/g, '<br>') + '</div></div>' +
-        '</div>';
+  } else if(fmt==='social'){
+    var s5=ph(activePhoto);
+    if(lay==='square'){
+      tpl='<div class="sw-wrap"><div class="sq-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="sq-ph">Upload a photo</div>')+'<div class="sq-grad"></div><div class="sq-top"><div class="sq-badge" style="background:'+a+'55;border-color:'+a+'88">'+(d.br||d.ag)+'</div></div><div class="sq-content"><div class="sq-tag" style="color:'+a+'">Just Listed &middot; '+d.ci+'</div><div class="sq-addr">'+d.a+'</div><div class="sq-price">'+d.pr+'</div><div class="sq-pills"><span class="sq-pill">'+d.bd+' bd</span><span class="sq-pill">'+d.bt+' ba</span><span class="sq-pill">'+d.sq+' sqft</span></div></div></div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
+    } else if(lay==='story'){
+      tpl='<div class="st-wrap"><div class="st-card">'+(s5?'<img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="st-ph">Upload a photo</div>')+'<div class="st-grad"></div><div class="st-brand">'+d.ag+(d.br?' &middot; '+d.br:'')+'</div><div class="st-bottom"><div class="st-tag" style="color:'+a+'">Just Listed &middot; '+d.ci+'</div><div class="st-addr">'+d.a+'</div><div class="st-price">'+d.pr+'</div><div class="st-facts"><div class="st-fact">&#127765; '+d.bd+' bedrooms</div><div class="st-fact">&#128703; '+d.bt+' bathrooms</div><div class="st-fact">&#128208; '+d.sq+' sq ft</div></div><div class="st-cta" style="background:'+a+'">'+(d.ph||'Contact for showing')+'</div></div></div><div class="caption-box" style="max-width:280px"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
+    } else if(lay==='sq2'){
+      var s5b=ph(photos.length>1?1:0);
+      tpl='<div class="sw-wrap"><div style="aspect-ratio:1;position:relative;border-radius:var(--rl);overflow:hidden;background:#0f0f0f;display:grid;grid-template-columns:1fr 1fr;gap:2px">'+(s5?'<div style="overflow:hidden"><img src="'+s5+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="photo 1"/></div>':'<div style="background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic">Photo 1</div>')+(s5b?'<div style="overflow:hidden"><img src="'+s5b+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="photo 2"/></div>':'<div style="background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#555;font-style:italic">Photo 2</div>')+'<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 55%);pointer-events:none"></div><div style="position:absolute;top:14px;left:14px"><div style="font-size:.5rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:20px;color:#fff;border:1px solid rgba(255,255,255,.3);background:'+a+'55">'+(d.br||d.ag)+'</div></div><div style="position:absolute;bottom:0;left:0;right:0;padding:1.125rem"><div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;color:'+a+';margin-bottom:.2rem">Just Listed &middot; '+d.ci+'</div><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.2rem">'+d.a+'</div><div style="font-size:.9375rem;color:rgba(255,255,255,.9);margin-bottom:.5rem;font-weight:300">'+d.pr+'</div><div style="display:flex;gap:.3rem"><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.bd+' bd</span><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.bt+' ba</span><span style="font-size:.5625rem;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.2)">'+d.sq+' sqft</span></div></div></div><div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div><div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div></div>';
     }
 
   // EMAIL
-  } else if (fmt === 'email') {
-    var s6 = curImg();
-    tpl = '<div class="em-wrap"><div class="em-inner">' +
-      '<div class="em-hdr"><div class="em-aid"><div class="em-av" style="background:' + a + '">' + in2 + '</div><div><div class="em-aname">' + d.ag + '</div><div class="em-abrok">' + (d.br || 'Real Estate Agent') + '</div></div></div><div style="font-size:.6875rem;color:var(--ink-muted)">' + d.ph + '</div></div>' +
-      '<div class="em-subj">Subject: <strong>' + (copy.email_subject || '') + '</strong></div>' +
-      '<div class="em-photo">' + (s6 ? '<img src="' + s6 + '" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>' : '<div class="em-photo-ph">Upload a photo</div>') + '</div>' +
-      '<div class="em-body"><div class="em-intro">' + (copy.email_body || '') + '</div>' +
-      '<div class="em-dgrid"><div class="em-dcell"><span class="em-dval" style="color:' + a + '">' + d.pr + '</span><span class="em-dlbl">Price</span></div><div class="em-dcell"><span class="em-dval" style="color:' + a + '">' + d.bd + '</span><span class="em-dlbl">Beds</span></div><div class="em-dcell"><span class="em-dval" style="color:' + a + '">' + d.bt + '</span><span class="em-dlbl">Baths</span></div><div class="em-dcell"><span class="em-dval" style="color:' + a + '">' + d.sq + '</span><span class="em-dlbl">Sq Ft</span></div></div>' +
-      '<div class="em-hls">' + (copy.highlights || []).map(function(h) { return '<div class="em-hl"><div class="em-hldot" style="background:' + a + '"></div>' + h + '</div>'; }).join('') + '</div>' +
-      '<div class="em-ctawrap"><a class="em-cta" style="background:' + a + '" href="#">View Full Listing &rarr;</a></div></div>' +
-      '<div class="em-foot"><span>' + d.ag + (d.br ? ' &middot; ' + d.br : '') + (d.ph ? ' &middot; ' + d.ph : '') + '</span>' + (d.ws ? '<span>' + d.ws + '</span>' : '') + '</div>' +
-      '</div></div>';
+  } else if(fmt==='email'){
+    var s6=ph(activePhoto);
+    tpl='<div class="em-wrap"><div class="em-inner"><div class="em-hdr"><div class="em-aid"><div class="em-av" style="background:'+a+'">'+in2+'</div><div><div class="em-aname">'+d.ag+'</div><div class="em-abrok">'+(d.br||'Real Estate Agent')+'</div></div></div><div style="font-size:.6875rem;color:var(--ink-muted)">'+d.ph+'</div></div><div class="em-subj">Subject: <strong>'+(copy.email_subject||'')+'</strong></div><div class="em-photo">'+(s6?'<img src="'+s6+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="em-photo-ph">Upload a photo</div>')+'</div><div class="em-body"><div class="em-intro">'+(copy.email_body||'')+'</div><div class="em-dgrid"><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.pr+'</span><span class="em-dlbl">Price</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.bd+'</span><span class="em-dlbl">Beds</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.bt+'</span><span class="em-dlbl">Baths</span></div><div class="em-dcell"><span class="em-dval" style="color:'+a+'">'+d.sq+'</span><span class="em-dlbl">Sq Ft</span></div></div><div class="em-hls">'+(copy.highlights||[]).map(function(h){return'<div class="em-hl"><div class="em-hldot" style="background:'+a+'"></div>'+h+'</div>';}).join('')+'</div><div class="em-ctawrap"><a class="em-cta" style="background:'+a+'" href="#">View Full Listing &rarr;</a></div></div><div class="em-foot"><span>'+d.ag+(d.br?' &middot; '+d.br:'')+(d.ph?' &middot; '+d.ph:'')+'</span>'+(d.ws?'<span>'+d.ws+'</span>':'')+'</div></div></div>';
 
   // MLS
-  } else if (fmt === 'mls') {
-    var mlsTxt = copy.mls_full || copy.description || '';
-    tpl = '<div class="mls-wrap">' +
-      '<div class="mls-head"><div><div class="mls-addr">' + d.a + '</div><div class="mls-city">' + d.ci + '</div></div><div class="mls-price" style="color:' + a + '">' + d.pr + '</div></div>' +
-      '<div class="mls-stats"><div class="mls-stat"><strong>' + d.bd + '</strong> beds</div><div class="mls-stat"><strong>' + d.bt + '</strong> baths</div><div class="mls-stat"><strong>' + d.sq + '</strong> sq ft</div><div class="mls-stat">Built <strong>' + d.yr + '</strong></div></div>' +
-      '<div class="mls-lbl">MLS Description</div>' +
-      '<div class="mls-text">' + mlsTxt + '</div>' +
-      '<div class="mls-chars">' + mlsTxt.length + ' characters</div>' +
-      '<div class="mls-hls">' + (copy.highlights || []).map(function(h) { return '<div class="mls-hl"><div class="mls-hldot"></div>' + h + '</div>'; }).join('') + '</div>' +
-      '</div>';
+  } else if(fmt==='mls'){
+    var mlsTxt=copy.mls_full||copy.description||'';
+    tpl='<div class="mls-wrap"><div class="mls-head"><div><div class="mls-addr">'+d.a+'</div><div class="mls-city">'+d.ci+'</div></div><div class="mls-price" style="color:'+a+'">'+d.pr+'</div></div><div class="mls-stats"><div class="mls-stat"><strong>'+d.bd+'</strong> beds</div><div class="mls-stat"><strong>'+d.bt+'</strong> baths</div><div class="mls-stat"><strong>'+d.sq+'</strong> sq ft</div><div class="mls-stat">Built <strong>'+d.yr+'</strong></div></div><div class="mls-lbl">MLS Description</div><div class="mls-text">'+mlsTxt+'</div><div class="mls-chars">'+mlsTxt.length+' characters</div><div class="mls-hls">'+(copy.highlights||[]).map(function(h){return'<div class="mls-hl"><div class="mls-hldot"></div>'+h+'</div>';}).join('')+'</div></div>';
 
   // JUST SOLD
-  } else if (fmt === 'sold') {
-    var s7 = curImg();
-    tpl = '<div class="js-wrap">' +
-      '<div class="js-photo">' + (s7 ? '<img src="' + s7 + '" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>' : '<div class="js-photo-ph" style="height:255px">Upload a photo</div>') +
-      '<div class="js-overlay"><div class="js-stamp" style="border-color:' + a + ';color:' + a + '">SOLD</div></div></div>' +
-      '<div class="js-body">' +
-      '<div class="js-eyebrow" style="color:' + a + '">Just Sold</div>' +
-      '<div class="js-addr">' + d.a + '</div><div class="js-city">' + d.ci + '</div>' +
-      '<div class="js-pricerow"><div><span class="js-plbl">Listed at</span><span class="js-pval">' + d.pr + '</span></div>' +
-      (d.sp ? '<div><span class="js-plbl">Sold for</span><span class="js-pval" style="color:' + a + '">' + d.sp + '</span></div>' : '') +
-      (d.dm ? '<div><span class="js-plbl">Days on market</span><span class="js-pval">' + d.dm + '</span></div>' : '') + '</div>' +
-      '<div class="js-msg">' + (copy.sold_message || copy.description || '') + '</div>' +
-      '<div class="js-footer"><div><div class="js-aname">' + d.ag + '</div>' + (d.br ? '<div class="js-asub">' + d.br + '</div>' : '') + (d.ph ? '<div class="js-asub">' + d.ph + '</div>' : '') + '</div><span class="js-pill" style="background:' + a + '">Results like this &rarr;</span></div>' +
-      '</div></div>';
+  } else if(fmt==='sold'){
+    var s7=ph(activePhoto);
+    tpl='<div class="js-wrap"><div class="js-photo" style="height:255px">'+(s7?'<img src="'+s7+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="Property"/>':'<div class="js-photo-ph" style="height:255px">Upload a photo</div>')+'<div class="js-overlay"><div class="js-stamp" style="border-color:'+a+';color:'+a+'">SOLD</div></div></div><div class="js-body"><div class="js-eyebrow" style="color:'+a+'">Just Sold</div><div class="js-addr">'+d.a+'</div><div class="js-city">'+d.ci+'</div><div class="js-pricerow"><div><span class="js-plbl">Listed at</span><span class="js-pval">'+d.pr+'</span></div>'+(d.sp?'<div><span class="js-plbl">Sold for</span><span class="js-pval" style="color:'+a+'">'+d.sp+'</span></div>':'')+(d.dm?'<div><span class="js-plbl">Days on market</span><span class="js-pval">'+d.dm+'</span></div>':'')+'</div><div class="js-msg">'+(copy.sold_message||copy.description||'')+'</div><div class="js-footer"><div><div class="js-aname">'+d.ag+'</div>'+(d.br?'<div class="js-asub">'+d.br+'</div>':'')+(d.ph?'<div class="js-asub">'+d.ph+'</div>':'')+'</div><span class="js-pill" style="background:'+a+'">Results like this &rarr;</span></div></div></div>';
   }
 
-  var lbls = {flyer:'Copy description',openhouse:'Copy caption',price:'Copy description',social:'Copy caption',email:'Copy email text',mls:'Copy MLS description',sold:'Copy sold message'};
-  panel.innerHTML = '<div class="preview-bar"><div class="preview-lbl">Preview</div><div class="act-row"><button class="act-btn" id="copyBtn" onclick="copyContent()">Copy text</button><button class="act-btn" onclick="window.print()">Print / PDF</button></div></div>' + tpl;
+  var lbls={flyer:'Copy description',openhouse:'Copy caption',price:'Copy description',social:'Copy caption',email:'Copy email text',mls:'Copy MLS description',sold:'Copy sold message'};
+  panel.innerHTML='<div class="preview-bar"><div class="preview-lbl">Preview</div><div class="act-row"><button class="act-btn" id="copyBtn" onclick="copyContent()">Copy text</button><button class="act-btn" onclick="saveToDevice()">Save to device</button><button class="act-btn" onclick="window.print()">Print / PDF</button></div></div><div id="tplWrap">'+tpl+'</div>';
 }
 
-function copyContent() {
-  var txt = '';
-  if (fmt === 'social' || fmt === 'openhouse') txt = lastC.caption || '';
-  else if (fmt === 'email') txt = 'Subject: ' + (lastC.email_subject || '') + '\n\n' + (lastC.email_body || '');
-  else if (fmt === 'mls') txt = lastC.mls_full || lastC.description || '';
-  else if (fmt === 'sold') txt = lastC.sold_message || '';
-  else if (fmt === 'price') txt = lastC.description || '';
-  else txt = [lastC.description].concat(lastC.highlights || []).join('\n');
-  if (!txt) return;
+function copyContent(){
+  var txt='';
+  if(fmt==='social'||fmt==='openhouse')txt=lastC.caption||'';
+  else if(fmt==='email')txt='Subject: '+(lastC.email_subject||'')+'\n\n'+(lastC.email_body||'');
+  else if(fmt==='mls')txt=lastC.mls_full||lastC.description||'';
+  else if(fmt==='sold')txt=lastC.sold_message||'';
+  else if(fmt==='price')txt=lastC.description||'';
+  else txt=[lastC.description].concat(lastC.highlights||[]).join('\n');
+  if(!txt)return;
   navigator.clipboard.writeText(txt).catch(function(){});
-  var btn = document.getElementById('copyBtn');
-  if (btn) { btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = 'Copy text'; }, 2000); }
+  var btn=document.getElementById('copyBtn');
+  if(btn){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy text';},2000);}
+}
+
+function saveToDevice(){
+  var wrap=document.getElementById('tplWrap');
+  if(!wrap||!wrap.firstElementChild){alert('Generate a material first.');return;}
+  var overlay=document.getElementById('saveOverlay');
+  overlay.classList.add('show');
+  // render to canvas
+  html2canvas(wrap.firstElementChild,{useCORS:true,scale:2,backgroundColor:'#ffffff',logging:false}).then(function(canvas){
+    var url=canvas.toDataURL('image/png');
+    document.getElementById('downloadBtn').onclick=function(){
+      var a=document.createElement('a');
+      a.href=url;
+      a.download='listing-marketing.png';
+      a.click();
+      overlay.classList.remove('show');
+    };
+  }).catch(function(err){
+    overlay.classList.remove('show');
+    alert('Could not render image. Try Print / PDF instead.');
+  });
 }
 </script>
 </body>
