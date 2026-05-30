@@ -462,10 +462,10 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .sub-grid .lay-btn{flex:none;padding:.4rem .875rem;border-radius:20px;font-size:.75rem;font-weight:500;display:block}
 .sub-grid .lay-btn .lay-name{font-size:.75rem;font-weight:500}
 
-.photo-thumb.unused{cursor:pointer!important}.photo-thumb.unused img{filter:grayscale(80%) brightness(.55)}
-.unused-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:1;pointer-events:none;cursor:pointer}
-.photo-thumb.unused .photo-num{background:rgba(0,0,0,.4)!important}
-.photo-thumb.unused{border-color:transparent!important;box-shadow:none!important}
+.photo-thumb.unused{cursor:pointer!important}
+
+
+
 
 /* ── Interactive editing ── */
 .editable{cursor:text;transition:background .15s,outline .15s;border-radius:3px;outline:2px solid transparent}
@@ -697,7 +697,8 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 
 <!-- RIGHT PANEL -->
 <div class="preview-panel" id="previewPanel">
-  <!-- Floating text toolbar -->
+
+  <!-- Floating text toolbar (fixed, never wiped) -->
   <div id="textToolbar">
     <button class="tb-close" onclick="closeToolbar()">&#10005;</button>
     <div class="tb-title" id="tbTitle">Editing text</div>
@@ -718,44 +719,61 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
     </div>
   </div>
 
-  <!-- Edit toolbar bar -->
+  <!-- Edit toolbar (shown after first generate) -->
   <div class="edit-toolbar-bar" id="editToolbar" style="display:none">
-    <button class="etb-btn" id="btnToggles" onclick="togglePanel()">&#9776; Show/Hide</button>
-    <button class="etb-btn" onclick="resetEdits()">&#8634; Reset all</button>
-    <span style="font-size:.5625rem;color:var(--ink-muted);padding:.25rem .375rem;align-self:center">Click text to edit &nbsp;&middot;&nbsp; Drag text to move &nbsp;&middot;&nbsp; Drop photos onto slots</span>
+    <button class="etb-btn" id="btnToggles" onclick="togglePanel()">&#9776; Show / Hide</button>
+    <button class="etb-btn" onclick="resetEdits()">&#8634; Reset</button>
+    <span style="font-size:.5625rem;color:var(--ink-muted);padding:.25rem .375rem;align-self:center">
+      Click text to edit &nbsp;&middot;&nbsp; Drag text to move &nbsp;&middot;&nbsp; Drop photos onto slots
+    </span>
   </div>
 
-  <!-- Toggles panel -->
+  <!-- Toggle panel (shown/hidden by Show/Hide button) -->
   <div id="togglePanel">
     <div class="toggle-lbl">Show / hide elements</div>
     <div class="toggle-grid" id="toggleGrid"></div>
   </div>
 
-  <div class="edit-banner" id="editBanner" style="display:none"></div>
-  <div class="empty-state" id="emptyState">
-    <div style="max-width:320px;text-align:center">
-      <div style="font-size:2rem;margin-bottom:1rem;opacity:.3">&#128247;</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:var(--ink);opacity:.5;margin-bottom:1.5rem">Your preview will appear here</div>
-      <div style="display:flex;flex-direction:column;gap:.625rem;text-align:left">
-        <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;background:rgba(200,169,110,.07);border-radius:var(--r);border:1px solid rgba(200,169,110,.2)">
-          <span style="font-size:1rem;width:24px;text-align:center">1</span>
-          <span style="font-size:.8125rem;color:var(--ink-mid)">Upload listing photos</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;background:rgba(200,169,110,.07);border-radius:var(--r);border:1px solid rgba(200,169,110,.2)">
-          <span style="font-size:1rem;width:24px;text-align:center">2</span>
-          <span style="font-size:.8125rem;color:var(--ink-mid)">Choose format, type &amp; layout</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;background:rgba(200,169,110,.07);border-radius:var(--r);border:1px solid rgba(200,169,110,.2)">
-          <span style="font-size:1rem;width:24px;text-align:center">3</span>
-          <span style="font-size:.8125rem;color:var(--ink-mid)">Fill in listing &amp; agent details</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;background:var(--ink);border-radius:var(--r)">
-          <span style="font-size:1rem;width:24px;text-align:center">&#9654;</span>
-          <span style="font-size:.8125rem;color:#fff;font-weight:500">Hit Generate — AI writes the copy</span>
+  <!-- Preview bar (action buttons — written by JS) -->
+  <div id="previewBar" style="display:none">
+    <div class="preview-bar">
+      <div class="preview-lbl" id="previewLbl">Preview</div>
+      <div class="act-row">
+        <button class="act-btn" id="copyBtn" onclick="copyContent()">Copy text</button>
+        <button class="act-btn" onclick="saveToDevice()">Save to device</button>
+        <button class="act-btn" onclick="window.print()">Print / PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic template content -->
+  <div id="tplWrap">
+    <div class="empty-state" id="emptyState">
+      <div style="max-width:320px;text-align:center">
+        <div style="font-size:2rem;margin-bottom:1rem;opacity:.3">&#128247;</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:var(--ink);opacity:.5;margin-bottom:1.5rem">Your preview will appear here</div>
+        <div style="display:flex;flex-direction:column;gap:.625rem;text-align:left">
+          <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;background:rgba(200,169,110,.07);border-radius:var(--r);border:1px solid rgba(200,169,110,.2)">
+            <span style="font-size:1rem;width:24px;text-align:center;color:var(--accent);font-weight:700">1</span>
+            <span style="font-size:.8125rem;color:var(--ink-mid)">Upload your listing photos</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;background:rgba(200,169,110,.07);border-radius:var(--r);border:1px solid rgba(200,169,110,.2)">
+            <span style="font-size:1rem;width:24px;text-align:center;color:var(--accent);font-weight:700">2</span>
+            <span style="font-size:.8125rem;color:var(--ink-mid)">Choose Vertical or Horizontal, pick a layout</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;background:rgba(200,169,110,.07);border-radius:var(--r);border:1px solid rgba(200,169,110,.2)">
+            <span style="font-size:1rem;width:24px;text-align:center;color:var(--accent);font-weight:700">3</span>
+            <span style="font-size:.8125rem;color:var(--ink-mid)">Fill in the listing details</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;background:var(--ink);border-radius:var(--r)">
+            <span style="font-size:1rem;width:24px;text-align:center;color:var(--accent);font-weight:700">&#9654;</span>
+            <span style="font-size:.8125rem;color:#fff;font-weight:500">Hit Generate — AI writes the copy</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
 </div>
 </div>
 
@@ -840,23 +858,18 @@ function renderStrip() {
   var isMulti = multiLayouts.indexOf(lay) >= 0;
   var n = photos.length;
 
-  var used = slotsUsed();
   var header = '<div class="photo-strip-header">'
     + '<span class="photo-strip-label">'
-    + 'Using ' + Math.min(used,n) + ' of ' + n + ' photo' + (n!==1?'s':'')
-    + ' &mdash; drag to reorder'
+    + n + ' photo' + (n!==1?'s':'') + ' &mdash; drag to reorder or drop onto preview'
     + '</span>'
     + '<span class="add-more-link" onclick="document.getElementById(&quot;fileInput&quot;).click()">+ Add more</span>'
     + '</div>';
 
   var thumbsHtml = '<div class="photo-strip-row" id="photoRow">'
     + photos.map(function(s, i) {
-      var used = slotsUsed();
-      var isUsed = i < used;
-      return '<div class="photo-thumb' + (isUsed?'':' unused') + '" data-idx="' + i + '" draggable="true">'
+      return '<div class="photo-thumb" data-idx="' + i + '" draggable="true">'
         + '<img src="' + s + '" alt="photo ' + (i+1) + '" />'
-        + '<span class="photo-num" style="background:' + (isUsed?'var(--accent)':'rgba(0,0,0,.4)') + '">' + (i+1) + '</span>'
-        + (isUsed?'':'<div class="unused-overlay"></div>')
+        + '<span class="photo-num">' + (i+1) + '</span>'
         + '<span class="del" onclick="delPhoto(event,' + i + ')">&#10005;</span>'
         + '</div>';
     }).join('')
@@ -1696,12 +1709,20 @@ function renderPreview(d,copy){
     }
   }
 
-  // ── Write to panel ──────────────────────────────────────────────
-  panel.innerHTML = '<div class="preview-bar"><div class="preview-lbl">Preview &mdash; '+(isVert?'Vertical 9:16':'Horizontal')+' &nbsp;<span style="font-size:.5625rem;color:var(--accent);letter-spacing:.06em">CLICK TEXT TO EDIT &nbsp;&middot;&nbsp; TAP PHOTO TO SWAP</span></div>'
-    + '<div class="act-row"><button class="act-btn" id="copyBtn" onclick="copyContent()">Copy text</button>'
-    + '<button class="act-btn" onclick="saveToDevice()">Save to device</button>'
-    + '<button class="act-btn" onclick="window.print()">Print / PDF</button></div></div>'
-    + '<div id="tplWrap">'+tpl+'</div>';
+  // ── Update only the dynamic content area, not the whole panel ──────
+  var tplDiv = document.getElementById('tplWrap');
+  if (tplDiv) tplDiv.innerHTML = tpl;
+
+  // Update preview label
+  var lbl = document.getElementById('previewLbl');
+  if (lbl) lbl.textContent = 'Preview — ' + (isVert ? 'Vertical 9:16' : 'Horizontal');
+
+  // Show the preview bar
+  var pb = document.getElementById('previewBar');
+  if (pb) pb.style.display = '';
+
+  // Show edit toolbar
+  showEditToolbar();
 
   // Attach interactive behaviour
   setTimeout(attachEditables, 50);
