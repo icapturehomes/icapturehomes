@@ -6,7 +6,7 @@
 <title>iCaptureHomes Marketing Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -488,6 +488,61 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 
 /* Strip thumb selected for slot assignment */
 .photo-thumb.slot-assign{border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,169,110,.4);transform:scale(1.08)}
+
+/* ── Drag-drop onto slot ── */
+.photo-slot.drop-hover{outline:3px solid var(--accent)!important;outline-offset:-3px}
+.photo-slot.drop-hover::before{content:'Drop here';position:absolute;inset:0;background:rgba(200,169,110,.35);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;letter-spacing:.06em;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8);z-index:20;pointer-events:none}
+
+/* ── Pan/crop within slot ── */
+.photo-slot img{cursor:grab;user-select:none;-webkit-user-select:none}
+.photo-slot img.panning{cursor:grabbing}
+
+/* ── Draggable text labels ── */
+.draglabel{cursor:move;user-select:none;-webkit-user-select:none;position:relative}
+.draglabel::after{content:'⠿';position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:10px;color:rgba(255,255,255,.5);opacity:0;transition:opacity .15s;pointer-events:none}
+.draglabel:hover::after{opacity:1}
+
+/* ── Floating text toolbar ── */
+#textToolbar{
+  display:none;position:fixed;z-index:1000;
+  background:#fff;border:1px solid var(--border-strong);border-radius:var(--rl);
+  box-shadow:0 4px 24px rgba(0,0,0,.15);padding:.625rem .875rem;
+  min-width:280px;max-width:340px;
+}
+#textToolbar.show{display:block}
+.tb-row{display:flex;align-items:center;gap:.625rem;margin-bottom:.5rem}
+.tb-row:last-child{margin-bottom:0}
+.tb-label{font-size:.5625rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);flex-shrink:0;width:44px}
+.tb-slider{flex:1;-webkit-appearance:none;height:3px;border-radius:2px;background:var(--border-strong);outline:none;cursor:pointer}
+.tb-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer}
+.tb-val{font-size:.6875rem;color:var(--ink-muted);width:28px;text-align:right;flex-shrink:0}
+.tb-fonts{display:flex;gap:.3rem;flex-wrap:wrap}
+.tb-font{border:1px solid var(--border-strong);border-radius:var(--r);padding:3px 8px;font-size:.75rem;cursor:pointer;background:#fff;transition:all .15s;white-space:nowrap}
+.tb-font:hover{border-color:var(--accent)}
+.tb-font.active{border-color:var(--accent);background:var(--accent);color:#fff}
+.tb-close{position:absolute;top:6px;right:8px;cursor:pointer;font-size:.875rem;color:var(--ink-muted);line-height:1;background:none;border:none;padding:2px 4px}
+.tb-close:hover{color:var(--ink)}
+.tb-title{font-size:.6875rem;font-weight:500;color:var(--ink);margin-bottom:.5rem;padding-right:20px}
+
+/* ── Toggles panel ── */
+#togglePanel{
+  background:#fff;border:1px solid var(--border);border-radius:var(--rl);
+  padding:.875rem 1rem;margin-bottom:.75rem;display:none
+}
+#togglePanel.show{display:block}
+.toggle-grid{display:grid;grid-template-columns:1fr 1fr;gap:.375rem .75rem}
+.toggle-item{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--ink-mid);cursor:pointer}
+.toggle-item input[type=checkbox]{accent-color:var(--accent);width:13px;height:13px;cursor:pointer;flex-shrink:0}
+.toggle-lbl{font-size:.625rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.375rem}
+
+/* ── Edit mode bar ── */
+.edit-toolbar-bar{
+  display:flex;gap:.375rem;flex-wrap:wrap;padding:.5rem 0;
+  border-bottom:1px solid var(--border);margin-bottom:.625rem
+}
+.etb-btn{font-size:.6875rem;padding:.3125rem .625rem;border:1px solid var(--border-strong);border-radius:var(--r);background:#fff;cursor:pointer;color:var(--ink-mid);font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;align-items:center;gap:.3rem}
+.etb-btn:hover{border-color:var(--accent);color:var(--ink)}
+.etb-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
 </style>
 </head>
 <body>
@@ -642,11 +697,41 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 
 <!-- RIGHT PANEL -->
 <div class="preview-panel" id="previewPanel">
-  <div class="edit-banner" id="editBanner">
-    <div class="edit-dot"></div>
-    <span>Click any text on the preview to edit it &middot; Tap a photo to swap it</span>
-    <span style="margin-left:auto;cursor:pointer;text-decoration:underline;color:var(--accent)" onclick="resetEdits()">Reset</span>
+  <!-- Floating text toolbar -->
+  <div id="textToolbar">
+    <button class="tb-close" onclick="closeToolbar()">&#10005;</button>
+    <div class="tb-title" id="tbTitle">Editing text</div>
+    <div class="tb-row">
+      <span class="tb-label">Size</span>
+      <input type="range" class="tb-slider" id="tbSize" min="8" max="72" value="16" oninput="applyFontSize(this.value)"/>
+      <span class="tb-val" id="tbSizeVal">16</span>
+    </div>
+    <div class="tb-row" style="align-items:flex-start">
+      <span class="tb-label" style="padding-top:2px">Font</span>
+      <div class="tb-fonts" id="tbFonts">
+        <span class="tb-font active" data-font="Cormorant Garamond,serif" onclick="applyFont(this)" style="font-family:'Cormorant Garamond',serif;font-style:italic">Cormorant</span>
+        <span class="tb-font" data-font="'DM Sans',sans-serif" onclick="applyFont(this)">DM Sans</span>
+        <span class="tb-font" data-font="'Playfair Display',serif" onclick="applyFont(this)" style="font-family:'Playfair Display',serif">Playfair</span>
+        <span class="tb-font" data-font="Montserrat,sans-serif" onclick="applyFont(this)" style="font-family:Montserrat,sans-serif">Montserrat</span>
+        <span class="tb-font" data-font="Georgia,serif" onclick="applyFont(this)" style="font-family:Georgia,serif">Georgia</span>
+      </div>
+    </div>
   </div>
+
+  <!-- Edit toolbar bar -->
+  <div class="edit-toolbar-bar" id="editToolbar" style="display:none">
+    <button class="etb-btn" id="btnToggles" onclick="togglePanel()">&#9776; Show/Hide</button>
+    <button class="etb-btn" onclick="resetEdits()">&#8634; Reset all</button>
+    <span style="font-size:.5625rem;color:var(--ink-muted);padding:.25rem .375rem;align-self:center">Click text to edit &nbsp;&middot;&nbsp; Drag text to move &nbsp;&middot;&nbsp; Drop photos onto slots</span>
+  </div>
+
+  <!-- Toggles panel -->
+  <div id="togglePanel">
+    <div class="toggle-lbl">Show / hide elements</div>
+    <div class="toggle-grid" id="toggleGrid"></div>
+  </div>
+
+  <div class="edit-banner" id="editBanner" style="display:none"></div>
   <div class="empty-state" id="emptyState">
     <div style="max-width:320px;text-align:center">
       <div style="font-size:2rem;margin-bottom:1rem;opacity:.3">&#128247;</div>
@@ -1279,10 +1364,25 @@ function renderPreview(d,copy){
 
   // ── Editable text helpers ────────────────────────────────────
   function ed(key, val, cls) {
+    if (hiddenEls[key]) return '';
     var v = getEdit(key, val);
-    return '<span data-ek="'+key+'" class="'+(cls||'editable-dark')+'" title="Click to edit">'+v+'</span>';
+    var st = textStyles[key] || {};
+    var extraStyle = '';
+    if (st.size) extraStyle += 'font-size:'+st.size+'px;';
+    if (st.font) extraStyle += 'font-family:'+st.font+';';
+    return '<span data-ek="'+key+'" class="'+(cls||'editable-dark')+'" style="'+extraStyle+'" title="Click to edit • Drag to move">'+v+'</span>';
   }
   function edLight(key, val) { return ed(key, val, 'editable'); }
+  // Stats block respects toggle
+  function statsBlock(dark) {
+    if (hiddenEls['stats']) return '';
+    return statPills(dark);
+  }
+  // Logo block respects toggle
+  function logoBlock(style, alt) {
+    if (!logoData || hiddenEls['logo']) return '';
+    return '<img src="'+logoData+'" style="'+style+'" alt="'+(alt||'Logo')+'"/>';
+  }
 
   // ── Slot photo helpers ────────────────────────────────────────
   function sp(slotId, defIdx) {
@@ -1705,6 +1805,385 @@ selPhoto = function(i) {
   if (Object.keys(lastC).length) renderPreview(lastD, lastC);
 };
 
+
+// ══════════════════════════════════════════════════════════
+// EDITOR STATE
+// ══════════════════════════════════════════════════════════
+var selectedEl   = null; // currently selected text element
+var textStyles   = {};   // {ek: {size, font, x, y}}  per-element style overrides
+var hiddenEls    = {};   // {ek: true} elements toggled off
+var slotPanPos   = {};   // {slotId: {x,y}} photo pan within slot
+
+var TOGGLES = [
+  {key:'typeLabel',  label:'Type label'},
+  {key:'address',    label:'Address'},
+  {key:'city',       label:'City / State'},
+  {key:'price',      label:'Price'},
+  {key:'stats',      label:'Beds / Baths / Sqft'},
+  {key:'agentName',  label:'Agent name'},
+  {key:'brokerage',  label:'Brokerage'},
+  {key:'phone',      label:'Phone'},
+  {key:'logo',       label:'Logo'}
+];
+
+// ══════════════════════════════════════════════════════════
+// TOGGLE PANEL
+// ══════════════════════════════════════════════════════════
+function initToggles() {
+  var grid = document.getElementById('toggleGrid');
+  if (!grid) return;
+  grid.innerHTML = TOGGLES.map(function(t) {
+    var checked = !hiddenEls[t.key] ? 'checked' : '';
+    return '<label class="toggle-item">'
+      + '<input type="checkbox" '+checked+' data-tkey="'+t.key+'" onchange="onToggle(this)"/>'
+      + t.label + '</label>';
+  }).join('');
+}
+
+function onToggle(cb) {
+  var key = cb.dataset.tkey;
+  if (cb.checked) { delete hiddenEls[key]; }
+  else            { hiddenEls[key] = true; }
+  if (Object.keys(lastC).length) renderPreview(lastD, lastC);
+}
+
+function togglePanel() {
+  var p = document.getElementById('togglePanel');
+  var btn = document.getElementById('btnToggles');
+  if (!p) return;
+  var open = p.classList.toggle('show');
+  btn.classList.toggle('active', open);
+  if (open) initToggles();
+}
+
+function showEditToolbar() {
+  var bar = document.getElementById('editToolbar');
+  if (bar) bar.style.display = 'flex';
+}
+
+// ══════════════════════════════════════════════════════════
+// FLOATING TEXT TOOLBAR
+// ══════════════════════════════════════════════════════════
+function openToolbar(el, key) {
+  selectedEl = el;
+  var tb = document.getElementById('textToolbar');
+  if (!tb) return;
+
+  // Position near the element
+  var rect = el.getBoundingClientRect();
+  var tbW = 300;
+  var left = Math.min(rect.left, window.innerWidth - tbW - 12);
+  var top  = rect.bottom + 8;
+  if (top + 160 > window.innerHeight) top = rect.top - 168;
+  tb.style.left = Math.max(8, left) + 'px';
+  tb.style.top  = Math.max(8, top)  + 'px';
+
+  // Set current values
+  var st = textStyles[key] || {};
+  var curSize = st.size || parseInt(window.getComputedStyle(el).fontSize) || 16;
+  document.getElementById('tbSize').value = curSize;
+  document.getElementById('tbSizeVal').textContent = curSize;
+  document.getElementById('tbTitle').textContent = 'Editing: ' + key.replace(/([A-Z])/g, ' $1').toLowerCase();
+
+  // Font buttons
+  var curFont = st.font || '';
+  document.querySelectorAll('.tb-font').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.font === curFont);
+  });
+
+  tb.classList.add('show');
+}
+
+function closeToolbar() {
+  document.getElementById('textToolbar').classList.remove('show');
+  selectedEl = null;
+}
+
+function applyFontSize(val) {
+  document.getElementById('tbSizeVal').textContent = val;
+  if (!selectedEl) return;
+  var key = selectedEl.dataset.ek;
+  if (!textStyles[key]) textStyles[key] = {};
+  textStyles[key].size = parseInt(val);
+  selectedEl.style.fontSize = val + 'px';
+}
+
+function applyFont(btn) {
+  document.querySelectorAll('.tb-font').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  if (!selectedEl) return;
+  var key = selectedEl.dataset.ek;
+  var font = btn.dataset.font;
+  if (!textStyles[key]) textStyles[key] = {};
+  textStyles[key].font = font;
+  selectedEl.style.fontFamily = font;
+}
+
+// ══════════════════════════════════════════════════════════
+// DRAG TEXT LABELS (move position)
+// ══════════════════════════════════════════════════════════
+function initTextDrag(el, key) {
+  var isDragging = false, startX, startY, origX, origY;
+  var st = textStyles[key] || {};
+
+  function getOffset() {
+    return { x: st.x || 0, y: st.y || 0 };
+  }
+
+  el.addEventListener('mousedown', function(e) {
+    if (el.contentEditable === 'true') return; // editing, not dragging
+    e.preventDefault();
+    isDragging = false;
+    startX = e.clientX; startY = e.clientY;
+    var off = getOffset();
+    origX = off.x; origY = off.y;
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+
+  el.addEventListener('touchstart', function(e) {
+    if (el.contentEditable === 'true') return;
+    var t = e.touches[0];
+    startX = t.clientX; startY = t.clientY;
+    var off = getOffset();
+    origX = off.x; origY = off.y;
+    isDragging = false;
+    document.addEventListener('touchmove', onTouchMove, {passive:false});
+    document.addEventListener('touchend', onTouchEnd);
+  }, {passive:true});
+
+  function onMove(e) {
+    var dx = e.clientX - startX, dy = e.clientY - startY;
+    if (Math.abs(dx)+Math.abs(dy) > 4) isDragging = true;
+    if (!isDragging) return;
+    if (!textStyles[key]) textStyles[key] = {};
+    textStyles[key].x = origX + dx;
+    textStyles[key].y = origY + dy;
+    applyTransform(el, textStyles[key]);
+  }
+  function onTouchMove(e) {
+    var t = e.touches[0];
+    var dx = t.clientX - startX, dy = t.clientY - startY;
+    if (Math.abs(dx)+Math.abs(dy) > 4) { isDragging = true; e.preventDefault(); }
+    if (!isDragging) return;
+    if (!textStyles[key]) textStyles[key] = {};
+    textStyles[key].x = origX + dx;
+    textStyles[key].y = origY + dy;
+    applyTransform(el, textStyles[key]);
+  }
+  function onUp(e) {
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+    if (!isDragging) {
+      // It was a click — open text editor
+      if (el.contentEditable !== 'true') makeEditable(el, key);
+      openToolbar(el, key);
+    }
+    isDragging = false;
+  }
+  function onTouchEnd() {
+    document.removeEventListener('touchmove', onTouchMove);
+    document.removeEventListener('touchend', onTouchEnd);
+    if (!isDragging) {
+      if (el.contentEditable !== 'true') makeEditable(el, key);
+      openToolbar(el, key);
+    }
+    isDragging = false;
+  }
+}
+
+function applyTransform(el, st) {
+  el.style.transform = 'translate('+(st.x||0)+'px,'+(st.y||0)+'px)';
+  el.style.position = 'relative';
+  el.style.zIndex = '15';
+}
+
+function applyAllStyles(wrap) {
+  wrap.querySelectorAll('[data-ek]').forEach(function(el) {
+    var key = el.dataset.ek;
+    var st = textStyles[key];
+    if (!st) return;
+    if (st.size) el.style.fontSize = st.size + 'px';
+    if (st.font) el.style.fontFamily = st.font;
+    if (st.x !== undefined || st.y !== undefined) applyTransform(el, st);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// DRAG PHOTO FROM STRIP ONTO SLOT
+// ══════════════════════════════════════════════════════════
+function initSlotDropZones() {
+  var wrap = document.getElementById('tplWrap');
+  if (!wrap) return;
+  wrap.querySelectorAll('.photo-slot').forEach(function(slot) {
+    slot.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      slot.classList.add('drop-hover');
+    });
+    slot.addEventListener('dragleave', function() {
+      slot.classList.remove('drop-hover');
+    });
+    slot.addEventListener('drop', function(e) {
+      e.preventDefault();
+      slot.classList.remove('drop-hover');
+      var idx = parseInt(e.dataTransfer.getData('photoIdx'));
+      if (!isNaN(idx)) {
+        slotAssign[slot.dataset.slot] = idx;
+        renderPreview(lastD, lastC);
+      }
+    });
+  });
+}
+
+// Make thumbnail strip items draggable with photo data
+function makeThumbsDraggable() {
+  var row = document.getElementById('photoRow');
+  if (!row) return;
+  row.querySelectorAll('.photo-thumb').forEach(function(thumb, i) {
+    thumb.draggable = true;
+    thumb.addEventListener('dragstart', function(e) {
+      e.dataTransfer.setData('photoIdx', String(i));
+      e.dataTransfer.effectAllowed = 'copy';
+      this.style.opacity = '.5';
+    });
+    thumb.addEventListener('dragend', function() {
+      this.style.opacity = '';
+    });
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// PHOTO PAN WITHIN SLOT
+// ══════════════════════════════════════════════════════════
+function initPhotoPan(img, slotId) {
+  if (!img) return;
+  var isPanning = false, startX, startY, startOX, startOY;
+  var pan = slotPanPos[slotId] || {x:50, y:50}; // % object-position
+
+  img.style.objectPosition = pan.x+'% '+pan.y+'%';
+
+  img.addEventListener('mousedown', function(e) {
+    // Only pan if slot not in assignment mode
+    if (activeSlot) return;
+    e.preventDefault();
+    isPanning = true;
+    startX = e.clientX; startY = e.clientY;
+    startOX = pan.x; startOY = pan.y;
+    img.classList.add('panning');
+    document.addEventListener('mousemove', onPanMove);
+    document.addEventListener('mouseup', onPanUp);
+  });
+  img.addEventListener('touchstart', function(e) {
+    if (activeSlot) return;
+    var t = e.touches[0];
+    isPanning = true;
+    startX = t.clientX; startY = t.clientY;
+    startOX = pan.x; startOY = pan.y;
+    document.addEventListener('touchmove', onPanTouchMove, {passive:false});
+    document.addEventListener('touchend', onPanTouchEnd);
+  }, {passive:true});
+
+  function onPanMove(e) {
+    if (!isPanning) return;
+    var dx = (e.clientX - startX) * -.12;
+    var dy = (e.clientY - startY) * -.12;
+    pan.x = Math.max(0, Math.min(100, startOX + dx));
+    pan.y = Math.max(0, Math.min(100, startOY + dy));
+    img.style.objectPosition = pan.x+'% '+pan.y+'%';
+    slotPanPos[slotId] = {x:pan.x, y:pan.y};
+  }
+  function onPanTouchMove(e) {
+    if (!isPanning) return;
+    e.preventDefault();
+    var t = e.touches[0];
+    var dx = (t.clientX - startX) * -.12;
+    var dy = (t.clientY - startY) * -.12;
+    pan.x = Math.max(0, Math.min(100, startOX + dx));
+    pan.y = Math.max(0, Math.min(100, startOY + dy));
+    img.style.objectPosition = pan.x+'% '+pan.y+'%';
+    slotPanPos[slotId] = {x:pan.x, y:pan.y};
+  }
+  function onPanUp() { isPanning = false; img.classList.remove('panning'); document.removeEventListener('mousemove', onPanMove); document.removeEventListener('mouseup', onPanUp); }
+  function onPanTouchEnd() { isPanning = false; document.removeEventListener('touchmove', onPanTouchMove); document.removeEventListener('touchend', onPanTouchEnd); }
+}
+
+// ══════════════════════════════════════════════════════════
+// UPDATED attachEditables — now wires all behaviours
+// ══════════════════════════════════════════════════════════
+function attachEditables() {
+  var wrap = document.getElementById('tplWrap');
+  if (!wrap) return;
+
+  // Text elements
+  wrap.querySelectorAll('[data-ek]').forEach(function(el) {
+    var key = el.dataset.ek;
+    el.dataset.orig = el.innerText;
+    el.classList.add('draglabel');
+    initTextDrag(el, key);
+  });
+
+  // Photo slot drop zones (for drag from strip)
+  initSlotDropZones();
+
+  // Photo pan within slots
+  wrap.querySelectorAll('.photo-slot').forEach(function(slot) {
+    var slotId = slot.dataset.slot;
+    // restore saved pan
+    var pan = slotPanPos[slotId];
+    var img = slot.querySelector('img');
+    if (img) {
+      if (pan) img.style.objectPosition = pan.x+'% '+pan.y+'%';
+      initPhotoPan(img, slotId);
+    }
+    // tap-to-assign (existing)
+    slot.addEventListener('click', function(e) {
+      if (e.defaultPrevented) return;
+      e.stopPropagation();
+      selectSlot(slotId);
+    });
+  });
+
+  // Apply saved text styles
+  applyAllStyles(wrap);
+
+  // Make strip thumbs draggable
+  makeThumbsDraggable();
+
+  // Show edit toolbar
+  showEditToolbar();
+}
+
+// Close toolbar on outside click
+document.addEventListener('click', function(e) {
+  var tb = document.getElementById('textToolbar');
+  if (tb && !tb.contains(e.target) && !e.target.closest('[data-ek]')) {
+    tb.classList.remove('show');
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+// UPDATED resetEdits — clears all state
+// ══════════════════════════════════════════════════════════
+function resetEdits() {
+  slotAssign    = {};
+  activeSlot    = null;
+  editOverrides = {};
+  textStyles    = {};
+  hiddenEls     = {};
+  slotPanPos    = {};
+  closeToolbar();
+  var tp = document.getElementById('togglePanel');
+  if (tp) tp.classList.remove('show');
+  var btn = document.getElementById('btnToggles');
+  if (btn) btn.classList.remove('active');
+  initToggles();
+  if (Object.keys(lastC).length) renderPreview(lastD, lastC);
+}
+
+// ══════════════════════════════════════════════════════════
+// UPDATED renderStrip — add draggable to thumbs after render
+// ══════════════════════════════════════════════════════════
 
 function copyContent(){
   var txt = '';
