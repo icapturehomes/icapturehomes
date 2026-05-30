@@ -466,6 +466,28 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .unused-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:1;pointer-events:none}
 .photo-thumb.unused .photo-num{background:rgba(0,0,0,.4)!important}
 .photo-thumb.unused{border-color:transparent!important;box-shadow:none!important}
+
+/* ── Interactive editing ── */
+.editable{cursor:text;transition:background .15s,outline .15s;border-radius:3px;outline:2px solid transparent}
+.editable:hover{background:rgba(200,169,110,.18);outline:2px solid rgba(200,169,110,.4)}
+.editable:focus{background:rgba(200,169,110,.12);outline:2px solid var(--accent);border-radius:3px}
+.editable-dark{cursor:text;transition:background .15s,outline .15s;border-radius:3px;outline:2px solid transparent}
+.editable-dark:hover{background:rgba(200,169,110,.2);outline:2px solid rgba(200,169,110,.5)}
+.editable-dark:focus{background:rgba(200,169,110,.15);outline:2px solid var(--accent);border-radius:3px}
+
+/* Photo slot tap-to-swap */
+.photo-slot{cursor:pointer;position:relative}
+.photo-slot::after{content:'tap to swap';position:absolute;inset:0;background:rgba(200,169,110,.0);color:rgba(255,255,255,.0);display:flex;align-items:center;justify-content:center;font-size:.625rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;transition:all .2s;font-family:'DM Sans',sans-serif}
+.photo-slot:hover::after{background:rgba(0,0,0,.35);color:rgba(255,255,255,.9)}
+.photo-slot.selected::after{content:'select from strip ↑';background:rgba(200,169,110,.5);color:#fff}
+
+/* Edit mode banner */
+.edit-banner{display:none;background:rgba(200,169,110,.12);border:1px solid rgba(200,169,110,.3);border-radius:var(--r);padding:.4rem .75rem;font-size:.6875rem;color:var(--ink-mid);margin-bottom:.625rem;align-items:center;gap:.5rem}
+.edit-banner.show{display:flex}
+.edit-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
+
+/* Strip thumb selected for slot assignment */
+.photo-thumb.slot-assign{border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,169,110,.4);transform:scale(1.08)}
 </style>
 </head>
 <body>
@@ -620,6 +642,11 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 
 <!-- RIGHT PANEL -->
 <div class="preview-panel" id="previewPanel">
+  <div class="edit-banner" id="editBanner">
+    <div class="edit-dot"></div>
+    <span>Click any text on the preview to edit it &middot; Tap a photo to swap it</span>
+    <span style="margin-left:auto;cursor:pointer;text-decoration:underline;color:var(--accent)" onclick="resetEdits()">Reset</span>
+  </div>
   <div class="empty-state" id="emptyState">
     <div style="max-width:320px;text-align:center">
       <div style="font-size:2rem;margin-bottom:1rem;opacity:.3">&#128247;</div>
@@ -1242,248 +1269,219 @@ async function generate(){
 }
 
 
+
 function renderPreview(d,copy){
   var a = ac();
   var panel = document.getElementById('previewPanel');
   var tpl = '';
   var isVert = (cat === 'vertical');
-  var typeLabel = getTypeLabel() || 'Just Listed';
+  var typeLabel = getEdit('typeLabel', getTypeLabel() || 'Just Listed');
 
-  // ── Photo helpers ──────────────────────────────────────────────
-  var p0=ph(0), p1=ph(1), p2=ph(2), p3=ph(3);
+  // ── Editable text helpers ────────────────────────────────────
+  function ed(key, val, cls) {
+    var v = getEdit(key, val);
+    return '<span data-ek="'+key+'" class="'+(cls||'editable-dark')+'" title="Click to edit">'+v+'</span>';
+  }
+  function edLight(key, val) { return ed(key, val, 'editable'); }
 
-  function imgFill(src, n) {
-    return src
-      ? '<img src="'+src+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block" alt="p'+n+'"/>'
-      : '<div style="position:absolute;inset:0;background:#1c1c1e;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#444;font-style:italic">Photo '+n+'</div>';
+  // ── Slot photo helpers ────────────────────────────────────────
+  function sp(slotId, defIdx) {
+    var idx = getSlotPhoto(slotId, defIdx);
+    return ph(idx);
+  }
+  function photoSlot(slotId, defIdx, extraStyle) {
+    var src = sp(slotId, defIdx);
+    var sel = (activeSlot === slotId) ? ' selected' : '';
+    var inner = src
+      ? '<img src="'+src+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block" alt="photo"/>'
+      : '<div style="position:absolute;inset:0;background:#1c1c1e;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#444;font-style:italic">Tap to add photo</div>';
+    return '<div class="photo-slot'+sel+'" data-slot="'+slotId+'" style="'+(extraStyle||'position:relative;overflow:hidden;width:100%;height:100%;')+'">'
+      + inner + '</div>';
   }
 
-  // ── Logo/agent block (top-left of card) ────────────────────────
-  function agentBadge() {
+  // ── Logo/agent block ──────────────────────────────────────────
+  function agentBadge(pos) {
+    var style = pos === 'bottom'
+      ? 'position:absolute;bottom:90px;left:18px;z-index:10'
+      : 'position:absolute;top:18px;left:18px;z-index:10';
     if (logoData) {
-      return '<div style="position:absolute;top:18px;left:18px;z-index:10">'
+      return '<div style="'+style+'">'
         + '<img src="'+logoData+'" style="max-height:60px;max-width:160px;object-fit:contain;display:block;filter:drop-shadow(0 2px 8px rgba(0,0,0,.7))" alt="Logo"/>'
-        + (d.ag ? '<div style="margin-top:5px;font-size:.6875rem;font-weight:500;color:rgba(255,255,255,.9);text-shadow:0 1px 4px rgba(0,0,0,.9);letter-spacing:.02em">'+d.ag+(d.br?' &middot; '+d.br:'')+'</div>' : '')
+        + (d.ag?'<div style="margin-top:4px;font-size:.6875rem;font-weight:500;color:rgba(255,255,255,.9);text-shadow:0 1px 3px rgba(0,0,0,.9)">'+ed('agentName',d.ag,'editable-dark')+(d.br?' &middot; '+ed('brokerage',d.br,'editable-dark'):'')+'</div>':'')
         + '</div>';
     }
-    return '<div style="position:absolute;top:18px;left:18px;z-index:10">'
-      + '<div style="font-size:.875rem;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.9);letter-spacing:.02em">'+d.ag+'</div>'
-      + (d.br?'<div style="font-size:.6875rem;color:rgba(255,255,255,.8);text-shadow:0 1px 4px rgba(0,0,0,.8);margin-top:2px">'+d.br+'</div>':'')
+    return '<div style="'+style+'">'
+      + '<div style="font-size:.875rem;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.9)">'+ed('agentName',d.ag,'editable-dark')+'</div>'
+      + (d.br?'<div style="font-size:.6875rem;color:rgba(255,255,255,.8);text-shadow:0 1px 4px rgba(0,0,0,.8);margin-top:2px">'+ed('brokerage',d.br,'editable-dark')+'</div>':'')
       + (d.ph?'<div style="font-size:.6875rem;color:rgba(255,255,255,.75);text-shadow:0 1px 4px rgba(0,0,0,.8);margin-top:1px">'+d.ph+'</div>':'')
       + '</div>';
   }
 
-  // ── Stats pills ────────────────────────────────────────────────
   function statPills(dark) {
-    var c = dark ? 'rgba(255,255,255,.8)' : 'rgba(0,0,0,.7)';
-    var bg = dark ? 'rgba(255,255,255,.15)' : 'rgba(0,0,0,.08)';
-    var bd = dark ? 'rgba(255,255,255,.25)' : 'rgba(0,0,0,.12)';
+    var c=dark?'rgba(255,255,255,.8)':'rgba(0,0,0,.7)';
+    var bg=dark?'rgba(255,255,255,.15)':'rgba(0,0,0,.08)';
+    var bd=dark?'rgba(255,255,255,.25)':'rgba(0,0,0,.12)';
     return '<div style="display:flex;flex-wrap:wrap;gap:.375rem;margin-top:.5rem">'
-      + '<span style="font-size:.6875rem;color:'+c+';background:'+bg+';padding:3px 10px;border-radius:20px;border:1px solid '+bd+'">'+d.bd+' Beds</span>'
-      + '<span style="font-size:.6875rem;color:'+c+';background:'+bg+';padding:3px 10px;border-radius:20px;border:1px solid '+bd+'">'+d.bt+' Baths</span>'
-      + '<span style="font-size:.6875rem;color:'+c+';background:'+bg+';padding:3px 10px;border-radius:20px;border:1px solid '+bd+'">'+d.sq+' Sqft</span>'
-      + '</div>';
+      +'<span style="font-size:.6875rem;color:'+c+';background:'+bg+';padding:3px 10px;border-radius:20px;border:1px solid '+bd+'">'+d.bd+' Beds</span>'
+      +'<span style="font-size:.6875rem;color:'+c+';background:'+bg+';padding:3px 10px;border-radius:20px;border:1px solid '+bd+'">'+d.bt+' Baths</span>'
+      +'<span style="font-size:.6875rem;color:'+c+';background:'+bg+';padding:3px 10px;border-radius:20px;border:1px solid '+bd+'">'+d.sq+' Sqft</span>'
+      +'</div>';
   }
 
-  // ── Caption for social ─────────────────────────────────────────
   var caption = '<div class="caption-box"><div class="cap-lbl">Caption &mdash; copy &amp; paste</div>'
     + '<div class="cap-txt">'+(copy.caption||'').replace(/\n/g,'<br>')+'</div></div>';
 
-  // ── CARD WRAPPER ────────────────────────────────────────────────
-  // Vertical: 9:16 stv-card | Horizontal: regular tpl-white/tpl-dark
-  var cardOpen, cardClose, cardW, cardH;
-  if (isVert) {
-    cardOpen  = '<div class="st-wrap"><div class="stv-card">';
-    cardClose = '</div></div>';
-    cardW = '100%'; cardH = '';
-  } else {
-    cardOpen  = '<div class="tpl-white">';
-    cardClose = '</div>';
-  }
 
-  // ════════════════════════════════════════════════════════════
-  // LAYOUT: Bold Headline  (Image 1 style)
-  // Full-bleed photo, large italic type label top, agent headshot
-  // area bottom, address/stats/price below card
-  // ════════════════════════════════════════════════════════════
+  // ════════════ BOLD HEADLINE ════════════
   if (lay === 'bold-headline') {
     if (isVert) {
       tpl = '<div class="st-wrap"><div class="stv-card">'
-        // full bleed photo
-        + '<div style="position:absolute;inset:0">'+imgFill(p0,1)+'</div>'
-        // dark gradient stronger at top for type label
-        + '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.72) 0%,rgba(0,0,0,.1) 45%,rgba(0,0,0,.0) 60%,rgba(0,0,0,.85) 100%);z-index:1"></div>'
-        // type label — big serif italic top-left
+        + photoSlot('v-main', 0, 'position:absolute;inset:0;')
+        + '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.72) 0%,rgba(0,0,0,.1) 45%,rgba(0,0,0,.0) 60%,rgba(0,0,0,.85) 100%);z-index:1;pointer-events:none"></div>'
         + '<div style="position:absolute;top:0;left:0;right:0;padding:1.5rem 1.375rem;z-index:2">'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:2.75rem;font-weight:600;font-style:italic;color:#fff;line-height:1;letter-spacing:-.01em;text-shadow:0 2px 12px rgba(0,0,0,.5)">'+typeLabel.toLowerCase()+'.</div>'
+        +   '<div style="font-family:Cormorant Garamond,serif;font-size:2.75rem;font-weight:600;font-style:italic;color:#fff;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.5)">'+ed('typeLabel',typeLabel.toLowerCase()+'.')+'</div>'
         + '</div>'
-        // agent block bottom-left
-        + agentBadge().replace('top:18px;left:18px','bottom:90px;left:18px')
-        // property info bottom
+        + agentBadge('bottom')
         + '<div style="position:absolute;bottom:0;left:0;right:0;padding:1.25rem 1.375rem;z-index:2">'
-        +   '<div style="font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:.2rem">'+fullAddr(d)+', '+d.ci+'</div>'
-        +   '<div style="display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap">'
-        +     '<span style="font-family:Cormorant Garamond,serif;font-size:1.625rem;font-weight:600;color:#fff">'+d.pr+'</span>'
-        +   '</div>'
+        +   '<div style="font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:.2rem">'+ed('address',fullAddr(d)+', '+d.ci)+'</div>'
+        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.625rem;font-weight:600;color:#fff">'+ed('price',d.pr)+'</div>'
         +   statPills(true)
         + '</div>'
         + '</div></div>' + caption;
-
     } else {
-      // Horizontal bold-headline
       tpl = '<div class="tpl-dark" style="max-width:580px">'
         + '<div style="height:320px;position:relative;overflow:hidden">'
-        +   '<div style="position:absolute;inset:0">'+imgFill(p0,1)+'</div>'
-        +   '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.68) 0%,rgba(0,0,0,.05) 50%,rgba(0,0,0,.0) 100%);z-index:1"></div>'
+        +   photoSlot('h-main', 0, 'position:absolute;inset:0;')
+        +   '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.68) 0%,rgba(0,0,0,.05) 50%,rgba(0,0,0,.0) 100%);z-index:1;pointer-events:none"></div>'
         +   '<div style="position:absolute;top:0;left:0;right:0;padding:1.75rem 2rem;z-index:2">'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:3rem;font-weight:600;font-style:italic;color:#fff;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.5)">'+typeLabel.toLowerCase()+'.</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:3rem;font-weight:600;font-style:italic;color:#fff;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.5)">'+ed('typeLabel',typeLabel.toLowerCase()+'.')+'</div>'
         +   '</div>'
         + '</div>'
         + '<div style="padding:1.5rem 2rem;background:#0f0f0f;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem">'
         +   '<div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff;line-height:1.2;margin-bottom:.2rem">'+fullAddr(d)+'</div>'
-        +     '<div style="font-size:.8125rem;color:rgba(255,255,255,.6);margin-bottom:.875rem">'+d.ci+'</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff;line-height:1.2;margin-bottom:.2rem">'+ed('address',fullAddr(d))+'</div>'
+        +     '<div style="font-size:.8125rem;color:rgba(255,255,255,.6);margin-bottom:.875rem">'+ed('city',d.ci)+'</div>'
         +     '<div style="display:flex;gap:1.25rem;font-size:.8125rem;color:rgba(255,255,255,.75);margin-bottom:.75rem">'
         +       '<span><strong style="color:#fff;font-weight:500">'+d.bd+'</strong> Beds</span>'
         +       '<span><strong style="color:#fff;font-weight:500">'+d.bt+'</strong> Baths</span>'
         +       '<span><strong style="color:#fff;font-weight:500">'+d.sq+'</strong> Sqft</span>'
         +     '</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.875rem;font-weight:600;color:'+a+'">'+d.pr+'</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.875rem;font-weight:600;color:'+a+'">'+ed('price',d.pr)+'</div>'
         +   '</div>'
         +   '<div style="text-align:right;flex-shrink:0">'
         +     (logoData?'<img src="'+logoData+'" style="max-height:52px;max-width:140px;object-fit:contain;display:block;margin-left:auto;margin-bottom:.5rem" alt="Logo"/>':'')
-        +     '<div style="font-size:.8125rem;font-weight:500;color:#fff">'+d.ag+'</div>'
-        +     (d.br?'<div style="font-size:.6875rem;color:rgba(255,255,255,.6);margin-top:2px">'+d.br+'</div>':'')
+        +     '<div style="font-size:.8125rem;font-weight:500;color:#fff">'+ed('agentName',d.ag)+'</div>'
+        +     (d.br?'<div style="font-size:.6875rem;color:rgba(255,255,255,.6);margin-top:2px">'+ed('brokerage',d.br)+'</div>':'')
         +     (d.ph?'<div style="font-size:.6875rem;color:rgba(255,255,255,.6);margin-top:1px">'+d.ph+'</div>':'')
         +   '</div>'
         + '</div>'
         + '</div>';
     }
 
-  // ════════════════════════════════════════════════════════════
-  // LAYOUT: Agent Header + Photos  (Image 2 style)
-  // Agent info block top, large hero photo middle, 2 smaller below
-  // Address rotated or displayed, type label stamp
-  // ════════════════════════════════════════════════════════════
+  // ════════════ AGENT HEADER ════════════
   } else if (lay === 'agent-header') {
     if (isVert) {
       tpl = '<div class="st-wrap"><div class="stv-card">'
-        // agent header — solid dark bar at top ~20% of card
         + '<div style="position:absolute;top:0;left:0;right:0;height:22%;background:#0f0f0f;z-index:2;display:flex;align-items:center;padding:0 1.125rem;gap:.75rem">'
         +   (logoData
-              ? '<img src="'+logoData+'" style="max-height:52px;max-width:130px;object-fit:contain;display:block;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))" alt="Logo"/>'
-              : '<div style="flex-shrink:0;width:44px;height:44px;border-radius:50%;background:'+a+';display:flex;align-items:center;justify-content:center;font-size:.875rem;font-weight:700;color:#fff">'+d.ag.split(' ').map(function(w){return w[0];}).join('').slice(0,2)+'</div>')
+              ? '<img src="'+logoData+'" style="max-height:52px;max-width:130px;object-fit:contain;display:block" alt="Logo"/>'
+              : '<div style="width:40px;height:40px;border-radius:50%;background:'+a+';display:flex;align-items:center;justify-content:center;font-size:.8125rem;font-weight:700;color:#fff;flex-shrink:0">'+d.ag.split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2)+'</div>')
         +   '<div style="min-width:0">'
-        +     '<div style="font-size:.75rem;font-weight:600;color:#fff;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+d.ag+'</div>'
-        +     (d.br?'<div style="font-size:.5625rem;color:rgba(255,255,255,.65);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+d.br+'</div>':'')
-        +     (d.ph?'<div style="font-size:.5625rem;color:rgba(255,255,255,.65);margin-top:1px">'+d.ph+'</div>':'')
+        +     '<div style="font-size:.75rem;font-weight:600;color:#fff">'+ed('agentName',d.ag)+'</div>'
+        +     (d.br?'<div style="font-size:.5625rem;color:rgba(255,255,255,.65);margin-top:1px">'+ed('brokerage',d.br)+'</div>':'')
+        +     (d.ph?'<div style="font-size:.5625rem;color:rgba(255,255,255,.65)">'+d.ph+'</div>':'')
         +   '</div>'
         + '</div>'
-        // hero photo + type stamp — 55% of card height
         + '<div style="position:absolute;top:22%;left:0;right:0;height:44%;overflow:hidden">'
-        +   '<div style="position:relative;width:100%;height:100%">'+imgFill(p0,1)
-        +   '<div style="position:absolute;inset:0;background:rgba(0,0,0,.25)"></div>'
+        +   photoSlot('v-hero', 0, 'position:relative;width:100%;height:100%;')
+        +   '<div style="position:absolute;inset:0;background:rgba(0,0,0,.25);z-index:1;pointer-events:none"></div>'
         +   '<div style="position:absolute;bottom:12px;left:14px;z-index:2">'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.625rem;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.04em;text-shadow:0 2px 8px rgba(0,0,0,.8)">'+typeLabel+'</div>'
-        +   '</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.625rem;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.04em;text-shadow:0 2px 8px rgba(0,0,0,.8)">'+ed('typeLabel',typeLabel)+'</div>'
         +   '</div>'
         + '</div>'
-        // 2 smaller photos — 20% height
         + '<div style="position:absolute;top:66%;left:0;right:0;height:20%;display:grid;grid-template-columns:1fr 1fr;gap:2px;overflow:hidden">'
-        +   '<div style="position:relative;overflow:hidden">'+imgFill(p1,2)+'</div>'
-        +   '<div style="position:relative;overflow:hidden">'+imgFill(p2,3)+'</div>'
+        +   photoSlot('v-s1', 1, 'position:relative;overflow:hidden;')
+        +   photoSlot('v-s2', 2, 'position:relative;overflow:hidden;')
         + '</div>'
-        // info bar at bottom — 14%
         + '<div style="position:absolute;bottom:0;left:0;right:0;height:14%;background:#0f0f0f;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:0 1.125rem">'
         +   '<div>'
-        +     '<div style="font-size:.5625rem;color:rgba(255,255,255,.7);letter-spacing:.05em;text-transform:uppercase">'+fullAddr(d)+', '+d.ci+'</div>'
+        +     '<div style="font-size:.5625rem;color:rgba(255,255,255,.7);letter-spacing:.05em;text-transform:uppercase">'+ed('address',fullAddr(d)+', '+d.ci)+'</div>'
         +     '<div style="display:flex;gap:.75rem;margin-top:2px">'
         +       '<span style="font-size:.5625rem;color:rgba(255,255,255,.8)">'+d.bd+' BD</span>'
         +       '<span style="font-size:.5625rem;color:rgba(255,255,255,.8)">'+d.bt+' BA</span>'
         +       '<span style="font-size:.5625rem;color:rgba(255,255,255,.8)">'+d.sq+' SF</span>'
         +     '</div>'
         +   '</div>'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1rem;font-weight:600;color:'+a+'">'+d.pr+'</div>'
+        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1rem;font-weight:600;color:'+a+'">'+ed('price',d.pr)+'</div>'
         + '</div>'
         + '</div></div>' + caption;
-
     } else {
-      // Horizontal agent-header
       tpl = '<div class="tpl-white" style="max-width:580px">'
-        // top agent bar
         + '<div style="background:#0f0f0f;padding:.875rem 1.5rem;display:flex;align-items:center;gap:.875rem">'
         +   (logoData
               ? '<img src="'+logoData+'" style="max-height:48px;max-width:130px;object-fit:contain;display:block" alt="Logo"/>'
-              : '<div style="width:40px;height:40px;border-radius:50%;background:'+a+';display:flex;align-items:center;justify-content:center;font-size:.8125rem;font-weight:700;color:#fff;flex-shrink:0">'+d.ag.split(' ').map(function(w){return w[0];}).join('').slice(0,2)+'</div>')
+              : '<div style="width:40px;height:40px;border-radius:50%;background:'+a+';display:flex;align-items:center;justify-content:center;font-size:.8125rem;font-weight:700;color:#fff;flex-shrink:0">'+d.ag.split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2)+'</div>')
         +   '<div>'
-        +     '<div style="font-size:.875rem;font-weight:600;color:#fff">'+d.ag+'</div>'
-        +     (d.br?'<div style="font-size:.6875rem;color:rgba(255,255,255,.65);margin-top:1px">'+d.br+'</div>':'')
+        +     '<div style="font-size:.875rem;font-weight:600;color:#fff">'+ed('agentName',d.ag)+'</div>'
+        +     (d.br?'<div style="font-size:.6875rem;color:rgba(255,255,255,.65);margin-top:1px">'+ed('brokerage',d.br)+'</div>':'')
         +     (d.ph?'<div style="font-size:.6875rem;color:rgba(255,255,255,.65)">'+d.ph+'</div>':'')
         +   '</div>'
         + '</div>'
-        // hero photo with type stamp
         + '<div style="height:240px;position:relative;overflow:hidden">'
-        +   '<div style="position:absolute;inset:0">'+imgFill(p0,1)+'</div>'
-        +   '<div style="position:absolute;inset:0;background:rgba(0,0,0,.3)"></div>'
+        +   photoSlot('h-hero', 0, 'position:absolute;inset:0;')
+        +   '<div style="position:absolute;inset:0;background:rgba(0,0,0,.3);z-index:1;pointer-events:none"></div>'
         +   '<div style="position:absolute;bottom:1rem;left:1.5rem;z-index:2">'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:2rem;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.04em;text-shadow:0 2px 8px rgba(0,0,0,.8)">'+typeLabel+'</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:2rem;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.04em;text-shadow:0 2px 8px rgba(0,0,0,.8)">'+ed('typeLabel',typeLabel)+'</div>'
         +   '</div>'
         + '</div>'
-        // 2-photo strip
         + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;height:140px">'
-        +   '<div style="position:relative;overflow:hidden">'+imgFill(p1,2)+'</div>'
-        +   '<div style="position:relative;overflow:hidden">'+imgFill(p2,3)+'</div>'
+        +   photoSlot('h-s1', 1, 'position:relative;overflow:hidden;')
+        +   photoSlot('h-s2', 2, 'position:relative;overflow:hidden;')
         + '</div>'
-        // info footer
         + '<div style="padding:1.125rem 1.5rem;border-top:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:.5rem">'
         +   '<div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;line-height:1.15;margin-bottom:.25rem">'+fullAddr(d)+'</div>'
-        +     '<div style="font-size:.75rem;color:var(--ink-muted);margin-bottom:.5rem">'+d.ci+'</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;line-height:1.15;margin-bottom:.25rem">'+ed('address',fullAddr(d),'editable')+'</div>'
+        +     '<div style="font-size:.75rem;color:var(--ink-muted);margin-bottom:.5rem">'+ed('city',d.ci,'editable')+'</div>'
         +     '<div style="display:flex;gap:1rem;font-size:.8125rem;color:var(--ink-mid)">'
         +       '<span><strong style="color:var(--ink)">'+d.bd+'</strong> Beds</span>'
         +       '<span><strong style="color:var(--ink)">'+d.bt+'</strong> Baths</span>'
         +       '<span><strong style="color:var(--ink)">'+d.sq+'</strong> Sqft</span>'
         +     '</div>'
         +   '</div>'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:'+a+'">'+d.pr+'</div>'
+        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:'+a+'">'+ed('price',d.pr,'editable')+'</div>'
         + '</div>'
         + '</div>';
     }
 
-  // ════════════════════════════════════════════════════════════
-  // LAYOUT: Frosted Box  (Image 3 style)
-  // Full-bleed photo, centered frosted glass card
-  // ════════════════════════════════════════════════════════════
+  // ════════════ FROSTED BOX ════════════
   } else if (lay === 'frosted-box') {
     if (isVert) {
       tpl = '<div class="st-wrap"><div class="stv-card">'
-        + '<div style="position:absolute;inset:0">'+imgFill(p0,1)+'</div>'
-        + agentBadge()
-        // frosted box centered
-        + '<div style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:1.25rem">'
-        +   '<div style="background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:1.5rem 1.625rem;width:100%;text-align:center">'
-        +     '<div style="font-size:.625rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-bottom:.5rem">'+fullAddr(d)+'</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:2rem;font-weight:600;font-style:italic;color:#fff;line-height:1.05;margin-bottom:.375rem">'+typeLabel.toLowerCase()+'.</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.75rem;font-weight:600;color:#fff;margin-bottom:1rem">'+d.pr+'</div>'
+        + photoSlot('v-main', 0, 'position:absolute;inset:0;')
+        + agentBadge('top')
+        + '<div style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:1.25rem;pointer-events:none">'
+        +   '<div style="background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:1.5rem 1.625rem;width:100%;text-align:center;pointer-events:auto">'
+        +     '<div style="font-size:.625rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-bottom:.5rem">'+ed('address',fullAddr(d)+', '+d.ci)+'</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:2rem;font-weight:600;font-style:italic;color:#fff;line-height:1.05;margin-bottom:.375rem">'+ed('typeLabel',typeLabel.toLowerCase()+'.')+'</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.75rem;font-weight:600;color:#fff;margin-bottom:1rem">'+ed('price',d.pr)+'</div>'
         +     '<div style="display:flex;justify-content:center;gap:1.5rem">'
         +       '<div style="text-align:center"><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff">'+d.bd+'</div><div style="font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75)">Bedrooms</div></div>'
-        +       '<div style="text-align:center"><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff">'+d.sq+'</div><div style="font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75)">Square Feet</div></div>'
+        +       '<div style="text-align:center"><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff">'+d.sq+'</div><div style="font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75)">Sq Feet</div></div>'
         +       '<div style="text-align:center"><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff">'+d.bt+'</div><div style="font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75)">Bathrooms</div></div>'
         +     '</div>'
         +   '</div>'
         + '</div>'
         + '</div></div>' + caption;
-
     } else {
       tpl = '<div class="tpl-dark" style="max-width:580px">'
         + '<div style="height:380px;position:relative;overflow:hidden">'
-        +   '<div style="position:absolute;inset:0">'+imgFill(p0,1)+'</div>'
-        +   agentBadge()
-        +   '<div style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:1.5rem">'
-        +     '<div style="background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:1.625rem 2rem;width:100%;max-width:380px;text-align:center">'
-        +       '<div style="font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:.5rem">'+fullAddr(d)+', '+d.ci+'</div>'
-        +       '<div style="font-family:Cormorant Garamond,serif;font-size:2.25rem;font-weight:600;font-style:italic;color:#fff;line-height:1.05;margin-bottom:.375rem">'+typeLabel.toLowerCase()+'.</div>'
-        +       '<div style="font-family:Cormorant Garamond,serif;font-size:2rem;font-weight:600;color:#fff;margin-bottom:1.125rem">'+d.pr+'</div>'
+        +   photoSlot('h-main', 0, 'position:absolute;inset:0;')
+        +   agentBadge('top')
+        +   '<div style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:1.5rem;pointer-events:none">'
+        +     '<div style="background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:1.625rem 2rem;width:100%;max-width:380px;text-align:center;pointer-events:auto">'
+        +       '<div style="font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:.5rem">'+ed('address',fullAddr(d)+', '+d.ci)+'</div>'
+        +       '<div style="font-family:Cormorant Garamond,serif;font-size:2.25rem;font-weight:600;font-style:italic;color:#fff;line-height:1.05;margin-bottom:.375rem">'+ed('typeLabel',typeLabel.toLowerCase()+'.')+'</div>'
+        +       '<div style="font-family:Cormorant Garamond,serif;font-size:2rem;font-weight:600;color:#fff;margin-bottom:1.125rem">'+ed('price',d.pr)+'</div>'
         +       '<div style="display:flex;justify-content:center;gap:2rem">'
         +         '<div><div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff">'+d.bd+'</div><div style="font-size:.5625rem;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.7)">Bedrooms</div></div>'
         +         '<div><div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff">'+d.sq+'</div><div style="font-size:.5625rem;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.7)">Sq Ft</div></div>'
@@ -1495,38 +1493,33 @@ function renderPreview(d,copy){
         + '</div>';
     }
 
-  // ════════════════════════════════════════════════════════════
-  // LAYOUT: Classic — clean, light, info below photo
-  // ════════════════════════════════════════════════════════════
+  // ════════════ CLASSIC ════════════
   } else if (lay === 'classic') {
     if (isVert) {
       tpl = '<div class="st-wrap"><div class="stv-card">'
-        + '<div style="position:absolute;inset:0">'+imgFill(p0,1)+'</div>'
-        + '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.95) 40%,rgba(0,0,0,.2) 75%,transparent 100%);z-index:1"></div>'
-        + agentBadge()
+        + photoSlot('v-main', 0, 'position:absolute;inset:0;')
+        + '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.95) 40%,rgba(0,0,0,.2) 75%,transparent 100%);z-index:1;pointer-events:none"></div>'
+        + agentBadge('top')
         + '<div style="position:absolute;bottom:0;left:0;right:0;padding:1.375rem;z-index:2">'
-        +   '<div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:'+a+';font-weight:600;margin-bottom:.375rem">'+typeLabel+'</div>'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.2rem">'+fullAddr(d)+'</div>'
-        +   '<div style="font-size:.6875rem;color:rgba(255,255,255,.65);margin-bottom:.625rem">'+d.ci+'</div>'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:'+a+';margin-bottom:.5rem">'+d.pr+'</div>'
+        +   '<div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:'+a+';font-weight:600;margin-bottom:.375rem">'+ed('typeLabel',typeLabel)+'</div>'
+        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.2rem">'+ed('address',fullAddr(d))+'</div>'
+        +   '<div style="font-size:.6875rem;color:rgba(255,255,255,.65);margin-bottom:.625rem">'+ed('city',d.ci)+'</div>'
+        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:'+a+';margin-bottom:.5rem">'+ed('price',d.pr)+'</div>'
         +   statPills(true)
         + '</div>'
         + '</div></div>' + caption;
-
     } else {
       tpl = '<div class="tpl-white" style="max-width:580px">'
         + '<div style="height:290px;position:relative;overflow:hidden">'
-        +   '<div style="position:absolute;inset:0">'+imgFill(p0,1)+'</div>'
-        +   '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 50%)"></div>'
-        +   '<div style="position:absolute;top:16px;right:16px;z-index:2">'
-        +     (logoData?'<img src="'+logoData+'" style="max-height:52px;max-width:140px;object-fit:contain;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))" alt="Logo"/>':'')
-        +   '</div>'
+        +   photoSlot('h-main', 0, 'position:absolute;inset:0;')
+        +   '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 50%);z-index:1;pointer-events:none"></div>'
+        +   (logoData?'<div style="position:absolute;top:16px;right:16px;z-index:2"><img src="'+logoData+'" style="max-height:52px;max-width:140px;object-fit:contain;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))" alt="Logo"/></div>':'')
         + '</div>'
         + '<div style="height:4px;background:'+a+'"></div>'
         + '<div style="padding:1.5rem 1.875rem 1.375rem">'
-        +   '<div style="font-size:.5625rem;letter-spacing:.12em;text-transform:uppercase;color:'+a+';font-weight:600;margin-bottom:.5rem">'+typeLabel+'</div>'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.875rem;font-weight:600;line-height:1.1;margin-bottom:.2rem">'+fullAddr(d)+'</div>'
-        +   '<div style="font-size:.875rem;color:var(--ink-muted);margin-bottom:1rem">'+d.ci+'</div>'
+        +   '<div style="font-size:.5625rem;letter-spacing:.12em;text-transform:uppercase;color:'+a+';font-weight:600;margin-bottom:.5rem">'+edLight('typeLabel',typeLabel)+'</div>'
+        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.875rem;font-weight:600;line-height:1.1;margin-bottom:.2rem">'+edLight('address',fullAddr(d))+'</div>'
+        +   '<div style="font-size:.875rem;color:var(--ink-muted);margin-bottom:1rem">'+edLight('city',d.ci)+'</div>'
         +   '<div style="display:flex;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:1rem">'
         +     '<div style="flex:1;text-align:center;padding:.625rem 0;border-right:1px solid var(--border)"><span style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:'+a+';display:block">'+d.bd+'</span><span style="font-size:.5rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted)">Beds</span></div>'
         +     '<div style="flex:1;text-align:center;padding:.625rem 0;border-right:1px solid var(--border)"><span style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:'+a+';display:block">'+d.bt+'</span><span style="font-size:.5rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted)">Baths</span></div>'
@@ -1534,11 +1527,11 @@ function renderPreview(d,copy){
         +     '<div style="flex:1;text-align:center;padding:.625rem 0"><span style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:'+a+';display:block">'+d.yr+'</span><span style="font-size:.5rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted)">Built</span></div>'
         +   '</div>'
         +   '<div style="display:flex;justify-content:space-between;align-items:flex-end;padding-top:.5rem">'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.75rem;font-weight:600;color:'+a+'">'+d.pr+'</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.75rem;font-weight:600;color:'+a+'">'+edLight('price',d.pr)+'</div>'
         +     '<div style="text-align:right">'
         +       (logoData?'<img src="'+logoData+'" style="max-height:40px;max-width:120px;object-fit:contain;display:block;margin-left:auto;margin-bottom:.25rem" alt="Logo"/>':'')
-        +       '<div style="font-size:.875rem;font-weight:500">'+d.ag+'</div>'
-        +       (d.br?'<div style="font-size:.6875rem;color:var(--ink-muted)">'+d.br+'</div>':'')
+        +       '<div style="font-size:.875rem;font-weight:500">'+edLight('agentName',d.ag)+'</div>'
+        +       (d.br?'<div style="font-size:.6875rem;color:var(--ink-muted)">'+edLight('brokerage',d.br)+'</div>':'')
         +       (d.ph?'<div style="font-size:.6875rem;color:var(--ink-muted)">'+d.ph+'</div>':'')
         +     '</div>'
         +   '</div>'
@@ -1546,54 +1539,51 @@ function renderPreview(d,copy){
         + '</div>';
     }
 
-  // ════════════════════════════════════════════════════════════
-  // LAYOUT: Split Panel — photo takes half, info takes half
-  // ════════════════════════════════════════════════════════════
+  // ════════════ SPLIT PANEL ════════════
   } else if (lay === 'split') {
     if (isVert) {
-      // Vertical split: photo top 60%, info bottom 40%
       tpl = '<div class="st-wrap"><div class="stv-card">'
-        + '<div style="position:absolute;top:0;left:0;right:0;height:60%;overflow:hidden">'
-        +   '<div style="position:relative;width:100%;height:100%">'+imgFill(p0,1)+'</div>'
+        + '<div style="position:absolute;top:0;left:0;right:0;height:58%;overflow:hidden">'
+        +   photoSlot('v-main', 0, 'position:relative;width:100%;height:100%;')
         + '</div>'
-        + '<div style="position:absolute;top:60%;left:0;right:0;bottom:0;background:#0f0f0f;padding:1.125rem;z-index:2;display:flex;flex-direction:column;justify-content:space-between">'
+        + '<div style="position:absolute;top:58%;left:0;right:0;bottom:0;background:#0f0f0f;padding:1rem 1.125rem;z-index:2;display:flex;flex-direction:column;justify-content:space-between">'
         +   '<div>'
-        +     '<div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:'+a+';font-weight:600;margin-bottom:.375rem">'+typeLabel+'</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff;line-height:1.2;margin-bottom:.2rem">'+fullAddr(d)+'</div>'
-        +     '<div style="font-size:.625rem;color:rgba(255,255,255,.6);margin-bottom:.625rem">'+d.ci+'</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:'+a+'">'+d.pr+'</div>'
+        +     '<div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:'+a+';font-weight:600;margin-bottom:.375rem">'+ed('typeLabel',typeLabel)+'</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff;line-height:1.2;margin-bottom:.2rem">'+ed('address',fullAddr(d))+'</div>'
+        +     '<div style="font-size:.625rem;color:rgba(255,255,255,.6);margin-bottom:.5rem">'+ed('city',d.ci)+'</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:'+a+'">'+ed('price',d.pr)+'</div>'
         +     statPills(true)
         +   '</div>'
-        +   '<div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.1);padding-top:.625rem">'
+        +   '<div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.1);padding-top:.5rem">'
         +     (logoData
-                ? '<img src="'+logoData+'" style="max-height:44px;max-width:120px;object-fit:contain;display:block;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))" alt="Logo"/>'
-                : '<div><div style="font-size:.75rem;font-weight:500;color:#fff">'+d.ag+'</div>'+(d.br?'<div style="font-size:.5625rem;color:rgba(255,255,255,.6)">'+d.br+'</div>':'')+'</div>')
+                ? '<img src="'+logoData+'" style="max-height:40px;max-width:110px;object-fit:contain;display:block;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))" alt="Logo"/>'
+                : '<div><div style="font-size:.75rem;font-weight:500;color:#fff">'+ed('agentName',d.ag)+'</div>'+(d.br?'<div style="font-size:.5625rem;color:rgba(255,255,255,.6)">'+ed('brokerage',d.br)+'</div>':'')+'</div>')
         +     (d.ph?'<div style="font-size:.625rem;color:rgba(255,255,255,.6)">'+d.ph+'</div>':'')
         +   '</div>'
         + '</div>'
         + '</div></div>' + caption;
-
     } else {
-      // Horizontal split: photo left 50%, info right 50%
       tpl = '<div style="display:grid;grid-template-columns:1fr 1fr;max-width:580px;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden">'
-        + '<div style="position:relative;min-height:380px">'+imgFill(p0,1)+'</div>'
+        + '<div style="position:relative;min-height:380px">'
+        +   photoSlot('h-main', 0, 'position:absolute;inset:0;')
+        + '</div>'
         + '<div style="background:#0f0f0f;padding:1.75rem 1.5rem;display:flex;flex-direction:column;justify-content:space-between">'
         +   '<div>'
-        +     '<div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:'+a+';font-weight:600;margin-bottom:.5rem">'+typeLabel+'</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff;line-height:1.2;margin-bottom:.2rem">'+fullAddr(d)+'</div>'
-        +     '<div style="font-size:.75rem;color:rgba(255,255,255,.55);margin-bottom:1.125rem">'+d.ci+'</div>'
+        +     '<div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:'+a+';font-weight:600;margin-bottom:.5rem">'+ed('typeLabel',typeLabel)+'</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff;line-height:1.2;margin-bottom:.2rem">'+ed('address',fullAddr(d))+'</div>'
+        +     '<div style="font-size:.75rem;color:rgba(255,255,255,.55);margin-bottom:1.125rem">'+ed('city',d.ci)+'</div>'
         +     '<div style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.125rem">'
         +       '<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:.4rem"><span style="font-size:.75rem;color:rgba(255,255,255,.55)">Bedrooms</span><strong style="font-size:.75rem;color:#fff">'+d.bd+'</strong></div>'
         +       '<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:.4rem"><span style="font-size:.75rem;color:rgba(255,255,255,.55)">Bathrooms</span><strong style="font-size:.75rem;color:#fff">'+d.bt+'</strong></div>'
         +       '<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:.4rem"><span style="font-size:.75rem;color:rgba(255,255,255,.55)">Square Feet</span><strong style="font-size:.75rem;color:#fff">'+d.sq+'</strong></div>'
-        +       '<div style="display:flex;justify-content:space-between;padding-bottom:.4rem"><span style="font-size:.75rem;color:rgba(255,255,255,.55)">Year Built</span><strong style="font-size:.75rem;color:#fff">'+d.yr+'</strong></div>'
+        +       '<div style="display:flex;justify-content:space-between"><span style="font-size:.75rem;color:rgba(255,255,255,.55)">Year Built</span><strong style="font-size:.75rem;color:#fff">'+d.yr+'</strong></div>'
         +     '</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.875rem;font-weight:600;color:'+a+'">'+d.pr+'</div>'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.875rem;font-weight:600;color:'+a+'">'+ed('price',d.pr)+'</div>'
         +   '</div>'
         +   '<div style="border-top:1px solid rgba(255,255,255,.1);padding-top:1rem">'
         +     (logoData?'<img src="'+logoData+'" style="max-height:48px;max-width:140px;object-fit:contain;display:block;margin-bottom:.625rem;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))" alt="Logo"/>':'')
-        +     '<div style="font-size:.8125rem;font-weight:500;color:#fff">'+d.ag+'</div>'
-        +     (d.br?'<div style="font-size:.6875rem;color:rgba(255,255,255,.55);margin-top:2px">'+d.br+'</div>':'')
+        +     '<div style="font-size:.8125rem;font-weight:500;color:#fff">'+ed('agentName',d.ag)+'</div>'
+        +     (d.br?'<div style="font-size:.6875rem;color:rgba(255,255,255,.55);margin-top:2px">'+ed('brokerage',d.br)+'</div>':'')
         +     (d.ph?'<div style="font-size:.6875rem;color:rgba(255,255,255,.55);margin-top:1px">'+d.ph+'</div>':'')
         +   '</div>'
         + '</div>'
@@ -1602,9 +1592,119 @@ function renderPreview(d,copy){
   }
 
   // ── Write to panel ──────────────────────────────────────────────
-  var lbls = {social:'Copy caption', flyer:'Copy description'};
-  panel.innerHTML = '<div class="preview-bar"><div class="preview-lbl">Preview &mdash; '+(isVert?'Vertical 9:16':'Horizontal')+'</div><div class="act-row"><button class="act-btn" id="copyBtn" onclick="copyContent()">Copy text</button><button class="act-btn" onclick="saveToDevice()">Save to device</button><button class="act-btn" onclick="window.print()">Print / PDF</button></div></div><div id="tplWrap">'+tpl+'</div>';
+  panel.innerHTML = '<div class="preview-bar"><div class="preview-lbl">Preview &mdash; '+(isVert?'Vertical 9:16':'Horizontal')+' &nbsp;<span style="font-size:.5625rem;color:var(--accent);letter-spacing:.06em">CLICK TEXT TO EDIT &nbsp;&middot;&nbsp; TAP PHOTO TO SWAP</span></div>'
+    + '<div class="act-row"><button class="act-btn" id="copyBtn" onclick="copyContent()">Copy text</button>'
+    + '<button class="act-btn" onclick="saveToDevice()">Save to device</button>'
+    + '<button class="act-btn" onclick="window.print()">Print / PDF</button></div></div>'
+    + '<div id="tplWrap">'+tpl+'</div>';
+
+  // Attach interactive behaviour
+  setTimeout(attachEditables, 50);
 }
+
+// ── Per-slot photo assignments ────────────────────────────────────
+var slotAssign = {};
+var activeSlot = null;
+
+function getSlotPhoto(slotId, defaultIdx) {
+  return (slotAssign[slotId] !== undefined) ? slotAssign[slotId] : defaultIdx;
+}
+
+function selectSlot(slotId) {
+  if (activeSlot === slotId) {
+    activeSlot = null;
+    document.querySelectorAll('.photo-slot').forEach(function(el){ el.classList.remove('selected'); });
+    document.querySelectorAll('.photo-thumb').forEach(function(el){ el.classList.remove('slot-assign'); });
+    return;
+  }
+  activeSlot = slotId;
+  document.querySelectorAll('.photo-slot').forEach(function(el){
+    el.classList.toggle('selected', el.dataset.slot === slotId);
+  });
+  document.querySelectorAll('.photo-thumb').forEach(function(el){ el.classList.add('slot-assign'); });
+  showEditBanner();
+}
+
+function assignPhotoToSlot(photoIdx) {
+  if (activeSlot === null) return false;
+  slotAssign[activeSlot] = photoIdx;
+  activeSlot = null;
+  document.querySelectorAll('.photo-slot').forEach(function(el){ el.classList.remove('selected'); });
+  document.querySelectorAll('.photo-thumb').forEach(function(el){ el.classList.remove('slot-assign'); });
+  renderPreview(lastD, lastC);
+  return true;
+}
+
+function resetEdits() {
+  slotAssign = {};
+  activeSlot = null;
+  editOverrides = {};
+  var banner = document.getElementById('editBanner');
+  if (banner) banner.classList.remove('show');
+  if (Object.keys(lastC).length) renderPreview(lastD, lastC);
+}
+
+// ── Editable text system ──────────────────────────────────────────
+var editOverrides = {};
+
+function getEdit(key, fallback) {
+  return editOverrides[key] !== undefined ? editOverrides[key] : fallback;
+}
+
+function showEditBanner() {
+  var banner = document.getElementById('editBanner');
+  if (banner) banner.classList.add('show');
+}
+
+function makeEditable(el, key) {
+  el.contentEditable = 'true';
+  el.spellcheck = false;
+  el.focus();
+  var range = document.createRange();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  var sel = window.getSelection();
+  if (sel) { sel.removeAllRanges(); sel.addRange(range); }
+  el.addEventListener('blur', function onBlur() {
+    editOverrides[key] = el.innerText.trim();
+    el.contentEditable = 'false';
+    el.removeEventListener('blur', onBlur);
+  });
+  el.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+    if (e.key === 'Escape') { el.innerText = editOverrides[key] || el.dataset.orig || el.innerText; el.blur(); }
+  });
+  showEditBanner();
+}
+
+function attachEditables() {
+  var wrap = document.getElementById('tplWrap');
+  if (!wrap) return;
+  wrap.querySelectorAll('[data-ek]').forEach(function(el) {
+    var key = el.dataset.ek;
+    el.dataset.orig = el.innerText;
+    el.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (el.contentEditable !== 'true') makeEditable(el, key);
+    });
+  });
+  wrap.querySelectorAll('.photo-slot').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      e.stopPropagation();
+      selectSlot(el.dataset.slot);
+    });
+  });
+}
+
+// Override selPhoto to intercept slot assignment
+var _origSelPhoto = selPhoto;
+selPhoto = function(i) {
+  if (assignPhotoToSlot(i)) return;
+  activePhoto = i;
+  renderStrip();
+  if (Object.keys(lastC).length) renderPreview(lastD, lastC);
+};
+
 
 function copyContent(){
   var txt = '';
