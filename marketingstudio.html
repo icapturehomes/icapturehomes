@@ -543,6 +543,27 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .etb-btn{font-size:.6875rem;padding:.3125rem .625rem;border:1px solid var(--border-strong);border-radius:var(--r);background:#fff;cursor:pointer;color:var(--ink-mid);font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;align-items:center;gap:.3rem}
 .etb-btn:hover{border-color:var(--accent);color:var(--ink)}
 .etb-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* ── Info Card / Photo Card (carousel style) ── */
+.ic-wrap{position:relative;border-radius:var(--rl);overflow:visible;max-width:480px;background:#fff;clip-path:inset(0 round var(--rl));box-shadow:0 0 0 3px var(--accent)}
+.ic-border{position:absolute;inset:-3px;border:3px solid var(--accent);border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20}
+.ic-info{padding:1.125rem 1.25rem .875rem;background:#fff}
+.ic-address{font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#1a1a1a;line-height:1.4;margin-bottom:.125rem}
+.ic-city{font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;color:#1a1a1a;margin-bottom:.375rem}
+.ic-type{font-size:.6875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1a1a1a;margin-bottom:.125rem}
+.ic-price{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;line-height:1;margin-bottom:0}
+.ic-photo{position:relative;overflow:hidden}
+.ic-stats{padding:.5rem 1.25rem;background:#fff;border-top:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;gap:.25rem}
+.ic-stat-txt{font-size:.625rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#1a1a1a}
+.ic-sep{font-size:.625rem;color:#aaa;margin:0 .125rem}
+.ic-footer{padding:.375rem 1.25rem .625rem;background:#fff;display:flex;align-items:center;justify-content:space-between}
+.ic-footer-logo{display:flex;align-items:center;justify-content:center;flex:1}
+.ic-arrow{width:28px;height:28px;border:1.5px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:.75rem;flex-shrink:0}
+/* Photo card */
+.pc-wrap{position:relative;max-width:480px;clip-path:inset(0 round var(--rl))}
+.pc-photo{position:relative;border-radius:var(--rl);overflow:hidden}
+.pc-border{position:absolute;inset:-3px;border:3px solid var(--accent);border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20}
+.pc-footer{position:absolute;bottom:0;left:0;right:0;padding:.625rem 1.25rem;background:#fff;border-top:1.5px solid var(--accent);display:flex;align-items:center;justify-content:space-between;border-radius:0 0 var(--rl) var(--rl)}
 </style>
 </head>
 <body>
@@ -689,6 +710,15 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
         <label>Brand color</label>
         <input type="color" id="fcol" value="#c8a96e" onchange="setAccent();livePreview();" oninput="setAccent();livePreview();"/>
       </div>
+    </div>
+  </div>
+
+  <!-- Custom text -->
+  <div>
+    <div class="sec-lbl">Custom text</div>
+    <div class="field">
+      <input id="fct" type="text" placeholder="e.g. Call for private showing, DM for details..." oninput="livePreview()"/>
+      <div style="margin-top:.3rem;font-size:.625rem;color:var(--ink-muted)">Appears on material &mdash; drag to reposition</div>
     </div>
   </div>
 
@@ -1011,7 +1041,9 @@ var LAYOUTS = {
     {id:'agent-header',  n:'Agent + Photos',   d:'Agent top, photos below'},
     {id:'frosted-box',   n:'Frosted Box',      d:'Glass card over full photo'},
     {id:'classic',       n:'Classic',          d:'Clean info below photo'},
-    {id:'split',         n:'Split Panel',      d:'Photo + info side by side'}
+    {id:'split',         n:'Split Panel',      d:'Photo + info side by side'},
+    {id:'info-card',     n:'Info Card',        d:'Info top, photo below'},
+    {id:'photo-card',    n:'Photo Card',       d:'Clean photo, branding only'}
   ]
 };
 // Same layouts for both formats
@@ -1347,7 +1379,7 @@ function scCard4(d,copy,a){
 async function generate(){
   var btn=document.getElementById('genBtn');
   btn.disabled=true;btn.innerHTML='<div class="spin"></div> Writing copy...';
-  var d={a:v('fa')||'123 Peachtree St NE',a2:v('fa2')||'',ci:v('fci')||'Atlanta, GA',pr:v('fp')||'$849,000',bd:v('fb2')||'4',bt:v('fbt')||'3',sq:v('fsq')||'3,200',yr:v('fyr')||'2021',fe:v('ffe'),ag:v('fn')||'Your Name',ph:v('fph')||'',br:v('fbr')||'',ws:v('fws')||'',ohd:v('fohd')||'',oht:v('foht')||'',was:v('fwas')||'',now:v('fnow')||'',sp:v('fsp')||'',dm:v('fdom')||''};
+  var d={a:v('fa')||'123 Peachtree St NE',a2:v('fa2')||'',ci:v('fci')||'Atlanta, GA',pr:v('fp')||'$849,000',bd:v('fb2')||'4',bt:v('fbt')||'3',sq:v('fsq')||'3,200',yr:v('fyr')||'2021',fe:v('ffe'),ag:v('fn')||'Your Name',ph:v('fph')||'',br:v('fbr')||'',ws:v('fws')||'',ct:v('fct')||'',ohd:v('fohd')||'',oht:v('foht')||'',was:v('fwas')||'',now:v('fnow')||'',sp:v('fsp')||'',dm:v('fdom')||''};
   lastD=d;
   var typeNote='';
   if(fmt==='openhouse')typeNote='Open house on '+(d.ohd||'this weekend')+(d.oht?' from '+d.oht:'');
@@ -1416,6 +1448,13 @@ function renderPreview(d,copy){
     if (!logoData || hiddenEls['logo']) return '';
     return '<img src="'+logoData+'" style="'+style+'" alt="'+(alt||'Logo')+'"/>';
   }
+  // Custom text block — draggable, editable, toggleable
+  function customTextBlock(defaultStyle) {
+    if (!d.ct || hiddenEls['customText']) return '';
+    return '<div style="'+defaultStyle+'">'
+      + ed('customText', d.ct, 'editable-dark')
+      + '</div>';
+  }
 
   // ── Slot photo helpers ────────────────────────────────────────
   function sp(slotId, defIdx) {
@@ -1480,6 +1519,7 @@ function renderPreview(d,copy){
         +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.625rem;font-weight:600;color:#fff">'+ed('price',d.pr)+'</div>'
         +   statsBlock(true)
         + '</div>'
+        + customTextBlock('position:absolute;top:50%;left:1.375rem;z-index:5;font-size:.875rem;font-weight:500;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)')
         + '</div></div>' + caption;
     } else {
       tpl = '<div class="tpl-dark" style="max-width:580px">'
@@ -1508,6 +1548,7 @@ function renderPreview(d,copy){
         +     phBlock("font-size:.6875rem;color:rgba(255,255,255,.6);margin-top:1px")
         +   '</div>'
         + '</div>'
+        + customTextBlock('padding:.5rem 2rem 1rem;font-size:.875rem;color:rgba(255,255,255,.8)')
         + '</div>';
     }
 
@@ -1547,6 +1588,9 @@ function renderPreview(d,copy){
         +   '</div>'
         +   '<div style="font-family:Cormorant Garamond,serif;font-size:1rem;font-weight:600;color:'+a+'">'+ed('price',d.pr)+'</div>'
         + '</div>'
+        + customTextBlock('position:absolute;top:50%;left:1.375rem;z-index:5;font-size:.875rem;font-weight:500;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)')
+        
+        + customTextBlock('position:absolute;bottom:16%;left:50%;transform:translateX(-50%);z-index:10;font-size:.6rem;color:rgba(255,255,255,.7);white-space:nowrap')
         + '</div></div>' + caption;
     } else {
       tpl = '<div class="tpl-white" style="max-width:580px">'
@@ -1582,6 +1626,7 @@ function renderPreview(d,copy){
         +     '</div>'
         +   '</div>'
         +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:'+a+'">'+ed('price',d.pr,'editable')+'</div>'
+        + customTextBlock('padding:.375rem 1.5rem .75rem;font-size:.8125rem;color:var(--ink-muted)')
         + '</div>'
         + '</div>';
     }
@@ -1604,6 +1649,9 @@ function renderPreview(d,copy){
         +     '</div>'
         +   '</div>'
         + '</div>'
+        + customTextBlock('position:absolute;top:50%;left:1.375rem;z-index:5;font-size:.875rem;font-weight:500;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)')
+        
+        + customTextBlock('position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:10;font-size:.625rem;color:rgba(255,255,255,.75);white-space:nowrap')
         + '</div></div>' + caption;
     } else {
       tpl = '<div class="tpl-dark" style="max-width:580px">'
@@ -1640,6 +1688,7 @@ function renderPreview(d,copy){
         +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:'+a+';margin-bottom:.5rem">'+ed('price',d.pr)+'</div>'
         +   statsBlock(true)
         + '</div>'
+        + customTextBlock('position:absolute;top:50%;left:1.375rem;z-index:5;font-size:.875rem;font-weight:500;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)')
         + '</div></div>' + caption;
     } else {
       tpl = '<div class="tpl-white" style="max-width:580px">'
@@ -1669,6 +1718,7 @@ function renderPreview(d,copy){
         +     '</div>'
         +   '</div>'
         + '</div>'
+        + customTextBlock('padding:.25rem 1.875rem .625rem;font-size:.8125rem;color:var(--ink-muted);font-style:italic')
         + '</div>';
     }
 
@@ -1694,6 +1744,7 @@ function renderPreview(d,copy){
         +     phBlock("font-size:.625rem;color:rgba(255,255,255,.6)")
         +   '</div>'
         + '</div>'
+        + customTextBlock('position:absolute;top:50%;left:1.375rem;z-index:5;font-size:.875rem;font-weight:500;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)')
         + '</div></div>' + caption;
     } else {
       tpl = '<div style="display:grid;grid-template-columns:1fr 1fr;max-width:580px;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden">'
@@ -1720,7 +1771,93 @@ function renderPreview(d,copy){
         +     phBlock("font-size:.6875rem;color:rgba(255,255,255,.55);margin-top:1px")
         +   '</div>'
         + '</div>'
+        + customTextBlock('padding:.375rem 1.5rem .625rem;font-size:.8125rem;color:rgba(255,255,255,.6);font-style:italic')
         + '</div>';
+    }
+
+  // ════════════ INFO CARD (carousel slide 1 style) ════════════
+  } else if (lay === 'info-card') {
+    // accent color for price — use brand color
+    var icPhoto = sp('ic-main', 0);
+    var icPhotoH = isVert ? 'calc(100% - 200px)' : '280px';
+
+    function icPhotoEl(h) {
+      return '<div class="ic-photo" style="height:'+h+'">'
+        + photoSlot('ic-main', 0, 'position:absolute;inset:0;')
+        + '</div>';
+    }
+
+    function icCard() {
+      return '<div style="position:relative;max-width:'+( isVert ? '340px' : '520px' )+'">'
+        + '<div class="ic-border"></div>'
+        // Info section
+        + '<div style="background:#fff;padding:1.125rem 1.375rem .75rem;border-radius:var(--rl) var(--rl) 0 0">'
+        +   '<div class="ic-address">'+ed('address', fullAddr(d))+'</div>'
+        +   (hiddenEls['city'] ? '' : '<div class="ic-city">'+ed('city', d.ci)+' | '+(d.pr.replace(/[^0-9]/g,'').slice(0,5)||'30000')+'</div>')
+        +   '<div style="height:.75rem"></div>'
+        +   (hiddenEls['typeLabel'] ? '' : '<div class="ic-type">'+ed('typeLabel', typeLabel)+'</div>')
+        +   (hiddenEls['price'] ? '' : '<div class="ic-price" style="color:'+a+'">'+ed('price', d.pr)+'</div>')
+        + '</div>'
+        // Photo
+        + '<div class="ic-photo" style="height:'+(isVert ? '340px' : '300px')+'">'
+        +   photoSlot('ic-main', 0, 'position:absolute;inset:0;')
+        + '</div>'
+        // Stats bar
+        + (hiddenEls['stats'] ? '' :
+          '<div class="ic-stats">'
+          + '<span class="ic-stat-txt">'+d.bd+' Bedroom'+(d.bd!=='1'?'s':'')+'</span>'
+          + '<span class="ic-sep">|</span>'
+          + '<span class="ic-stat-txt">'+d.bt+' Baths</span>'
+          + '<span class="ic-sep">|</span>'
+          + '<span class="ic-stat-txt">'+d.sq+' Sq. Ft.</span>'
+          + '</div>')
+        // Footer: logo + arrow
+        + '<div style="background:#fff;padding:.375rem 1.25rem .625rem;display:flex;align-items:center;justify-content:space-between;border-radius:0 0 var(--rl) var(--rl)">'
+        +   '<div style="width:28px"></div>'
+        +   '<div style="flex:1;text-align:center">'
+        +     (logoData ? '<img src="'+logoData+'" style="max-height:40px;max-width:140px;object-fit:contain;display:inline-block" alt="Logo"/>' : '<span style="font-size:.75rem;font-weight:600;color:var(--ink-muted)">'+d.ag+'</span>')
+        +   '</div>'
+        +   '<div style="width:28px;height:28px;border:1.5px solid '+a+';border-radius:50%;display:flex;align-items:center;justify-content:center;color:'+a+';font-size:.75rem">&#8594;</div>'
+        + '</div>'
+        + customTextBlock('padding:.25rem 1.375rem .375rem;background:#fff;font-size:.6875rem;color:var(--ink-muted);font-style:italic;border-radius:0 0 var(--rl) var(--rl)')
+        + '</div>';
+    }
+
+    if (isVert) {
+      tpl = '<div class="st-wrap">' + icCard() + '</div>' + caption;
+    } else {
+      tpl = icCard();
+    }
+
+  // ════════════ PHOTO CARD (carousel slide 2+ style) ════════════
+  } else if (lay === 'photo-card') {
+    function pcCard(photoIdx) {
+      var s = sp('pc-ph'+photoIdx, photoIdx);
+      return '<div style="position:relative;max-width:'+(isVert?'340px':'520px')+'">'
+        + '<div class="pc-border"></div>'
+        + '<div style="border-radius:var(--rl);overflow:hidden;position:relative">'
+        +   '<div style="height:'+(isVert?'520px':'400px')+';position:relative;overflow:hidden">'
+        +     photoSlot('pc-ph'+photoIdx, photoIdx, 'position:absolute;inset:0;')
+        +   '</div>'
+        // Footer bar
+        +   '<div style="background:#fff;padding:.375rem 1.25rem .625rem;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid '+a+'">'
+        +     '<div style="width:28px"></div>'
+        +     '<div style="flex:1;text-align:center">'
+        +       (logoData ? '<img src="'+logoData+'" style="max-height:40px;max-width:140px;object-fit:contain;display:inline-block" alt="Logo"/>' : '<span style="font-size:.75rem;font-weight:600;color:'+a+'">'+d.ag+'</span>')
+        +     '</div>'
+        +     '<div style="width:28px;height:28px;border:1.5px solid '+a+';border-radius:50%;display:flex;align-items:center;justify-content:center;color:'+a+';font-size:.75rem">&#8594;</div>'
+        +   '</div>'
+        + '</div>'
+        + '</div>';
+    }
+
+    if (isVert) {
+      tpl = '<div class="st-wrap">' + pcCard(0) + '</div>'
+        + (photos.length > 1 ? '<div class="st-wrap" style="margin-top:.75rem">' + pcCard(1) + '</div>' : '')
+        + caption;
+    } else {
+      tpl = pcCard(0)
+        + (photos.length > 1 ? '<div style="margin-top:.75rem">' + pcCard(1) + '</div>' : '');
     }
   }
 
@@ -1840,7 +1977,8 @@ var TOGGLES = [
   {key:'agentName',  label:'Agent name'},
   {key:'brokerage',  label:'Brokerage'},
   {key:'phone',      label:'Phone'},
-  {key:'logo',       label:'Logo'}
+  {key:'logo',       label:'Logo'},
+  {key:'customText',  label:'Custom text'}
 ];
 
 // ══════════════════════════════════════════════════════════
