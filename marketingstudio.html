@@ -564,6 +564,33 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .pc-photo{position:relative;border-radius:var(--rl);overflow:hidden}
 .pc-border{position:absolute;inset:-3px;border:3px solid var(--accent);border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20}
 .pc-footer{position:absolute;bottom:0;left:0;right:0;padding:.625rem 1.25rem;background:#fff;border-top:1.5px solid var(--accent);display:flex;align-items:center;justify-content:space-between;border-radius:0 0 var(--rl) var(--rl)}
+
+/* ── Carousel ── */
+#carouselWrap{display:none;margin-top:1rem}
+#carouselWrap.show{display:block}
+.carousel-slides{position:relative}
+.carousel-slide{display:none}
+.carousel-slide.active{display:block}
+.carousel-thumbs{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem}
+.c-thumb{width:52px;height:52px;border-radius:var(--r);overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .15s;flex-shrink:0;position:relative}
+.c-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.c-thumb.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,169,110,.25)}
+.c-thumb-ph{width:100%;height:100%;background:#e8e4de;display:flex;align-items:center;justify-content:center;font-size:.5625rem;color:#aaa;font-style:italic}
+.carousel-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.625rem}
+.carousel-lbl{font-size:.6875rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted)}
+.carousel-actions{display:flex;gap:.375rem}
+.c-nav{width:28px;height:28px;border:1px solid var(--border-strong);border-radius:50%;background:#fff;cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.c-nav:hover{border-color:var(--accent);color:var(--accent)}
+/* Horizontal info card landscape */
+.hic-wrap{position:relative;max-width:600px;border-radius:var(--rl);overflow:visible;clip-path:inset(0 round var(--rl))}
+.hic-border{position:absolute;inset:-3px;border:3px solid var(--accent);border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20}
+.hic-inner{display:grid;grid-template-columns:200px 1fr;min-height:320px;background:#fff;border-radius:var(--rl);overflow:hidden}
+.hic-left{background:#fff;padding:1.25rem 1.125rem;display:flex;flex-direction:column;justify-content:space-between;border-right:1.5px solid var(--accent)}
+.hic-right{position:relative;overflow:hidden}
+/* Horizontal photo card landscape */
+.hpc-wrap{position:relative;max-width:600px;border-radius:var(--rl);overflow:visible;clip-path:inset(0 round var(--rl))}
+.hpc-border{position:absolute;inset:-3px;border:3px solid var(--accent);border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20}
+.hpc-inner{position:relative;border-radius:var(--rl);overflow:hidden}
 </style>
 </head>
 <body>
@@ -802,6 +829,20 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Carousel -->
+  <div id="carouselWrap">
+    <div class="carousel-bar">
+      <span class="carousel-lbl">Carousel slides</span>
+      <div class="carousel-actions">
+        <button class="c-nav" onclick="carouselPrev()" title="Previous">&#8592;</button>
+        <button class="c-nav" onclick="carouselNext()" title="Next">&#8594;</button>
+        <button class="act-btn" onclick="saveAllSlides()" style="font-size:.6875rem;padding:.3rem .625rem">Save all slides</button>
+      </div>
+    </div>
+    <div class="carousel-slides" id="carouselSlides"></div>
+    <div class="carousel-thumbs" id="carouselThumbs"></div>
   </div>
 
 </div>
@@ -1775,91 +1816,131 @@ function renderPreview(d,copy){
         + '</div>';
     }
 
-  // ════════════ INFO CARD (carousel slide 1 style) ════════════
-  } else if (lay === 'info-card') {
-    // accent color for price — use brand color
-    var icPhoto = sp('ic-main', 0);
-    var icPhotoH = isVert ? 'calc(100% - 200px)' : '280px';
+  // ════════════ INFO CARD + PHOTO CARD + CAROUSEL ════════════
+  } else if (lay === 'info-card' || lay === 'photo-card') {
 
-    function icPhotoEl(h) {
-      return '<div class="ic-photo" style="height:'+h+'">'
-        + photoSlot('ic-main', 0, 'position:absolute;inset:0;')
+    // ── Shared card builders ────────────────────────────────────
+    function arrowBtn() {
+      return '<div style="width:28px;height:28px;border:1.5px solid '+a+';border-radius:50%;display:flex;align-items:center;justify-content:center;color:'+a+';font-size:.75rem;flex-shrink:0">&#8594;</div>';
+    }
+    function logoOrName() {
+      return logoData
+        ? '<img src="'+logoData+'" style="max-height:38px;max-width:130px;object-fit:contain;display:inline-block" alt="Logo"/>'
+        : '<span style="font-size:.75rem;font-weight:600;color:var(--ink-muted)">'+d.ag+'</span>';
+    }
+    function footerBar(bgColor, borderColor) {
+      var bg  = bgColor    || '#fff';
+      var brd = borderColor|| a;
+      return '<div style="background:'+bg+';padding:.4rem 1.125rem .5rem;display:flex;align-items:center;justify-content:space-between;border-top:2px solid '+brd+'">'
+        + '<div style="width:28px"></div>'
+        + '<div style="flex:1;text-align:center">'+logoOrName()+'</div>'
+        + arrowBtn()
         + '</div>';
     }
 
-    function icCard() {
-      return '<div style="position:relative;max-width:'+( isVert ? '340px' : '520px' )+'">'
-        + '<div class="ic-border"></div>'
-        // Info section
-        + '<div style="background:#fff;padding:1.125rem 1.375rem .75rem;border-radius:var(--rl) var(--rl) 0 0">'
-        +   '<div class="ic-address">'+ed('address', fullAddr(d))+'</div>'
-        +   (hiddenEls['city'] ? '' : '<div class="ic-city">'+ed('city', d.ci)+' | '+(d.pr.replace(/[^0-9]/g,'').slice(0,5)||'30000')+'</div>')
-        +   '<div style="height:.75rem"></div>'
-        +   (hiddenEls['typeLabel'] ? '' : '<div class="ic-type">'+ed('typeLabel', typeLabel)+'</div>')
-        +   (hiddenEls['price'] ? '' : '<div class="ic-price" style="color:'+a+'">'+ed('price', d.pr)+'</div>')
+    // ── VERTICAL info slide (portrait) ─────────────────────────
+    function buildVertInfoSlide() {
+      return '<div style="position:relative;max-width:360px;border-radius:var(--rl);overflow:visible;clip-path:inset(0 round var(--rl))">'
+        + '<div style="position:absolute;inset:-3px;border:3px solid '+a+';border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20"></div>'
+        + '<div style="background:#fff;padding:1.125rem 1.375rem .75rem">'
+        +   '<div style="font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1a1a1a;line-height:1.4">'+ed('address',fullAddr(d))+'</div>'
+        +   (hiddenEls['city']?'':'<div style="font-size:.6875rem;letter-spacing:.05em;text-transform:uppercase;color:#555;margin-bottom:.5rem">'+ed('city',d.ci)+'</div>')
+        +   '<div style="height:.5rem"></div>'
+        +   (hiddenEls['typeLabel']?'':'<div style="font-size:.6875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1a1a1a">'+ed('typeLabel',typeLabel)+'</div>')
+        +   (hiddenEls['price']?'':'<div style="font-family:Cormorant Garamond,serif;font-size:2.25rem;font-weight:700;line-height:1;color:'+a+'">'+ed('price',d.pr)+'</div>')
         + '</div>'
-        // Photo
-        + '<div class="ic-photo" style="height:'+(isVert ? '340px' : '300px')+'">'
-        +   photoSlot('ic-main', 0, 'position:absolute;inset:0;')
-        + '</div>'
-        // Stats bar
-        + (hiddenEls['stats'] ? '' :
-          '<div class="ic-stats">'
-          + '<span class="ic-stat-txt">'+d.bd+' Bedroom'+(d.bd!=='1'?'s':'')+'</span>'
-          + '<span class="ic-sep">|</span>'
-          + '<span class="ic-stat-txt">'+d.bt+' Baths</span>'
-          + '<span class="ic-sep">|</span>'
-          + '<span class="ic-stat-txt">'+d.sq+' Sq. Ft.</span>'
-          + '</div>')
-        // Footer: logo + arrow
-        + '<div style="background:#fff;padding:.375rem 1.25rem .625rem;display:flex;align-items:center;justify-content:space-between;border-radius:0 0 var(--rl) var(--rl)">'
-        +   '<div style="width:28px"></div>'
-        +   '<div style="flex:1;text-align:center">'
-        +     (logoData ? '<img src="'+logoData+'" style="max-height:40px;max-width:140px;object-fit:contain;display:inline-block" alt="Logo"/>' : '<span style="font-size:.75rem;font-weight:600;color:var(--ink-muted)">'+d.ag+'</span>')
-        +   '</div>'
-        +   '<div style="width:28px;height:28px;border:1.5px solid '+a+';border-radius:50%;display:flex;align-items:center;justify-content:center;color:'+a+';font-size:.75rem">&#8594;</div>'
-        + '</div>'
-        + customTextBlock('padding:.25rem 1.375rem .375rem;background:#fff;font-size:.6875rem;color:var(--ink-muted);font-style:italic;border-radius:0 0 var(--rl) var(--rl)')
+        + '<div style="height:320px;position:relative;overflow:hidden">'+photoSlot('ic-main',0,'position:absolute;inset:0;')+'</div>'
+        + (hiddenEls['stats']?'':'<div style="background:#fff;padding:.5rem 1.125rem;border-top:2px solid '+a+';display:flex;align-items:center;justify-content:center;gap:.25rem">'
+          +'<span style="font-size:.5625rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase">'+d.bd+' Beds</span>'
+          +'<span style="color:#bbb;margin:0 .125rem">|</span>'
+          +'<span style="font-size:.5625rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase">'+d.bt+' Baths</span>'
+          +'<span style="color:#bbb;margin:0 .125rem">|</span>'
+          +'<span style="font-size:.5625rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase">'+d.sq+' Sq. Ft.</span>'
+          +'</div>')
+        + footerBar('#fff', a)
+        + customTextBlock('padding:.125rem 1.375rem .375rem;background:#fff;font-size:.6875rem;color:var(--ink-muted);font-style:italic')
         + '</div>';
     }
 
-    if (isVert) {
-      tpl = '<div class="st-wrap">' + icCard() + '</div>' + caption;
-    } else {
-      tpl = icCard();
+    // ── VERTICAL photo slide (portrait) ────────────────────────
+    function buildVertPhotoSlide(slotId, photoIdx) {
+      return '<div style="position:relative;max-width:360px;border-radius:var(--rl);overflow:visible;clip-path:inset(0 round var(--rl))">'
+        + '<div style="position:absolute;inset:-3px;border:3px solid '+a+';border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20"></div>'
+        + '<div style="border-radius:var(--rl);overflow:hidden">'
+        +   '<div style="height:480px;position:relative;overflow:hidden">'+photoSlot(slotId,photoIdx,'position:absolute;inset:0;')+'</div>'
+        +   footerBar('#fff', a)
+        + '</div>'
+        + '</div>';
     }
 
-  // ════════════ PHOTO CARD (carousel slide 2+ style) ════════════
-  } else if (lay === 'photo-card') {
-    function pcCard(photoIdx) {
-      var s = sp('pc-ph'+photoIdx, photoIdx);
-      return '<div style="position:relative;max-width:'+(isVert?'340px':'520px')+'">'
-        + '<div class="pc-border"></div>'
-        + '<div style="border-radius:var(--rl);overflow:hidden;position:relative">'
-        +   '<div style="height:'+(isVert?'520px':'400px')+';position:relative;overflow:hidden">'
-        +     photoSlot('pc-ph'+photoIdx, photoIdx, 'position:absolute;inset:0;')
-        +   '</div>'
-        // Footer bar
-        +   '<div style="background:#fff;padding:.375rem 1.25rem .625rem;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid '+a+'">'
-        +     '<div style="width:28px"></div>'
-        +     '<div style="flex:1;text-align:center">'
-        +       (logoData ? '<img src="'+logoData+'" style="max-height:40px;max-width:140px;object-fit:contain;display:inline-block" alt="Logo"/>' : '<span style="font-size:.75rem;font-weight:600;color:'+a+'">'+d.ag+'</span>')
+    // ── HORIZONTAL info slide (landscape) ──────────────────────
+    function buildHorizInfoSlide() {
+      return '<div class="hic-wrap">'
+        + '<div class="hic-border"></div>'
+        + '<div class="hic-inner">'
+        // Left info panel
+        +   '<div class="hic-left">'
+        +     '<div>'
+        +       '<div style="font-size:.6875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1a1a1a;line-height:1.5;margin-bottom:.125rem">'+ed('address',fullAddr(d))+'</div>'
+        +       (hiddenEls['city']?'':'<div style="font-size:.5625rem;letter-spacing:.05em;text-transform:uppercase;color:#777;margin-bottom:.75rem">'+ed('city',d.ci)+'</div>')
+        +       (hiddenEls['typeLabel']?'':'<div style="font-size:.5625rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1a1a1a;margin-bottom:.125rem">'+ed('typeLabel',typeLabel)+'</div>')
+        +       (hiddenEls['price']?'':'<div style="font-family:Cormorant Garamond,serif;font-size:1.75rem;font-weight:700;line-height:1;color:'+a+';margin-bottom:.75rem">'+ed('price',d.pr)+'</div>')
+        +       (hiddenEls['stats']?'':'<div style="display:flex;flex-direction:column;gap:.25rem">'
+        +         '<div style="font-size:.5rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#555">'+d.bd+' Bedrooms</div>'
+        +         '<div style="font-size:.5rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#555">'+d.bt+' Bathrooms</div>'
+        +         '<div style="font-size:.5rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#555">'+d.sq+' Sq. Ft.</div>'
+        +       '</div>')
         +     '</div>'
-        +     '<div style="width:28px;height:28px;border:1.5px solid '+a+';border-radius:50%;display:flex;align-items:center;justify-content:center;color:'+a+';font-size:.75rem">&#8594;</div>'
+        +     '<div style="border-top:1.5px solid '+a+';padding-top:.75rem;display:flex;flex-direction:column;align-items:center;gap:.375rem">'
+        +       logoOrName()
+        +       arrowBtn()
+        +     '</div>'
         +   '</div>'
+        // Right photo
+        +   '<div class="hic-right">'+photoSlot('hic-main',0,'position:absolute;inset:0;')+'</div>'
         + '</div>'
         + '</div>';
     }
 
-    if (isVert) {
-      tpl = '<div class="st-wrap">' + pcCard(0) + '</div>'
-        + (photos.length > 1 ? '<div class="st-wrap" style="margin-top:.75rem">' + pcCard(1) + '</div>' : '')
-        + caption;
-    } else {
-      tpl = pcCard(0)
-        + (photos.length > 1 ? '<div style="margin-top:.75rem">' + pcCard(1) + '</div>' : '');
+    // ── HORIZONTAL photo slide (landscape) ─────────────────────
+    function buildHorizPhotoSlide(slotId, photoIdx) {
+      return '<div class="hpc-wrap">'
+        + '<div class="hpc-border"></div>'
+        + '<div class="hpc-inner">'
+        +   '<div style="height:320px;position:relative;overflow:hidden">'+photoSlot(slotId,photoIdx,'position:absolute;inset:0;')+'</div>'
+        +   footerBar('#fff', a)
+        + '</div>'
+        + '</div>';
     }
-  }
+
+    // ── Build slides array and render carousel ──────────────────
+    var allSlides = [];
+    if (isVert) {
+      allSlides.push(buildVertInfoSlide());
+      for (var si = 1; si < Math.max(photos.length, 2); si++) {
+        allSlides.push(buildVertPhotoSlide('pc-v'+si, si < photos.length ? si : 0));
+      }
+    } else {
+      allSlides.push(buildHorizInfoSlide());
+      for (var si = 1; si < Math.max(photos.length, 2); si++) {
+        allSlides.push(buildHorizPhotoSlide('pc-h'+si, si < photos.length ? si : 0));
+      }
+    }
+
+    // Store slides for carousel JS
+    window._carouselSlides = allSlides;
+    window._carouselIdx = 0;
+
+    // Render: show first slide in tplWrap, build carousel below
+    tpl = allSlides[0];
+
+    // Build carousel after render
+    setTimeout(function() {
+      buildCarousel(allSlides);
+      attachEditables();
+    }, 60);
+
+    } // end info/photo card
 
   // ── Update only the dynamic content area, not the whole panel ──────
   var tplDiv = document.getElementById('tplWrap');
@@ -2342,6 +2423,171 @@ function resetEdits() {
 // ══════════════════════════════════════════════════════════
 // UPDATED renderStrip — add draggable to thumbs after render
 // ══════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════
+// CAROUSEL
+// ══════════════════════════════════════════════════════════
+var _carouselSlides = [];
+var _carouselIdx = 0;
+
+function buildCarousel(slides) {
+  _carouselSlides = slides;
+  _carouselIdx = 0;
+
+  var wrap = document.getElementById('carouselWrap');
+  var slidesEl = document.getElementById('carouselSlides');
+  var thumbsEl = document.getElementById('carouselThumbs');
+  if (!wrap || !slidesEl || !thumbsEl) return;
+
+  // Render slides
+  slidesEl.innerHTML = slides.map(function(html, i) {
+    return '<div class="carousel-slide'+(i===0?' active':'')+'" data-idx="'+i+'">'+html+'</div>';
+  }).join('');
+
+  // Render thumbs
+  thumbsEl.innerHTML = slides.map(function(html, i) {
+    // Extract photo src from slot if possible
+    var slot = i === 0 ? (window.slotAssign && window.slotAssign['ic-main'] !== undefined ? window.slotAssign['ic-main'] : 0) : i;
+    var src = photos[slot < photos.length ? slot : 0];
+    return '<div class="c-thumb'+(i===0?' active':'')+'" onclick="carouselGoTo('+i+')">'
+      + (src ? '<img src="'+src+'" alt="slide '+(i+1)+'"/>' : '<div class="c-thumb-ph">Slide '+(i+1)+'</div>')
+      + '</div>';
+  }).join('');
+
+  wrap.classList.add('show');
+
+  // Attach drag/edit to first slide
+  setTimeout(function() {
+    var firstSlide = slidesEl.querySelector('.carousel-slide.active');
+    if (firstSlide) {
+      firstSlide.querySelectorAll('[data-ek]').forEach(function(el) {
+        var key = el.dataset.ek;
+        el.classList.add('draglabel');
+        initTextDrag(el, key);
+      });
+      firstSlide.querySelectorAll('.photo-slot').forEach(function(slot) {
+        initSlotDropZones();
+        var img = slot.querySelector('img');
+        if (img) initPhotoPan(img, slot.dataset.slot);
+        slot.addEventListener('click', function(e) {
+          e.stopPropagation();
+          selectSlot(slot.dataset.slot);
+        });
+      });
+      applyAllStyles(firstSlide);
+    }
+    makeThumbsDraggable();
+  }, 80);
+}
+
+function carouselGoTo(idx) {
+  var slidesEl = document.getElementById('carouselSlides');
+  var thumbsEl = document.getElementById('carouselThumbs');
+  if (!slidesEl) return;
+
+  slidesEl.querySelectorAll('.carousel-slide').forEach(function(s,i) {
+    s.classList.toggle('active', i===idx);
+  });
+  thumbsEl.querySelectorAll('.c-thumb').forEach(function(t,i) {
+    t.classList.toggle('active', i===idx);
+  });
+  _carouselIdx = idx;
+
+  // Attach editables to newly shown slide
+  setTimeout(function() {
+    var activeSlide = slidesEl.querySelector('.carousel-slide.active');
+    if (activeSlide) {
+      activeSlide.querySelectorAll('[data-ek]').forEach(function(el) {
+        if (!el._dragInited) {
+          el._dragInited = true;
+          el.classList.add('draglabel');
+          initTextDrag(el, el.dataset.ek);
+        }
+      });
+      activeSlide.querySelectorAll('.photo-slot').forEach(function(slot) {
+        var img = slot.querySelector('img');
+        if (img && !img._panInited) {
+          img._panInited = true;
+          initPhotoPan(img, slot.dataset.slot);
+        }
+      });
+      applyAllStyles(activeSlide);
+      initSlotDropZones();
+    }
+  }, 40);
+}
+
+function carouselPrev() {
+  var n = _carouselSlides.length;
+  carouselGoTo((_carouselIdx - 1 + n) % n);
+}
+
+function carouselNext() {
+  carouselGoTo((_carouselIdx + 1) % _carouselSlides.length);
+}
+
+function saveAllSlides() {
+  var slides = document.querySelectorAll('.carousel-slide');
+  if (!slides.length) { alert('Generate a carousel first.'); return; }
+  var idx = 0;
+  function saveNext() {
+    if (idx >= slides.length) return;
+    var slide = slides[idx];
+    var card = slide.firstElementChild;
+    if (!card) { idx++; saveNext(); return; }
+    var slideNum = idx + 1;
+    html2canvas(card, {
+      useCORS: true,
+      scale: 2,
+      backgroundColor: '#ffffff',
+      logging: false
+    }).then(function(canvas) {
+      var url = canvas.toDataURL('image/jpeg', 0.92);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'slide-' + slideNum + '.jpg';
+      a.click();
+      idx++;
+      setTimeout(saveNext, 600);
+    }).catch(function() {
+      idx++; saveNext();
+    });
+  }
+  saveNext();
+}
+
+// Also update saveToDevice to save current carousel slide if carousel is active
+var _origSaveToDevice = saveToDevice;
+saveToDevice = function() {
+  var carouselWrap = document.getElementById('carouselWrap');
+  if (carouselWrap && carouselWrap.classList.contains('show')) {
+    // Save current active slide
+    var activeSlide = document.querySelector('.carousel-slide.active');
+    if (activeSlide && activeSlide.firstElementChild) {
+      html2canvas(activeSlide.firstElementChild, {
+        useCORS: true, scale: 2, backgroundColor: '#ffffff', logging: false
+      }).then(function(canvas) {
+        var url = canvas.toDataURL('image/jpeg', 0.92);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'slide-' + (_carouselIdx+1) + '.jpg';
+        a.click();
+      });
+      return;
+    }
+  }
+  _origSaveToDevice();
+};
+
+// Hide carousel when switching layouts
+var _origSetLay = setLay;
+setLay = function(btn) {
+  _origSetLay(btn);
+  if (lay !== 'info-card' && lay !== 'photo-card') {
+    var cw = document.getElementById('carouselWrap');
+    if (cw) cw.classList.remove('show');
+  }
+};
 
 function copyContent(){
   var txt = '';
