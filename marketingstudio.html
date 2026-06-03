@@ -477,9 +477,18 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 
 /* Photo slot tap-to-swap */
 .photo-slot{cursor:pointer;position:relative;overflow:hidden}
-.photo-slot::after{content:'tap to swap';position:absolute;inset:0;background:rgba(200,169,110,.0);color:rgba(255,255,255,.0);display:flex;align-items:center;justify-content:center;font-size:.625rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;transition:all .2s;font-family:'DM Sans',sans-serif}
-.photo-slot:hover::after{background:rgba(0,0,0,.35);color:rgba(255,255,255,.9)}
-.photo-slot.selected::after{content:'select from strip ↑';background:rgba(200,169,110,.5);color:#fff}
+.photo-slot::after{content:'';position:absolute;inset:0;background:rgba(200,169,110,.0);transition:background .2s;pointer-events:none}
+.photo-slot:hover::after{background:rgba(0,0,0,.15)}
+.photo-slot.selected::after{background:rgba(200,169,110,.35)}
+/* Reframe hint shown on hover */
+.photo-slot .reframe-hint{
+  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,.6);color:#fff;font-size:.5rem;font-weight:500;
+  letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;
+  border-radius:10px;white-space:nowrap;opacity:0;transition:opacity .2s;
+  pointer-events:none;z-index:10
+}
+.photo-slot:hover .reframe-hint{opacity:1}
 
 /* Edit mode banner */
 .edit-banner{display:none;background:rgba(200,169,110,.12);border:1px solid rgba(200,169,110,.3);border-radius:var(--r);padding:.4rem .75rem;font-size:.6875rem;color:var(--ink-mid);margin-bottom:.625rem;align-items:center;gap:.5rem}
@@ -494,7 +503,8 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .photo-slot.drop-hover::before{content:'Drop here';position:absolute;inset:0;background:rgba(200,169,110,.35);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;letter-spacing:.06em;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8);z-index:20;pointer-events:none}
 
 /* ── Pan/crop within slot ── */
-.photo-slot img{cursor:grab;user-select:none;-webkit-user-select:none}
+.photo-slot img{cursor:grab;user-select:none;-webkit-user-select:none;transition:object-position .05s}
+.photo-slot img:hover::after{content:'drag to reframe';position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-size:.5rem;color:#fff;background:rgba(0,0,0,.5);padding:2px 6px;border-radius:10px;pointer-events:none;white-space:nowrap}
 .photo-slot img.panning{cursor:grabbing}
 
 /* ── Draggable text labels ── */
@@ -839,7 +849,7 @@ var activePhoto = 0;
 var fmtDim = 'story'; // story | feed | square
 var fmt = 'social';   // always social for vertical
 var sub = 'listed';   // subcategory
-var lay = 'classic';     // layout
+var lay = 'minimal';     // layout
 var lastC = {};
 var lastD = {};
 var addrTimer = null;
@@ -1059,10 +1069,7 @@ var CAT_SUBS = {}; // Type is now free-text only
 
 var LAYOUTS = {
   layouts: [
-    {id:'classic',    n:'Classic',       d:'White card, gold border'},
-    {id:'dark',       n:'Dark Luxury',   d:'All dark, moody aesthetic'},
-    {id:'minimal',    n:'Minimal',       d:'Clean type, lots of white'},
-    {id:'editorial',  n:'Editorial',     d:'Bold type, photo behind'}
+    {id:'minimal',    n:'Minimal',       d:'Clean type, lots of white'}
   ]
 };
 // Same layouts for both formats
@@ -1118,7 +1125,7 @@ function setSub(btn){
   // Map fmt to layouts key
   var layKey = (fmt==='social')?'social':(fmt==='flyer')?'flyer':(LAYOUTS[fmt]?fmt:'flyer');
   var firstLay = (LAYOUTS[layKey]||[])[0];
-  lay = firstLay ? firstLay.id : 'bold-headline';
+  lay = firstLay ? firstLay.id : 'minimal';
   renderLayouts();
   if(Object.keys(lastC).length) renderPreview(lastD,lastC);
 }
@@ -1487,6 +1494,7 @@ function renderPreview(d,copy){
     var sel = (activeSlot === slotId) ? ' selected' : '';
     var inner = src
       ? '<img src="'+src+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block" alt="photo"/>'
+        + '<div class="reframe-hint">drag to reframe</div>'
       : '<div style="position:absolute;inset:0;background:#1c1c1e;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#444;font-style:italic">Tap to add photo</div>';
     return '<div class="photo-slot'+sel+'" data-slot="'+slotId+'" style="'+(extraStyle||'position:relative;overflow:hidden;width:100%;height:100%;')+'">'
       + inner + '</div>';
@@ -2390,10 +2398,11 @@ function initPhotoPan(img, slotId) {
 
   function onPanMove(e) {
     if (!isPanning) return;
-    var dx = (e.clientX - startX) * -.12;
-    var dy = (e.clientY - startY) * -.12;
-    pan.x = Math.max(0, Math.min(100, startOX + dx));
-    pan.y = Math.max(0, Math.min(100, startOY + dy));
+    // positive multiplier: drag right → focal point moves right
+    var dx = (e.clientX - startX) * 0.15;
+    var dy = (e.clientY - startY) * 0.15;
+    pan.x = Math.max(0, Math.min(100, startOX - dx));
+    pan.y = Math.max(0, Math.min(100, startOY - dy));
     img.style.objectPosition = pan.x+'% '+pan.y+'%';
     slotPanPos[slotId] = {x:pan.x, y:pan.y};
   }
@@ -2401,10 +2410,10 @@ function initPhotoPan(img, slotId) {
     if (!isPanning) return;
     e.preventDefault();
     var t = e.touches[0];
-    var dx = (t.clientX - startX) * -.12;
-    var dy = (t.clientY - startY) * -.12;
-    pan.x = Math.max(0, Math.min(100, startOX + dx));
-    pan.y = Math.max(0, Math.min(100, startOY + dy));
+    var dx = (t.clientX - startX) * 0.15;
+    var dy = (t.clientY - startY) * 0.15;
+    pan.x = Math.max(0, Math.min(100, startOX - dx));
+    pan.y = Math.max(0, Math.min(100, startOY - dy));
     img.style.objectPosition = pan.x+'% '+pan.y+'%';
     slotPanPos[slotId] = {x:pan.x, y:pan.y};
   }
@@ -2521,7 +2530,7 @@ function buildCarousel(slides) {
 
   wrap.classList.add('show');
 
-  // Attach drag/edit to first slide
+  // Attach drag/edit + pan to first slide
   setTimeout(function() {
     var firstSlide = slidesEl.querySelector('.carousel-slide.active');
     if (firstSlide) {
@@ -2531,14 +2540,15 @@ function buildCarousel(slides) {
         initTextDrag(el, key);
       });
       firstSlide.querySelectorAll('.photo-slot').forEach(function(slot) {
-        initSlotDropZones();
         var img = slot.querySelector('img');
-        if (img) initPhotoPan(img, slot.dataset.slot);
-        slot.addEventListener('click', function(e) {
-          e.stopPropagation();
-          selectSlot(slot.dataset.slot);
-        });
+        if (img) {
+          // Restore saved pan position then enable drag-to-reframe
+          var saved = slotPanPos[slot.dataset.slot];
+          if (saved) img.style.objectPosition = saved.x+'% '+saved.y+'%';
+          initPhotoPan(img, slot.dataset.slot);
+        }
       });
+      initSlotDropZones();
       applyAllStyles(firstSlide);
     }
     makeThumbsDraggable();
@@ -2571,7 +2581,8 @@ function carouselGoTo(idx) {
       });
       activeSlide.querySelectorAll('.photo-slot').forEach(function(slot) {
         var img = slot.querySelector('img');
-        if (img && !img._panInited) {
+        if (img) {
+          // Always re-init pan so saved position applies and drag works
           img._panInited = true;
           initPhotoPan(img, slot.dataset.slot);
         }
