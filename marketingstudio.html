@@ -440,7 +440,7 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .sl3-card{aspect-ratio:16/9;position:relative;overflow:hidden;background:#0f0f0f;border-radius:var(--rl);display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px}
 
 /* Story vertical multi-photo */
-.stv-card{aspect-ratio:9/16;width:100%;position:relative;overflow:visible;background:#0f0f0f;border-radius:var(--rl);display:block;clip-path:inset(0 round var(--rl))}
+.stv-card{width:100%;position:relative;overflow:visible;background:#0f0f0f;border-radius:var(--rl);display:block;clip-path:inset(0 round var(--rl))}
 .stv-grid3{display:grid;grid-template-rows:1fr 1fr 1fr;gap:2px;height:100%}
 .stv-grid5{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:2px;height:100%}
 .stv-grid5 .stv-top{grid-column:1/3}
@@ -546,7 +546,7 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 
 /* ── Info Card / Photo Card (carousel style) ── */
 .ic-wrap{position:relative;border-radius:var(--rl);overflow:visible;max-width:480px;background:#fff;clip-path:inset(0 round var(--rl));box-shadow:0 0 0 3px var(--accent)}
-.ic-border{position:absolute;inset:-3px;border:3px solid var(--accent);border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20}
+.ic-border{position:absolute;inset:-4px;border:4px solid var(--accent);border-radius:calc(var(--rl) + 4px);pointer-events:none;z-index:20}
 .ic-info{padding:1.125rem 1.25rem .875rem;background:#fff}
 .ic-address{font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#1a1a1a;line-height:1.4;margin-bottom:.125rem}
 .ic-city{font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;color:#1a1a1a;margin-bottom:.375rem}
@@ -562,7 +562,7 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 /* Photo card */
 .pc-wrap{position:relative;max-width:480px;clip-path:inset(0 round var(--rl))}
 .pc-photo{position:relative;border-radius:var(--rl);overflow:hidden}
-.pc-border{position:absolute;inset:-3px;border:3px solid var(--accent);border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20}
+.pc-border{position:absolute;inset:-4px;border:4px solid var(--accent);border-radius:calc(var(--rl) + 4px);pointer-events:none;z-index:20}
 .pc-footer{position:absolute;bottom:0;left:0;right:0;padding:.625rem 1.25rem;background:#fff;border-top:1.5px solid var(--accent);display:flex;align-items:center;justify-content:space-between;border-radius:0 0 var(--rl) var(--rl)}
 
 /* ── Carousel ── */
@@ -583,13 +583,13 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 .c-nav:hover{border-color:var(--accent);color:var(--accent)}
 /* Horizontal info card landscape */
 .hic-wrap{position:relative;max-width:600px;border-radius:var(--rl);overflow:visible;clip-path:inset(0 round var(--rl))}
-.hic-border{position:absolute;inset:-3px;border:3px solid var(--accent);border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20}
+.hic-border{position:absolute;inset:-4px;border:4px solid var(--accent);border-radius:calc(var(--rl) + 4px);pointer-events:none;z-index:20}
 .hic-inner{display:grid;grid-template-columns:200px 1fr;min-height:320px;background:#fff;border-radius:var(--rl);overflow:hidden}
 .hic-left{background:#fff;padding:1.25rem 1.125rem;display:flex;flex-direction:column;justify-content:space-between;border-right:1.5px solid var(--accent)}
 .hic-right{position:relative;overflow:hidden}
 /* Horizontal photo card landscape */
 .hpc-wrap{position:relative;max-width:600px;border-radius:var(--rl);overflow:visible;clip-path:inset(0 round var(--rl))}
-.hpc-border{position:absolute;inset:-3px;border:3px solid var(--accent);border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20}
+.hpc-border{position:absolute;inset:-4px;border:4px solid var(--accent);border-radius:calc(var(--rl) + 4px);pointer-events:none;z-index:20}
 .hpc-inner{position:relative;border-radius:var(--rl);overflow:hidden}
 </style>
 </head>
@@ -629,16 +629,21 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
   <!-- Format -->
   <div>
     <div class="sec-lbl">Format</div>
-    <div class="fmt-grid" style="grid-template-columns:1fr 1fr">
-      <button class="fmt-btn active" data-cat="vertical" onclick="setCat(this)">
+    <div class="fmt-grid" style="grid-template-columns:repeat(3,1fr)">
+      <button class="fmt-btn active" data-fmt="story" onclick="setFmtDim(this)">
         <span class="fmt-icon">&#128247;</span>
-        <span class="fmt-lbl">Vertical</span>
-        <span class="fmt-sub">Stories &amp; Reels</span>
+        <span class="fmt-lbl">Story</span>
+        <span class="fmt-sub">9:16 Reels</span>
       </button>
-      <button class="fmt-btn" data-cat="horizontal" onclick="setCat(this)">
-        <span class="fmt-icon">&#128196;</span>
-        <span class="fmt-lbl">Horizontal</span>
-        <span class="fmt-sub">Flyers &amp; Print</span>
+      <button class="fmt-btn" data-fmt="feed" onclick="setFmtDim(this)">
+        <span class="fmt-icon">&#9654;</span>
+        <span class="fmt-lbl">Feed</span>
+        <span class="fmt-sub">4:5 Portrait</span>
+      </button>
+      <button class="fmt-btn" data-fmt="square" onclick="setFmtDim(this)">
+        <span class="fmt-icon">&#9632;</span>
+        <span class="fmt-lbl">Square</span>
+        <span class="fmt-sub">1:1 Grid</span>
       </button>
     </div>
   </div>
@@ -851,10 +856,10 @@ input[type=color]{width:34px;height:26px;border:1px solid var(--border-strong);b
 <script>
 var photos = [];
 var activePhoto = 0;
-var cat = 'vertical'; // top-level: vertical | horizontal
-var fmt = 'social';   // actual render format
+var fmtDim = 'story'; // story | feed | square
+var fmt = 'social';   // always social for vertical
 var sub = 'listed';   // subcategory
-var lay = 'bold-headline'; // layout
+var lay = 'info-card';    // layout
 var lastC = {};
 var lastD = {};
 var addrTimer = null;
@@ -1078,13 +1083,9 @@ var CAT_SUBS = {}; // Type is now free-text only
 
 var LAYOUTS = {
   layouts: [
-    {id:'bold-headline', n:'Bold Headline',    d:'Type label big over photo'},
-    {id:'agent-header',  n:'Agent + Photos',   d:'Agent top, photos below'},
-    {id:'frosted-box',   n:'Frosted Box',      d:'Glass card over full photo'},
-    {id:'classic',       n:'Classic',          d:'Clean info below photo'},
-    {id:'split',         n:'Split Panel',      d:'Photo + info side by side'},
-    {id:'info-card',     n:'Info Card',        d:'Info top, photo below'},
-    {id:'photo-card',    n:'Photo Card',       d:'Clean photo, branding only'}
+    {id:'info-card',     n:'Carousel',         d:'Info card + photo slides'},
+    {id:'bold-headline', n:'Bold Headline',    d:'Large type over photo'},
+    {id:'frosted-box',   n:'Frosted Box',      d:'Glass card over photo'}
   ]
 };
 // Same layouts for both formats
@@ -1107,18 +1108,28 @@ function livePreview(){
 
 function initUI(){
   initUpload();
-  fmt = (cat === 'vertical') ? 'social' : 'flyer';
-  lay = 'bold-headline';
+  fmt = 'social';
+  fmtDim = 'story';
+  lay = 'info-card';
   renderLayouts();
 }
 
 function setCat(btn){
+  // Legacy — now handled by setFmtDim
+  setFmtDim(btn);
+}
+function setFmtDim(btn){
   document.querySelectorAll('.fmt-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-  cat = btn.dataset.cat;
-  fmt = cat === 'vertical' ? 'social' : 'flyer';
+  fmtDim = btn.dataset.fmt || 'story';
+  fmt = 'social';
+  cat = 'vertical';
+  // Reset to info-card when switching dims
+  lay = 'info-card';
   renderLayouts();
   renderStrip();
+  var cw = document.getElementById('carouselWrap');
+  if (cw) cw.classList.remove('show');
   if(Object.keys(lastC).length) renderPreview(lastD, lastC);
 }
 
@@ -1456,7 +1467,10 @@ function renderPreview(d,copy){
   var a = ac();
   var panel = document.getElementById('previewPanel');
   var tpl = '';
-  var isVert = (cat === 'vertical');
+  var isVert = true; // always vertical/social now
+  // Set aspect ratio on stv-card elements based on fmtDim
+  var dimAspect = fmtDim === 'feed' ? '4/5' : fmtDim === 'square' ? '1/1' : '9/16';
+  var dimStyle  = 'aspect-ratio:'+dimAspect+';';
   var typeLabel = getEdit('typeLabel', getTypeLabel() || 'Just Listed');
 
   // ── Editable text helpers ────────────────────────────────────
@@ -1546,6 +1560,16 @@ function renderPreview(d,copy){
 
 
   // ════════════ BOLD HEADLINE ════════════
+  // Dimension wrapper for feed/square
+  function dimWrap(innerHtml) {
+    if (fmtDim === 'feed') {
+      return '<div style="width:100%;max-width:360px;aspect-ratio:4/5;position:relative;overflow:hidden;border-radius:var(--rl);background:#0f0f0f;clip-path:inset(0 round var(--rl))">'+innerHtml+'</div>';
+    } else if (fmtDim === 'square') {
+      return '<div style="width:100%;max-width:400px;aspect-ratio:1/1;position:relative;overflow:hidden;border-radius:var(--rl);background:#0f0f0f;clip-path:inset(0 round var(--rl))">'+innerHtml+'</div>';
+    }
+    return '<div class="stv-card">'+innerHtml+'</div>';
+  }
+
   if (lay === 'bold-headline') {
     if (isVert) {
       tpl = '<div class="st-wrap"><div class="stv-card">'
@@ -1841,7 +1865,7 @@ function renderPreview(d,copy){
     // ── VERTICAL info slide (portrait) ─────────────────────────
     function buildVertInfoSlide() {
       return '<div style="position:relative;max-width:360px;border-radius:var(--rl);overflow:visible;clip-path:inset(0 round var(--rl))">'
-        + '<div style="position:absolute;inset:-3px;border:3px solid '+a+';border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20"></div>'
+        + '<div style="position:absolute;inset:-4px;border:4px solid '+a+';border-radius:calc(var(--rl) + 4px);pointer-events:none;z-index:20"></div>'
         + '<div style="background:#fff;padding:1.125rem 1.375rem .75rem">'
         +   '<div style="font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1a1a1a;line-height:1.4">'+ed('address',fullAddr(d))+'</div>'
         +   (hiddenEls['city']?'':'<div style="font-size:.6875rem;letter-spacing:.05em;text-transform:uppercase;color:#555;margin-bottom:.5rem">'+ed('city',d.ci)+'</div>')
@@ -1865,10 +1889,16 @@ function renderPreview(d,copy){
     // ── VERTICAL photo slide (portrait) ────────────────────────
     function buildVertPhotoSlide(slotId, photoIdx) {
       return '<div style="position:relative;max-width:360px;border-radius:var(--rl);overflow:visible;clip-path:inset(0 round var(--rl))">'
-        + '<div style="position:absolute;inset:-3px;border:3px solid '+a+';border-radius:calc(var(--rl) + 3px);pointer-events:none;z-index:20"></div>'
+        + '<div style="position:absolute;inset:-4px;border:4px solid '+a+';border-radius:calc(var(--rl) + 4px);pointer-events:none;z-index:20"></div>'
         + '<div style="border-radius:var(--rl);overflow:hidden">'
         +   '<div style="height:480px;position:relative;overflow:hidden">'+photoSlot(slotId,photoIdx,'position:absolute;inset:0;')+'</div>'
-        +   footerBar('#fff', a)
+        +   '<div style="background:#fff;padding:.4rem 1.125rem .5rem;display:flex;align-items:center;justify-content:space-between;border-top:4px solid '+a+'">'
+        +   '<div style="font-size:.5625rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#555;max-width:140px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'+fullAddr(d)+'</div>'
+        +   '<div style="display:flex;align-items:center;gap:.375rem">'
+        +     (logoData?'<img src="'+logoData+'" style="max-height:26px;max-width:70px;object-fit:contain;display:inline-block" alt="Logo"/>':'<span style="font-size:.5rem;font-weight:700;color:'+a+'">'+d.ag+'</span>')
+        +     '<div style="width:20px;height:20px;border:1.5px solid '+a+';border-radius:50%;display:flex;align-items:center;justify-content:center;color:'+a+';font-size:.5rem;flex-shrink:0">&#8594;</div>'
+        +   '</div>'
+        + '</div>'
         + '</div>'
         + '</div>';
     }
@@ -2587,6 +2617,7 @@ setLay = function(btn) {
     var cw = document.getElementById('carouselWrap');
     if (cw) cw.classList.remove('show');
   }
+  renderStrip(); // refresh slot labels
 };
 
 function copyContent(){
