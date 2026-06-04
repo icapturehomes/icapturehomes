@@ -947,7 +947,7 @@ function renderStrip() {
 
 // How many photo slots each layout uses
 var SLOT_COUNTS = {
-  'classic':1, 'dark':1, 'minimal':1, 'editorial':1
+  'classic':1, 'dark':1, 'minimal':1, 'editorial':1, 'featured':2
 };
 function slotsUsed(){ return SLOT_COUNTS[lay] || 1; }
 
@@ -1069,7 +1069,8 @@ var CAT_SUBS = {}; // Type is now free-text only
 
 var LAYOUTS = {
   layouts: [
-    {id:'minimal',    n:'Minimal',       d:'Clean type, lots of white'}
+    {id:'minimal',    n:'Minimal',       d:'Clean type, lots of white'},
+    {id:'featured',   n:'Featured',      d:'Card with photos + features'}
   ]
 };
 // Same layouts for both formats
@@ -1544,280 +1545,10 @@ function renderPreview(d,copy){
     return '<div class="stv-card">'+innerHtml+'</div>';
   }
 
-  if (lay === 'bold-headline') {
-    if (isVert) {
-      tpl = '<div class="st-wrap"><div class="stv-card">'
-        + photoSlot('v-main', 0, 'position:absolute;inset:0;')
-        + '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.72) 0%,rgba(0,0,0,.1) 45%,rgba(0,0,0,.0) 60%,rgba(0,0,0,.85) 100%);z-index:1;pointer-events:none"></div>'
-        + '<div style="position:absolute;top:0;left:0;right:0;padding:1.5rem 1.375rem;z-index:2">'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:2.75rem;font-weight:600;font-style:italic;color:#fff;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.5)">'+ed('typeLabel',typeLabel.toLowerCase()+'.')+'</div>'
-        + '</div>'
-        + agentBadge('bottom')
-        + '<div style="position:absolute;bottom:0;left:0;right:0;padding:1.25rem 1.375rem;z-index:2">'
-        +   '<div style="font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:.2rem">'+ed('address',fullAddr(d))+(hiddenEls['city']?'':', '+d.ci)+'</div>'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.625rem;font-weight:600;color:#fff">'+ed('price',d.pr)+'</div>'
-        +   statsBlock(true)
-        + '</div>'
-        + customTextBlock('position:absolute;top:50%;left:1.375rem;z-index:5;font-size:.875rem;font-weight:500;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)')
-        + '</div></div>' + caption;
-    } else {
-      tpl = '<div class="tpl-dark" style="max-width:580px">'
-        + '<div style="height:320px;position:relative;overflow:hidden">'
-        +   photoSlot('h-main', 0, 'position:absolute;inset:0;')
-        +   '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.68) 0%,rgba(0,0,0,.05) 50%,rgba(0,0,0,.0) 100%);z-index:1;pointer-events:none"></div>'
-        +   '<div style="position:absolute;top:0;left:0;right:0;padding:1.75rem 2rem;z-index:2">'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:3rem;font-weight:600;font-style:italic;color:#fff;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.5)">'+ed('typeLabel',typeLabel.toLowerCase()+'.')+'</div>'
-        +   '</div>'
-        + '</div>'
-        + '<div style="padding:1.5rem 2rem;background:#0f0f0f;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem">'
-        +   '<div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff;line-height:1.2;margin-bottom:.2rem">'+ed('address',fullAddr(d))+'</div>'
-        +     '<div style="font-size:.8125rem;color:rgba(255,255,255,.6);margin-bottom:.875rem">'+ed('city',d.ci)+'</div>'
-        +     '<div style="display:flex;gap:1.25rem;font-size:.8125rem;color:rgba(255,255,255,.75);margin-bottom:.75rem">'
-        +       '<span><strong style="color:#fff;font-weight:500">'+d.bd+'</strong> Beds</span>'
-        +       '<span><strong style="color:#fff;font-weight:500">'+d.bt+'</strong> Baths</span>'
-        +       '<span><strong style="color:#fff;font-weight:500">'+d.sq+'</strong> Sqft</span>'
-        +     '</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.875rem;font-weight:600;color:'+a+'">'+ed('price',d.pr)+'</div>'
-        +   '</div>'
-        +   '<div style="text-align:right;flex-shrink:0">'
-        +     (logoData?'<img src="'+logoData+'" style="max-height:52px;max-width:140px;object-fit:contain;display:block;margin-left:auto;margin-bottom:.5rem" alt="Logo"/>':'')
-        +     '<div style="font-size:.8125rem;font-weight:500;color:#fff">'+ed('agentName',d.ag)+'</div>'
-        +     (d.br?'<div style="font-size:.6875rem;color:rgba(255,255,255,.6);margin-top:2px">'+ed('brokerage',d.br)+'</div>':'')
-        +     phBlock("font-size:.6875rem;color:rgba(255,255,255,.6);margin-top:1px")
-        +   '</div>'
-        + '</div>'
-        + customTextBlock('padding:.5rem 2rem 1rem;font-size:.875rem;color:rgba(255,255,255,.8)')
-        + '</div>';
-    }
-
-  // ════════════ AGENT HEADER ════════════
-  } else if (lay === 'agent-header') {
-    if (isVert) {
-      tpl = '<div class="st-wrap"><div class="stv-card">'
-        + '<div style="position:absolute;top:0;left:0;right:0;height:22%;background:#0f0f0f;z-index:2;display:flex;align-items:center;padding:0 1.125rem;gap:.75rem">'
-        +   (logoData
-              ? '<img src="'+logoData+'" style="max-height:52px;max-width:130px;object-fit:contain;display:block" alt="Logo"/>'
-              : '<div style="width:40px;height:40px;border-radius:50%;background:'+a+';display:flex;align-items:center;justify-content:center;font-size:.8125rem;font-weight:700;color:#fff;flex-shrink:0">'+d.ag.split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2)+'</div>')
-        +   '<div style="min-width:0">'
-        +     '<div style="font-size:.75rem;font-weight:600;color:#fff">'+ed('agentName',d.ag)+'</div>'
-        +     (d.br?'<div style="font-size:.5625rem;color:rgba(255,255,255,.65);margin-top:1px">'+ed('brokerage',d.br)+'</div>':'')
-        +     phBlock("font-size:.5625rem;color:rgba(255,255,255,.65)")
-        +   '</div>'
-        + '</div>'
-        + '<div style="position:absolute;top:22%;left:0;right:0;height:44%;overflow:hidden">'
-        +   photoSlot('v-hero', 0, 'position:relative;width:100%;height:100%;')
-        +   '<div style="position:absolute;inset:0;background:rgba(0,0,0,.25);z-index:1;pointer-events:none"></div>'
-        +   '<div style="position:absolute;bottom:12px;left:14px;z-index:2">'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.625rem;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.04em;text-shadow:0 2px 8px rgba(0,0,0,.8)">'+ed('typeLabel',typeLabel)+'</div>'
-        +   '</div>'
-        + '</div>'
-        + '<div style="position:absolute;top:66%;left:0;right:0;height:20%;display:grid;grid-template-columns:1fr 1fr;gap:2px;overflow:hidden">'
-        +   photoSlot('v-s1', 1, 'position:relative;overflow:hidden;')
-        +   photoSlot('v-s2', 2, 'position:relative;overflow:hidden;')
-        + '</div>'
-        + '<div style="position:absolute;bottom:0;left:0;right:0;height:14%;background:#0f0f0f;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:0 1.125rem">'
-        +   '<div>'
-        +     '<div style="font-size:.5625rem;color:rgba(255,255,255,.7);letter-spacing:.05em;text-transform:uppercase">'+ed('address',fullAddr(d))+(hiddenEls['city']?'':', '+d.ci)+'</div>'
-        +     '<div style="display:flex;gap:.75rem;margin-top:2px">'
-        +       '<span style="font-size:.5625rem;color:rgba(255,255,255,.8)">'+d.bd+' BD</span>'
-        +       '<span style="font-size:.5625rem;color:rgba(255,255,255,.8)">'+d.bt+' BA</span>'
-        +       '<span style="font-size:.5625rem;color:rgba(255,255,255,.8)">'+d.sq+' SF</span>'
-        +     '</div>'
-        +   '</div>'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1rem;font-weight:600;color:'+a+'">'+ed('price',d.pr)+'</div>'
-        + '</div>'
-        + customTextBlock('position:absolute;top:50%;left:1.375rem;z-index:5;font-size:.875rem;font-weight:500;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)')
-        
-        + customTextBlock('position:absolute;bottom:16%;left:50%;transform:translateX(-50%);z-index:10;font-size:.6rem;color:rgba(255,255,255,.7);white-space:nowrap')
-        + '</div></div>' + caption;
-    } else {
-      tpl = '<div class="tpl-white" style="max-width:580px">'
-        + '<div style="background:#0f0f0f;padding:.875rem 1.5rem;display:flex;align-items:center;gap:.875rem">'
-        +   (logoData
-              ? '<img src="'+logoData+'" style="max-height:48px;max-width:130px;object-fit:contain;display:block" alt="Logo"/>'
-              : '<div style="width:40px;height:40px;border-radius:50%;background:'+a+';display:flex;align-items:center;justify-content:center;font-size:.8125rem;font-weight:700;color:#fff;flex-shrink:0">'+d.ag.split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2)+'</div>')
-        +   '<div>'
-        +     '<div style="font-size:.875rem;font-weight:600;color:#fff">'+ed('agentName',d.ag)+'</div>'
-        +     (d.br?'<div style="font-size:.6875rem;color:rgba(255,255,255,.65);margin-top:1px">'+ed('brokerage',d.br)+'</div>':'')
-        +     phBlock("font-size:.6875rem;color:rgba(255,255,255,.65)")
-        +   '</div>'
-        + '</div>'
-        + '<div style="height:240px;position:relative;overflow:hidden">'
-        +   photoSlot('h-hero', 0, 'position:absolute;inset:0;')
-        +   '<div style="position:absolute;inset:0;background:rgba(0,0,0,.3);z-index:1;pointer-events:none"></div>'
-        +   '<div style="position:absolute;bottom:1rem;left:1.5rem;z-index:2">'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:2rem;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.04em;text-shadow:0 2px 8px rgba(0,0,0,.8)">'+ed('typeLabel',typeLabel)+'</div>'
-        +   '</div>'
-        + '</div>'
-        + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;height:140px">'
-        +   photoSlot('h-s1', 1, 'position:relative;overflow:hidden;')
-        +   photoSlot('h-s2', 2, 'position:relative;overflow:hidden;')
-        + '</div>'
-        + '<div style="padding:1.125rem 1.5rem;border-top:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:.5rem">'
-        +   '<div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;line-height:1.15;margin-bottom:.25rem">'+ed('address',fullAddr(d),'editable')+'</div>'
-        +     '<div style="font-size:.75rem;color:var(--ink-muted);margin-bottom:.5rem">'+ed('city',d.ci,'editable')+'</div>'
-        +     '<div style="display:flex;gap:1rem;font-size:.8125rem;color:var(--ink-mid)">'
-        +       '<span><strong style="color:var(--ink)">'+d.bd+'</strong> Beds</span>'
-        +       '<span><strong style="color:var(--ink)">'+d.bt+'</strong> Baths</span>'
-        +       '<span><strong style="color:var(--ink)">'+d.sq+'</strong> Sqft</span>'
-        +     '</div>'
-        +   '</div>'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:'+a+'">'+ed('price',d.pr,'editable')+'</div>'
-        + customTextBlock('padding:.375rem 1.5rem .75rem;font-size:.8125rem;color:var(--ink-muted)')
-        + '</div>'
-        + '</div>';
-    }
-
-  // ════════════ FROSTED BOX ════════════
-  } else if (lay === 'frosted-box') {
-    if (isVert) {
-      tpl = '<div class="st-wrap"><div class="stv-card">'
-        + photoSlot('v-main', 0, 'position:absolute;inset:0;')
-        + agentBadge('top')
-        + '<div style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:1.25rem;pointer-events:none">'
-        +   '<div style="background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:1.5rem 1.625rem;width:100%;text-align:center;pointer-events:auto">'
-        +     '<div style="font-size:.625rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-bottom:.5rem">'+ed('address',fullAddr(d))+(hiddenEls['city']?'':', '+d.ci)+'</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:2rem;font-weight:600;font-style:italic;color:#fff;line-height:1.05;margin-bottom:.375rem">'+ed('typeLabel',typeLabel.toLowerCase()+'.')+'</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.75rem;font-weight:600;color:#fff;margin-bottom:1rem">'+ed('price',d.pr)+'</div>'
-        +     '<div style="display:flex;justify-content:center;gap:1.5rem">'
-        +       '<div style="text-align:center"><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff">'+d.bd+'</div><div style="font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75)">Bedrooms</div></div>'
-        +       '<div style="text-align:center"><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff">'+d.sq+'</div><div style="font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75)">Sq Feet</div></div>'
-        +       '<div style="text-align:center"><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff">'+d.bt+'</div><div style="font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75)">Bathrooms</div></div>'
-        +     '</div>'
-        +   '</div>'
-        + '</div>'
-        + customTextBlock('position:absolute;top:50%;left:1.375rem;z-index:5;font-size:.875rem;font-weight:500;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)')
-        
-        + customTextBlock('position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:10;font-size:.625rem;color:rgba(255,255,255,.75);white-space:nowrap')
-        + '</div></div>' + caption;
-    } else {
-      tpl = '<div class="tpl-dark" style="max-width:580px">'
-        + '<div style="height:380px;position:relative;overflow:hidden">'
-        +   photoSlot('h-main', 0, 'position:absolute;inset:0;')
-        +   agentBadge('top')
-        +   '<div style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:1.5rem;pointer-events:none">'
-        +     '<div style="background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:1.625rem 2rem;width:100%;max-width:380px;text-align:center;pointer-events:auto">'
-        +       '<div style="font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:.5rem">'+ed('address',fullAddr(d))+(hiddenEls['city']?'':', '+d.ci)+'</div>'
-        +       '<div style="font-family:Cormorant Garamond,serif;font-size:2.25rem;font-weight:600;font-style:italic;color:#fff;line-height:1.05;margin-bottom:.375rem">'+ed('typeLabel',typeLabel.toLowerCase()+'.')+'</div>'
-        +       '<div style="font-family:Cormorant Garamond,serif;font-size:2rem;font-weight:600;color:#fff;margin-bottom:1.125rem">'+ed('price',d.pr)+'</div>'
-        +       '<div style="display:flex;justify-content:center;gap:2rem">'
-        +         '<div><div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff">'+d.bd+'</div><div style="font-size:.5625rem;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.7)">Bedrooms</div></div>'
-        +         '<div><div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff">'+d.sq+'</div><div style="font-size:.5625rem;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.7)">Sq Ft</div></div>'
-        +         '<div><div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff">'+d.bt+'</div><div style="font-size:.5625rem;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.7)">Bathrooms</div></div>'
-        +       '</div>'
-        +     '</div>'
-        +   '</div>'
-        + '</div>'
-        + '</div>';
-    }
-
-  // ════════════ CLASSIC ════════════
-  } else if (lay === 'classic') {
-    if (isVert) {
-      tpl = '<div class="st-wrap"><div class="stv-card">'
-        + photoSlot('v-main', 0, 'position:absolute;inset:0;')
-        + '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.95) 40%,rgba(0,0,0,.2) 75%,transparent 100%);z-index:1;pointer-events:none"></div>'
-        + agentBadge('top')
-        + '<div style="position:absolute;bottom:0;left:0;right:0;padding:1.375rem;z-index:2">'
-        +   '<div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:'+a+';font-weight:600;margin-bottom:.375rem">'+ed('typeLabel',typeLabel)+'</div>'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff;line-height:1.15;margin-bottom:.2rem">'+ed('address',fullAddr(d))+'</div>'
-        +   '<div style="font-size:.6875rem;color:rgba(255,255,255,.65);margin-bottom:.625rem">'+ed('city',d.ci)+'</div>'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:'+a+';margin-bottom:.5rem">'+ed('price',d.pr)+'</div>'
-        +   statsBlock(true)
-        + '</div>'
-        + customTextBlock('position:absolute;top:50%;left:1.375rem;z-index:5;font-size:.875rem;font-weight:500;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)')
-        + '</div></div>' + caption;
-    } else {
-      tpl = '<div class="tpl-white" style="max-width:580px">'
-        + '<div style="height:290px;position:relative;overflow:hidden">'
-        +   photoSlot('h-main', 0, 'position:absolute;inset:0;')
-        +   '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 50%);z-index:1;pointer-events:none"></div>'
-        +   (logoData?'<div style="position:absolute;top:16px;right:16px;z-index:2"><img src="'+logoData+'" style="max-height:52px;max-width:140px;object-fit:contain;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))" alt="Logo"/></div>':'')
-        + '</div>'
-        + '<div style="height:4px;background:'+a+'"></div>'
-        + '<div style="padding:1.5rem 1.875rem 1.375rem">'
-        +   '<div style="font-size:.5625rem;letter-spacing:.12em;text-transform:uppercase;color:'+a+';font-weight:600;margin-bottom:.5rem">'+edLight('typeLabel',typeLabel)+'</div>'
-        +   '<div style="font-family:Cormorant Garamond,serif;font-size:1.875rem;font-weight:600;line-height:1.1;margin-bottom:.2rem">'+edLight('address',fullAddr(d))+'</div>'
-        +   '<div style="font-size:.875rem;color:var(--ink-muted);margin-bottom:1rem">'+edLight('city',d.ci)+'</div>'
-        +   '<div style="display:flex;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:1rem">'
-        +     '<div style="flex:1;text-align:center;padding:.625rem 0;border-right:1px solid var(--border)"><span style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:'+a+';display:block">'+d.bd+'</span><span style="font-size:.5rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted)">Beds</span></div>'
-        +     '<div style="flex:1;text-align:center;padding:.625rem 0;border-right:1px solid var(--border)"><span style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:'+a+';display:block">'+d.bt+'</span><span style="font-size:.5rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted)">Baths</span></div>'
-        +     '<div style="flex:1;text-align:center;padding:.625rem 0;border-right:1px solid var(--border)"><span style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:'+a+';display:block">'+d.sq+'</span><span style="font-size:.5rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted)">Sqft</span></div>'
-        +     '<div style="flex:1;text-align:center;padding:.625rem 0"><span style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:600;color:'+a+';display:block">'+d.yr+'</span><span style="font-size:.5rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted)">Built</span></div>'
-        +   '</div>'
-        +   '<div style="display:flex;justify-content:space-between;align-items:flex-end;padding-top:.5rem">'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.75rem;font-weight:600;color:'+a+'">'+edLight('price',d.pr)+'</div>'
-        +     '<div style="text-align:right">'
-        +       (logoData?'<img src="'+logoData+'" style="max-height:40px;max-width:120px;object-fit:contain;display:block;margin-left:auto;margin-bottom:.25rem" alt="Logo"/>':'')
-        +       '<div style="font-size:.875rem;font-weight:500">'+edLight('agentName',d.ag)+'</div>'
-        +       (d.br?'<div style="font-size:.6875rem;color:var(--ink-muted)">'+edLight('brokerage',d.br)+'</div>':'')
-        +       phBlock("font-size:.6875rem;color:var(--ink-muted)")
-        +     '</div>'
-        +   '</div>'
-        + '</div>'
-        + customTextBlock('padding:.25rem 1.875rem .625rem;font-size:.8125rem;color:var(--ink-muted);font-style:italic')
-        + '</div>';
-    }
-
-  // ════════════ SPLIT PANEL ════════════
-  } else if (lay === 'split') {
-    if (isVert) {
-      tpl = '<div class="st-wrap"><div class="stv-card">'
-        + '<div style="position:absolute;top:0;left:0;right:0;height:58%;overflow:hidden">'
-        +   photoSlot('v-main', 0, 'position:relative;width:100%;height:100%;')
-        + '</div>'
-        + '<div style="position:absolute;top:58%;left:0;right:0;bottom:0;background:#0f0f0f;padding:1rem 1.125rem;z-index:2;display:flex;flex-direction:column;justify-content:space-between">'
-        +   '<div>'
-        +     '<div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:'+a+';font-weight:600;margin-bottom:.375rem">'+ed('typeLabel',typeLabel)+'</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff;line-height:1.2;margin-bottom:.2rem">'+ed('address',fullAddr(d))+'</div>'
-        +     '<div style="font-size:.625rem;color:rgba(255,255,255,.6);margin-bottom:.5rem">'+ed('city',d.ci)+'</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:'+a+'">'+ed('price',d.pr)+'</div>'
-        +     statsBlock(true)
-        +   '</div>'
-        +   '<div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.1);padding-top:.5rem">'
-        +     (logoData
-                ? '<img src="'+logoData+'" style="max-height:40px;max-width:110px;object-fit:contain;display:block;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))" alt="Logo"/>'
-                : '<div><div style="font-size:.75rem;font-weight:500;color:#fff">'+ed('agentName',d.ag)+'</div>'+(d.br?'<div style="font-size:.5625rem;color:rgba(255,255,255,.6)">'+ed('brokerage',d.br)+'</div>':'')+'</div>')
-        +     phBlock("font-size:.625rem;color:rgba(255,255,255,.6)")
-        +   '</div>'
-        + '</div>'
-        + customTextBlock('position:absolute;top:50%;left:1.375rem;z-index:5;font-size:.875rem;font-weight:500;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)')
-        + '</div></div>' + caption;
-    } else {
-      tpl = '<div style="display:grid;grid-template-columns:1fr 1fr;max-width:580px;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden">'
-        + '<div style="position:relative;min-height:380px">'
-        +   photoSlot('h-main', 0, 'position:absolute;inset:0;')
-        + '</div>'
-        + '<div style="background:#0f0f0f;padding:1.75rem 1.5rem;display:flex;flex-direction:column;justify-content:space-between">'
-        +   '<div>'
-        +     '<div style="font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:'+a+';font-weight:600;margin-bottom:.5rem">'+ed('typeLabel',typeLabel)+'</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.5rem;font-weight:600;color:#fff;line-height:1.2;margin-bottom:.2rem">'+ed('address',fullAddr(d))+'</div>'
-        +     '<div style="font-size:.75rem;color:rgba(255,255,255,.55);margin-bottom:1.125rem">'+ed('city',d.ci)+'</div>'
-        +     '<div style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.125rem">'
-        +       '<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:.4rem"><span style="font-size:.75rem;color:rgba(255,255,255,.55)">Bedrooms</span><strong style="font-size:.75rem;color:#fff">'+d.bd+'</strong></div>'
-        +       '<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:.4rem"><span style="font-size:.75rem;color:rgba(255,255,255,.55)">Bathrooms</span><strong style="font-size:.75rem;color:#fff">'+d.bt+'</strong></div>'
-        +       '<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:.4rem"><span style="font-size:.75rem;color:rgba(255,255,255,.55)">Square Feet</span><strong style="font-size:.75rem;color:#fff">'+d.sq+'</strong></div>'
-        +       '<div style="display:flex;justify-content:space-between"><span style="font-size:.75rem;color:rgba(255,255,255,.55)">Year Built</span><strong style="font-size:.75rem;color:#fff">'+d.yr+'</strong></div>'
-        +     '</div>'
-        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.875rem;font-weight:600;color:'+a+'">'+ed('price',d.pr)+'</div>'
-        +   '</div>'
-        +   '<div style="border-top:1px solid rgba(255,255,255,.1);padding-top:1rem">'
-        +     (logoData?'<img src="'+logoData+'" style="max-height:48px;max-width:140px;object-fit:contain;display:block;margin-bottom:.625rem;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))" alt="Logo"/>':'')
-        +     '<div style="font-size:.8125rem;font-weight:500;color:#fff">'+ed('agentName',d.ag)+'</div>'
-        +     (d.br?'<div style="font-size:.6875rem;color:rgba(255,255,255,.55);margin-top:2px">'+ed('brokerage',d.br)+'</div>':'')
-        +     phBlock("font-size:.6875rem;color:rgba(255,255,255,.55);margin-top:1px")
-        +   '</div>'
-        + '</div>'
-        + customTextBlock('padding:.375rem 1.5rem .625rem;font-size:.8125rem;color:rgba(255,255,255,.6);font-style:italic')
-        + '</div>';
-    }
-
   // ════════════════════════════════════════════════════════════════
-  // ALL 4 CAROUSEL THEMES — always 9:16 vertical
+  // CAROUSEL THEMES — always 9:16 vertical
   // ════════════════════════════════════════════════════════════════
-  } else if (lay === 'classic' || lay === 'dark' || lay === 'minimal' || lay === 'editorial') {
+  if (lay === 'minimal' || lay === 'classic' || lay === 'dark' || lay === 'editorial' || lay === 'featured') {
 
     var CARD_W = '360px';
     var SAFE   = '1.375rem'; // safe zone ~20px from edges
@@ -1989,12 +1720,62 @@ function renderPreview(d,copy){
       );
     }
 
+    // ── Featured layout (Coming Soon / listing card with 2 photos + features) ──
+    function buildInfoFeatured() {
+      // Header bar: type label centered on gold/accent band
+      // White card: address centered top, left col = photo + agent, right col = features + photo + price
+      // Background: second photo as blurred backdrop
+      var SAFE2 = '1.25rem';
+      return '<div style="position:relative;max-width:'+CARD_W+';border-radius:var(--rl);overflow:visible;clip-path:inset(0 round var(--rl));">'
+        + '<div style="position:absolute;inset:-4px;border:4px solid '+a+';border-radius:calc(var(--rl) + 4px);pointer-events:none;z-index:30"></div>'
+        // accent header band
+        + '<div style="background:linear-gradient(135deg,'+a+',#b8943a);padding:.5rem '+SAFE2+';text-align:center;border-radius:var(--rl) var(--rl) 0 0">'
+        +   '<div style="font-size:.6875rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.3)">'+ed('typeLabel',typeLabel,'editable')+'</div>'
+        + '</div>'
+        // white card body
+        + '<div style="background:#fff;padding:'+SAFE2+' '+SAFE2+' .75rem">'
+        +   '<div style="text-align:center;border-bottom:1px solid #e8e4de;padding-bottom:.75rem;margin-bottom:.75rem">'
+        +     '<div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#1a1a1a;line-height:1.25">'+ed('address',fullAddr(d),'editable')+'</div>'
+        +     (hiddenEls['city']?'':'<div style="font-size:.625rem;letter-spacing:.08em;text-transform:uppercase;color:#777;margin-top:.125rem">'+ed('city',d.ci,'editable')+'</div>')
+        +   '</div>'
+        // two-col layout
+        +   '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">'
+        // LEFT col: main photo + agent info
+        +     '<div style="display:flex;flex-direction:column;gap:.5rem">'
+        +       '<div style="height:160px;position:relative;overflow:hidden;border-radius:4px">'+photoSlot('ft-main',0,'position:absolute;inset:0;')+'</div>'
+        +       '<div style="font-size:.5rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#1a1a1a;line-height:1.6">'
+        +         ed('agentName',d.ag,'editable')
+        +         (d.br?'<br><span style="font-weight:400;color:#777">'+ed('brokerage',d.br,'editable')+'</span>':'')
+        +         (d.ph?'<br><span style="font-weight:400;color:#999">'+d.ph+'</span>':'')
+        +       '</div>'
+        +       (logoData?'<img src="'+logoData+'" style="max-height:24px;max-width:80px;object-fit:contain;display:block" alt="Logo"/>':'')
+        +     '</div>'
+        // RIGHT col: stats + second photo + price
+        +     '<div style="display:flex;flex-direction:column;gap:.375rem">'
+        +       (hiddenEls['stats']?'':'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.25rem">'
+        +         '<div style="display:flex;align-items:center;gap:3px"><span style="font-size:.4375rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#555">'+d.sq+' Sq Ft</span></div>'
+        +         '<div style="display:flex;align-items:center;gap:3px"><span style="font-size:.4375rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#555">'+d.bd+' Beds</span></div>'
+        +         '<div style="display:flex;align-items:center;gap:3px"><span style="font-size:.4375rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#555">'+d.bt+' Baths</span></div>'
+        +         (d.fe?'<div style="display:flex;align-items:center;gap:3px"><span style="font-size:.4375rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#555">'+d.fe.split(',')[0].trim()+'</span></div>':'')
+        +       '</div>')
+        +       '<div style="flex:1;position:relative;overflow:hidden;border-radius:4px;min-height:100px">'+photoSlot('ft-sec',1,'position:absolute;inset:0;')+'</div>'
+        +       (hiddenEls['price']?'':'<div style="background:'+a+';padding:.5rem .375rem;text-align:center;border-radius:4px">'
+        +         '<div style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:700;color:#fff">'+ed('price',d.pr,'editable')+'</div>'
+        +       '</div>')
+        +     '</div>'
+        +   '</div>'
+        + '</div>'
+        + customTextBlock('padding:.25rem '+SAFE2+' .375rem;background:#fff;font-size:.5625rem;color:var(--ink-muted);font-style:italic;border-radius:0 0 var(--rl) var(--rl)')
+        + '</div>';
+    }
+
     // ── Pick info slide builder by theme ─────────────────────────
     var infoBuilders = {
       classic:   buildInfoClassic,
       dark:      buildInfoDark,
       minimal:   buildInfoMinimal,
-      editorial: buildInfoEditorial
+      editorial: buildInfoEditorial,
+      featured:  buildInfoFeatured
     };
 
     // ── Build & render carousel ───────────────────────────────────
