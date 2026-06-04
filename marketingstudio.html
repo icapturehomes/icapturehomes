@@ -1437,6 +1437,28 @@ async function generate(){
 
 
 
+// ── Property stat SVG icons ───────────────────────────────────────
+function svgIcon(type, size) {
+  var s = size || 14;
+  var icons = {
+    bed: '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3"/><path d="M2 9h20v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M6 9V6"/><path d="M2 13h20"/><rect x="6" y="6" width="4" height="3" rx="1"/></svg>',
+    bath: '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><line x1="4" y1="13" x2="20" y2="13"/><path d="M12 19v2"/><path d="M8 19v2"/><path d="M16 19v2"/></svg>',
+    sqft: '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+    garage: '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="1"/><path d="M12 2L2 10h20z"/><line x1="8" y1="16" x2="16" y2="16"/><line x1="8" y1="13" x2="16" y2="13"/></svg>'
+  };
+  return icons[type] || '';
+}
+
+function statItem(icon, value, label, color) {
+  var c = color || '#555';
+  return '<div style="display:flex;align-items:center;gap:5px;color:'+c+'">'
+    + '<span style="flex-shrink:0;display:flex;align-items:center">'+svgIcon(icon, 13)+'</span>'
+    + '<span style="font-size:.5rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase">'+value+'</span>'
+    + (label ? '<span style="font-size:.4375rem;letter-spacing:.04em;text-transform:uppercase;opacity:.7">'+label+'</span>' : '')
+    + '</div>';
+}
+
+
 function renderPreview(d,copy){
   var a = ac();
   var panel = document.getElementById('previewPanel');
@@ -1594,12 +1616,12 @@ function renderPreview(d,copy){
           +   (hiddenEls['price']?'':'<div style="font-family:Cormorant Garamond,serif;font-size:2rem;font-weight:700;line-height:1;color:'+a+'">'+ed('price',d.pr,'editable')+'</div>')
           + '</div>'
           + photoBox('ic-main',0,300)
-          + (hiddenEls['stats']?'':'<div style="background:#fff;padding:.5rem '+SAFE+';border-top:2px solid '+a+';display:flex;align-items:center;justify-content:center;gap:.25rem">'
-            +'<span style="font-size:.5rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase">'+d.bd+' Beds</span>'
-            +'<span style="color:#ccc;margin:0 .2rem">|</span>'
-            +'<span style="font-size:.5rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase">'+d.bt+' Baths</span>'
-            +'<span style="color:#ccc;margin:0 .2rem">|</span>'
-            +'<span style="font-size:.5rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase">'+d.sq+' Sq. Ft.</span>'
+          + (hiddenEls['stats']?'':'<div style="background:#fff;padding:.5rem '+SAFE+';border-top:2px solid '+a+';display:flex;align-items:center;justify-content:center;gap:.75rem">'
+            + statItem('bed',d.bd,'Beds')
+            +'<span style="color:#ddd">|</span>'
+            + statItem('bath',d.bt,'Baths')
+            +'<span style="color:#ddd">|</span>'
+            + statItem('sqft',d.sq,'Sq Ft')
             +'</div>')
           + '<div style="background:#fff;padding:.375rem '+SAFE+' .625rem;display:flex;align-items:center;justify-content:space-between;border-radius:0 0 var(--rl) var(--rl)">'
           +   '<div style="width:24px"></div>'
@@ -1626,10 +1648,10 @@ function renderPreview(d,copy){
           +   (hiddenEls['typeLabel']?'':'<div style="font-size:.5625rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:'+a+';margin-bottom:.375rem">'+ed('typeLabel',typeLabel)+'</div>')
           +   (hiddenEls['price']?'':'<div style="font-family:Cormorant Garamond,serif;font-size:2.25rem;font-weight:700;color:#fff;line-height:1;margin-bottom:.375rem">'+ed('price',d.pr)+'</div>')
           +   '<div style="font-size:.625rem;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.75);margin-bottom:.75rem">'+ed('address',fullAddr(d))+(hiddenEls['city']?'':' &middot; '+d.ci)+'</div>'
-          +   (hiddenEls['stats']?'':'<div style="display:flex;gap:.75rem">'
-            +'<div style="text-align:center"><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff">'+d.bd+'</div><div style="font-size:.4375rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55)">Beds</div></div>'
-            +'<div style="text-align:center"><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff">'+d.bt+'</div><div style="font-size:.4375rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55)">Baths</div></div>'
-            +'<div style="text-align:center"><div style="font-family:Cormorant Garamond,serif;font-size:1.375rem;font-weight:600;color:#fff">'+d.sq+'</div><div style="font-size:.4375rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55)">Sq Ft</div></div>'
+          +   (hiddenEls['stats']?'':'<div style="display:flex;gap:1rem">'
+            + statItem('bed',d.bd,'Beds','rgba(255,255,255,.85)')
+            + statItem('bath',d.bt,'Baths','rgba(255,255,255,.85)')
+            + statItem('sqft',d.sq,'Sq Ft','rgba(255,255,255,.85)')
             +'</div>')
           +   customTextBlock('margin-top:.5rem;font-size:.6rem;color:rgba(255,255,255,.55);font-style:italic')
           + '</div>'
@@ -1650,10 +1672,10 @@ function renderPreview(d,copy){
           +   (hiddenEls['city']?'':'<div style="font-size:.5625rem;color:#aaa;margin-bottom:1rem">'+ed('city',d.ci,'editable')+'</div>')
           + '</div>'
           + photoBox('ic-main',0,320)
-          + (hiddenEls['stats']?'':'<div style="padding:.625rem '+SAFE+';display:flex;gap:1.25rem;border-top:1px solid #e8e8e8">'
-            +'<div><div style="font-family:Cormorant Garamond,serif;font-size:1.125rem;font-weight:600;color:#1a1a1a">'+d.bd+'</div><div style="font-size:.4375rem;letter-spacing:.1em;text-transform:uppercase;color:#aaa">Beds</div></div>'
-            +'<div><div style="font-family:Cormorant Garamond,serif;font-size:1.125rem;font-weight:600;color:#1a1a1a">'+d.bt+'</div><div style="font-size:.4375rem;letter-spacing:.1em;text-transform:uppercase;color:#aaa">Baths</div></div>'
-            +'<div><div style="font-family:Cormorant Garamond,serif;font-size:1.125rem;font-weight:600;color:#1a1a1a">'+d.sq+'</div><div style="font-size:.4375rem;letter-spacing:.1em;text-transform:uppercase;color:#aaa">Sq Ft</div></div>'
+          + (hiddenEls['stats']?'':'<div style="padding:.625rem '+SAFE+';display:flex;gap:1.25rem;border-top:1px solid #e8e8e8;align-items:center">'
+            + statItem('bed',d.bd,'Beds','#999')
+            + statItem('bath',d.bt,'Baths','#999')
+            + statItem('sqft',d.sq,'Sq Ft','#999')
             +'</div>')
           + '<div style="padding:.375rem '+SAFE+' .75rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #e8e8e8">'
           +   (logoData?'<img src="'+logoData+'" style="max-height:30px;max-width:100px;object-fit:contain;display:inline-block" alt="Logo"/>':'<span style="font-size:.5625rem;font-weight:600;color:#aaa">'+d.ag+'</span>')
@@ -1679,10 +1701,10 @@ function renderPreview(d,copy){
           + '<div style="position:absolute;bottom:0;left:0;right:0;z-index:5;background:rgba(255,255,255,.14);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.3);padding:1rem '+SAFE+'">'
           +   (hiddenEls['price']?'':'<div style="font-family:Cormorant Garamond,serif;font-size:1.875rem;font-weight:700;color:#fff;line-height:1;margin-bottom:.25rem">'+ed('price',d.pr)+'</div>')
           +   '<div style="font-size:.5625rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:.5rem">'+ed('address',fullAddr(d))+(hiddenEls['city']?'':' &middot; '+ed('city',d.ci))+'</div>'
-          +   (hiddenEls['stats']?'':'<div style="display:flex;gap:.625rem;margin-bottom:.625rem">'
-            +'<span style="font-size:.5rem;color:rgba(255,255,255,.75);background:rgba(255,255,255,.15);padding:2px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.25)">'+d.bd+' Beds</span>'
-            +'<span style="font-size:.5rem;color:rgba(255,255,255,.75);background:rgba(255,255,255,.15);padding:2px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.25)">'+d.bt+' Baths</span>'
-            +'<span style="font-size:.5rem;color:rgba(255,255,255,.75);background:rgba(255,255,255,.15);padding:2px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.25)">'+d.sq+' Sq Ft</span>'
+          +   (hiddenEls['stats']?'':'<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.625rem">'
+            +'<span style="font-size:.4375rem;color:rgba(255,255,255,.85);background:rgba(255,255,255,.15);padding:3px 7px;border-radius:20px;border:1px solid rgba(255,255,255,.25);display:inline-flex;align-items:center;gap:4px">'+svgIcon('bed',10)+d.bd+' Beds</span>'
+            +'<span style="font-size:.4375rem;color:rgba(255,255,255,.85);background:rgba(255,255,255,.15);padding:3px 7px;border-radius:20px;border:1px solid rgba(255,255,255,.25);display:inline-flex;align-items:center;gap:4px">'+svgIcon('bath',10)+d.bt+' Baths</span>'
+            +'<span style="font-size:.4375rem;color:rgba(255,255,255,.85);background:rgba(255,255,255,.15);padding:3px 7px;border-radius:20px;border:1px solid rgba(255,255,255,.25);display:inline-flex;align-items:center;gap:4px">'+svgIcon('sqft',10)+d.sq+' Sq Ft</span>'
             +'</div>')
           +   '<div style="display:flex;align-items:center;justify-content:space-between">'
           +     (logoData?'<img src="'+logoData+'" style="max-height:28px;max-width:90px;object-fit:contain;display:inline-block;filter:brightness(0) invert(1)" alt="Logo"/>':'<span style="font-size:.5rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.7)">'+d.ag+'</span>')
@@ -1752,12 +1774,7 @@ function renderPreview(d,copy){
         +     '</div>'
         // RIGHT col: stats + second photo + price
         +     '<div style="display:flex;flex-direction:column;gap:.375rem">'
-        +       (hiddenEls['stats']?'':'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.25rem">'
-        +         '<div style="display:flex;align-items:center;gap:3px"><span style="font-size:.4375rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#555">'+d.sq+' Sq Ft</span></div>'
-        +         '<div style="display:flex;align-items:center;gap:3px"><span style="font-size:.4375rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#555">'+d.bd+' Beds</span></div>'
-        +         '<div style="display:flex;align-items:center;gap:3px"><span style="font-size:.4375rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#555">'+d.bt+' Baths</span></div>'
-        +         (d.fe?'<div style="display:flex;align-items:center;gap:3px"><span style="font-size:.4375rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#555">'+d.fe.split(',')[0].trim()+'</span></div>':'')
-        +       '</div>')
+        +       (hiddenEls['stats']?'':'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem .25rem;margin-bottom:.25rem">'+statItem('sqft',d.sq,'Sq Ft')+statItem('bed', d.bd,'Beds')+statItem('bath',d.bt,'Baths')+(d.fe ? statItem('garage',d.fe.split(',')[0].trim(),'') : '')+'</div>')
         +       '<div style="flex:1;position:relative;overflow:hidden;border-radius:4px;min-height:100px">'+photoSlot('ft-sec',1,'position:absolute;inset:0;')+'</div>'
         +       (hiddenEls['price']?'':'<div style="background:'+a+';padding:.5rem .375rem;text-align:center;border-radius:4px">'
         +         '<div style="font-family:Cormorant Garamond,serif;font-size:1.25rem;font-weight:700;color:#fff">'+ed('price',d.pr,'editable')+'</div>'
