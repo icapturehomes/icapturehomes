@@ -9,141 +9,74 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    :root {
-      --gold: #c8a96e; --bg: #0a0a0a; --bg-mid: #0d0d0d;
-      --text: #f0ede6; --text-muted: rgba(240,237,230,0.55);
-      --text-dim: rgba(240,237,230,0.3); --border: rgba(240,237,230,0.08);
-    }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; cursor: none; }
-    .cursor { position:fixed; width:8px; height:8px; background:var(--gold); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width 0.2s,height 0.2s; }
-    .cursor-ring { position:fixed; width:32px; height:32px; border:1px solid rgba(200,169,110,0.4); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
-    header {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:24px 48px; border-bottom:0.5px solid var(--border);
-      position:sticky; top:0; background:rgba(10,10,10,0.95);
-      backdrop-filter:blur(16px); z-index:100;
-    }
-    .logo { font-family:'Playfair Display',serif; font-size:18px; color:var(--text); text-decoration:none; letter-spacing:0.02em; }
-    .back-link { font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); text-decoration:none; transition:color 0.2s; display:flex; align-items:center; gap:6px; }
-    .back-link:hover { color:var(--gold); }
-    .back-link::before { content:'←'; }
-    .page-intro { padding:56px 48px 40px; border-bottom:0.5px solid var(--border); }
-    .page-eyebrow { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
-    .page-eyebrow::before { content:''; display:block; width:18px; height:1px; background:var(--gold); }
-    .page-intro h1 { font-family:'Playfair Display',serif; font-size:clamp(28px,4vw,48px); font-weight:500; color:var(--text); line-height:1.1; }
-    .page-intro p { font-size:13px; font-weight:300; color:var(--text-muted); margin-top:12px; max-width:480px; line-height:1.75; }
-    .galleries-grid {
-      display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
-      background:var(--border); padding:1px; margin:1px;
-    }
-    @media(max-width:900px) { .galleries-grid { grid-template-columns:repeat(2,1fr); } }
-    @media(max-width:500px) { .galleries-grid { grid-template-columns:1fr; } }
-    .gcard { display:block; text-decoration:none; background:var(--bg-mid); transition:background 0.2s; }
-    .gcard:hover { background:#131313; }
-    .gcard-thumb { position:relative; aspect-ratio:3/2; overflow:hidden; }
-    .gcard-thumb img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.5s ease; }
-    .gcard:hover .gcard-thumb img { transform:scale(1.04); }
-    .gcard-overlay {
-      position:absolute; inset:0;
-      background:rgba(10,10,10,0);
-      display:flex; align-items:center; justify-content:center;
-      transition:background 0.3s;
-    }
-    .gcard:hover .gcard-overlay { background:rgba(10,10,10,0.55); }
-    .gcard-view {
-      font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
-      color:var(--text); background:rgba(200,169,110,0.9);
-      padding:10px 24px; opacity:0; transform:translateY(8px);
-      transition:opacity 0.25s,transform 0.25s;
-    }
-    .gcard:hover .gcard-view { opacity:1; transform:translateY(0); }
-    .gcard-info { padding:20px 24px; border-top:0.5px solid var(--border); }
-    .gcard-name { font-family:'Playfair Display',serif; font-size:17px; font-weight:500; color:var(--text); margin-bottom:6px; }
-    .gcard-meta { font-size:11px; color:var(--text-dim); letter-spacing:0.05em; }
-    footer { padding:32px 48px; border-top:0.5px solid var(--border); display:flex; align-items:center; justify-content:space-between; margin-top:1px; }
-    .footer-logo { font-family:'Playfair Display',serif; font-size:14px; color:var(--text-dim); }
-    .footer-note { font-size:11px; color:var(--text-dim); }
-    @media(max-width:600px) {
-      header { padding:16px 20px; }
-      .page-intro { padding:32px 20px 28px; }
-      footer { padding:24px 20px; flex-direction:column; gap:12px; text-align:center; }
-    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{--gold:#c8a96e;--bg:#0a0a0a;--bg-mid:#0d0d0d;--text:#f0ede6;--text-muted:rgba(240,237,230,0.55);--text-dim:rgba(240,237,230,0.3);--border:rgba(240,237,230,0.08)}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;cursor:none}
+    .cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+    .cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(200,169,110,0.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+    header{display:flex;align-items:center;justify-content:space-between;padding:24px 48px;border-bottom:.5px solid var(--border);position:sticky;top:0;background:rgba(10,10,10,0.95);backdrop-filter:blur(16px);z-index:100}
+    .logo{font-family:'Playfair Display',serif;font-size:18px;color:var(--text);text-decoration:none}
+    .back-link{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:6px}
+    .back-link:hover{color:var(--gold)}
+    .back-link::before{content:'←'}
+    .page-intro{padding:56px 48px 40px;border-bottom:.5px solid var(--border)}
+    .page-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+    .page-eyebrow::before{content:'';display:block;width:18px;height:1px;background:var(--gold)}
+    .page-intro h1{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,48px);font-weight:500;line-height:1.1}
+    .page-intro p{font-size:13px;font-weight:300;color:var(--text-muted);margin-top:12px;max-width:480px;line-height:1.75}
+    .galleries-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);padding:1px;margin:1px}
+    @media(max-width:900px){.galleries-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:500px){.galleries-grid{grid-template-columns:1fr}}
+    .gcard{display:block;text-decoration:none;background:var(--bg-mid);transition:background .2s}
+    .gcard:hover{background:#131313}
+    .gcard-thumb{position:relative;aspect-ratio:3/2;overflow:hidden}
+    .gcard-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+    .gcard:hover .gcard-thumb img{transform:scale(1.04)}
+    .gcard-overlay{position:absolute;inset:0;background:rgba(10,10,10,0);display:flex;align-items:center;justify-content:center;transition:background .3s}
+    .gcard:hover .gcard-overlay{background:rgba(10,10,10,0.55)}
+    .gcard-view{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text);background:rgba(200,169,110,0.9);padding:10px 24px;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
+    .gcard:hover .gcard-view{opacity:1;transform:translateY(0)}
+    .gcard-info{padding:20px 24px;border-top:.5px solid var(--border)}
+    .gcard-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--text);margin-bottom:6px}
+    .gcard-meta{font-size:11px;color:var(--text-dim);letter-spacing:.05em}
+    footer{padding:32px 48px;border-top:.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;margin-top:1px}
+    .footer-logo{font-family:'Playfair Display',serif;font-size:14px;color:var(--text-dim)}
+    .footer-note{font-size:11px;color:var(--text-dim)}
+    @media(max-width:600px){header{padding:16px 20px}.page-intro{padding:32px 20px 28px}footer{padding:24px 20px;flex-direction:column;gap:12px;text-align:center}}
   </style>
 </head>
 <body>
   <div class="cursor" id="cur"></div>
   <div class="cursor-ring" id="ring"></div>
   <header>
-    <a href="https://www.icapturehomes.com" class="logo">iCaptureHomes</a>
+    <a href="https://www.icapturehomes.com" class="logo">iCaptureHomes Photography</a>
     <a href="https://www.icapturehomes.com" class="back-link">Back to site</a>
   </header>
   <div class="page-intro">
-    <div class="page-eyebrow">iCaptureHomes Photography</div>
-    <h1>Client Galleries</h1>
-    <p>Select your gallery below to view your photos. Images are for viewing only and cannot be downloaded from this page.</p>
+    <div class="page-eyebrow">Client Galleries</div>
+    <h1>Your Photos,<br>Delivered.</h1>
+    <p>Private galleries for iCaptureHomes clients. Select your gallery below to view and download your images.</p>
   </div>
   <div class="galleries-grid">
-      <a href="laisonkdo.html" class="gcard">
-        <div class="gcard-thumb">
-          <img src="https://lh3.googleusercontent.com/d/1gD7EEV3TrFVuIrTnOziXxdt7Hx8lQckd" alt="Laison — KDO" loading="lazy">
-          <div class="gcard-overlay">
-            <div class="gcard-view">View Gallery →</div>
-          </div>
-        </div>
-        <div class="gcard-info">
-          <div class="gcard-name">Laison — KDO</div>
-          <div class="gcard-meta">145 photos · May 2026</div>
-        </div>
-      </a>
-      <a href="mclendonave.html" class="gcard">
-        <div class="gcard-thumb">
-          <img src="https://lh3.googleusercontent.com/d/1XlanQX0GZr1rT_JIK8BPkBkIRPt5Xxpd" alt="McLendon Ave" loading="lazy">
-          <div class="gcard-overlay">
-            <div class="gcard-view">View Gallery →</div>
-          </div>
-        </div>
-        <div class="gcard-info">
-          <div class="gcard-name">McLendon Ave</div>
-          <div class="gcard-meta">57 photos · May 2026</div>
-        </div>
-      </a>
-      <a href="lainstonctheadshots.html" class="gcard">
-        <div class="gcard-thumb">
-          <img src="https://lh3.googleusercontent.com/d/1qDVWTW4YvKEXgANdhBs5iSzYf9XfcYMv" alt="Lainston Ct Headshots" loading="lazy">
-          <div class="gcard-overlay">
-            <div class="gcard-view">View Gallery →</div>
-          </div>
-        </div>
-        <div class="gcard-info">
-          <div class="gcard-name">Lainston Ct — Headshots</div>
-          <div class="gcard-meta">33 photos · May 2026</div>
-        </div>
-      </a>
-      <a href="randalltestshots.html" class="gcard">
-        <div class="gcard-thumb">
-          <img src="https://lh3.googleusercontent.com/d/1VyTK2jarns7E4lMYzrJyn8lZAXFVVFuX" alt="Randall Test Shots" loading="lazy">
-          <div class="gcard-overlay">
-            <div class="gcard-view">View Gallery →</div>
-          </div>
-        </div>
-        <div class="gcard-info">
-          <div class="gcard-name">Randall — Test Shots</div>
-          <div class="gcard-meta">55 photos · May 2026</div>
-        </div>
-      </a>
+    <a href="newjersey.html" class="gcard">
+      <div class="gcard-thumb">
+        <img src="https://lh3.googleusercontent.com/d/13pz-5SjhBmoz2R1rx2GwnCySptBb-nnG" alt="New Jersey">
+        <div class="gcard-overlay"><span class="gcard-view">View Gallery</span></div>
+      </div>
+      <div class="gcard-info">
+        <div class="gcard-name">New Jersey</div>
+        <div class="gcard-meta">July 2026 &nbsp;&middot;&nbsp; 181 images</div>
+      </div>
+    </a>
   </div>
   <footer>
-    <div class="footer-logo">iCaptureHomes Photography</div>
-    <div class="footer-note">Private — not for public distribution</div>
+    <span class="footer-logo">iCaptureHomes Photography</span>
+    <span class="footer-note">Private client galleries &mdash; not for public distribution</span>
   </footer>
   <script>
-    var cx=0,cy=0,rx=0,ry=0;
-    var cur=document.getElementById('cur'),ring=document.getElementById('ring');
-    document.addEventListener('mousemove',function(e){cx=e.clientX;cy=e.clientY;cur.style.left=cx+'px';cur.style.top=cy+'px';});
-    function animRing(){rx+=(cx-rx)*0.12;ry+=(cy-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
-    animRing();
-    document.addEventListener('contextmenu',function(e){e.preventDefault();});
+    const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+    let rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';setTimeout(()=>{rx+=(e.clientX-rx)*.15;ry+=(e.clientY-ry)*.15;ring.style.left=rx+'px';ring.style.top=ry+'px';},0)});
   </script>
 </body>
 </html>
