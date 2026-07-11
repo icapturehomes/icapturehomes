@@ -727,6 +727,8 @@ function render(){
     let sy = item.focusY * item.img.height - sh/2;
     sx = Math.min(Math.max(sx, 0), item.img.width - sw);
     sy = Math.min(Math.max(sy, 0), item.img.height - sh);
+    item.focusX = (sx + sw/2) / item.img.width;
+    item.focusY = (sy + sh/2) / item.img.height;
     ctx.drawImage(item.img, sx, sy, sw, sh, x0, y0, innerW, innerH);
   } else {
     let drawW, drawH;
@@ -990,26 +992,23 @@ let dragging = false;
 let didDrag = false;
 let potentialDrag = false;
 let dragStartX = 0, dragStartY = 0;
+let lastPointerX = 0, lastPointerY = 0;
 const DRAG_THRESHOLD = 6;
 
-function updateFocusFromEvent(e){
+function panByDelta(dxCss, dyCss){
   const item = activeItem();
   if(!item || !fillFrame || mode === 'original') return;
 
   const rect = canvas.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;
   const scaleY = canvas.height / rect.height;
-  const px = (e.clientX - rect.left) * scaleX;
-  const py = (e.clientY - rect.top) * scaleY;
+  const dxCanvas = dxCss * scaleX;
+  const dyCanvas = dyCss * scaleY;
 
   const size = currentCanvasSize();
   const bottomB = polaroid ? bottomExtra : borderPx;
   const innerW = size.w - borderPx*2;
   const innerH = size.h - borderPx - bottomB;
-  const x0 = borderPx, y0 = borderPx;
-
-  const relX = Math.min(Math.max((px - x0) / innerW, 0), 1);
-  const relY = Math.min(Math.max((py - y0) / innerH, 0), 1);
 
   const imgRatio = item.img.width / item.img.height;
   const boxRatio = innerW / innerH;
@@ -1019,11 +1018,16 @@ function updateFocusFromEvent(e){
 
   let sx = item.focusX * item.img.width - sw/2;
   let sy = item.focusY * item.img.height - sh/2;
+
+  // dragging the finger right/down should drag the photo right/down (natural pan feel)
+  sx -= dxCanvas * (sw / innerW);
+  sy -= dyCanvas * (sh / innerH);
+
   sx = Math.min(Math.max(sx, 0), item.img.width - sw);
   sy = Math.min(Math.max(sy, 0), item.img.height - sh);
 
-  item.focusX = (sx + relX * sw) / item.img.width;
-  item.focusY = (sy + relY * sh) / item.img.height;
+  item.focusX = (sx + sw/2) / item.img.width;
+  item.focusY = (sy + sh/2) / item.img.height;
   render();
 }
 
@@ -1035,6 +1039,8 @@ canvas.addEventListener('pointerdown', e => {
   didDrag = false;
   dragStartX = e.clientX;
   dragStartY = e.clientY;
+  lastPointerX = e.clientX;
+  lastPointerY = e.clientY;
   canvas.setPointerCapture(e.pointerId);
 });
 canvas.addEventListener('pointermove', e => {
@@ -1046,7 +1052,11 @@ canvas.addEventListener('pointermove', e => {
     dragging = true;
     didDrag = true;
   }
-  updateFocusFromEvent(e);
+  const dx = e.clientX - lastPointerX;
+  const dy = e.clientY - lastPointerY;
+  lastPointerX = e.clientX;
+  lastPointerY = e.clientY;
+  panByDelta(dx, dy);
 });
 canvas.addEventListener('pointerup', () => { potentialDrag = false; dragging = false; });
 canvas.addEventListener('pointercancel', () => { potentialDrag = false; dragging = false; });
