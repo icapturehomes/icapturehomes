@@ -123,6 +123,41 @@
     box-shadow:0 20px 50px -20px rgba(0,0,0,.8);
     border-radius:0;
     transition:aspect-ratio .15s ease;
+    cursor:zoom-in;
+  }
+  .expand-hint{
+    position:absolute;
+    bottom:8px;
+    right:8px;
+    background:rgba(20,20,20,.72);
+    color:var(--dim);
+    font-family:var(--mono);
+    font-size:9.5px;
+    letter-spacing:.04em;
+    padding:4px 8px;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity .15s;
+  }
+  .frame.has-image .expand-hint{ opacity:1; }
+
+  .lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(10,10,10,.94);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    padding:28px;
+    cursor:zoom-out;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    box-shadow:0 30px 80px -20px rgba(0,0,0,.9);
   }
   canvas{
     width:100%;
@@ -406,6 +441,7 @@
     <div class="frame" id="frame">
       <canvas id="canvas" width="1080" height="1920"></canvas>
       <div class="empty" id="emptyMsg">Upload a photo to preview the frame</div>
+      <div class="expand-hint" id="expandHint">⤢ tap to enlarge</div>
     </div>
 
     <label class="dropzone" id="drop">
@@ -465,6 +501,10 @@
   </div>
 </div>
 
+<div class="lightbox" id="lightbox">
+  <img id="lightboxImg" alt="Enlarged preview">
+</div>
+
 <script>
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -511,6 +551,8 @@ const drop = document.getElementById('drop');
 const fileInput = document.getElementById('fileInput');
 const hintText = document.getElementById('hintText');
 const thumbs = document.getElementById('thumbs');
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
 
 function activeItem(){ return activeIndex >= 0 ? queue[activeIndex] : null; }
 
@@ -608,6 +650,8 @@ function render(){
 
   ctx.fillStyle = bgColor;
   ctx.fillRect(0,0,size.w,size.h);
+
+  frame.classList.toggle('has-image', !!item);
 
   if(!item){ updateHint(); updateExifStatus(); return; }
 
@@ -896,6 +940,15 @@ async function downloadAll(){
 }
 
 downloadBtn.addEventListener('click', downloadAll);
+
+frame.addEventListener('click', () => {
+  if(!activeItem()) return;
+  lightboxImg.src = canvas.toDataURL('image/png');
+  lightbox.classList.add('open');
+});
+lightbox.addEventListener('click', () => {
+  lightbox.classList.remove('open');
+});
 
 updateFrameAspect();
 render();
