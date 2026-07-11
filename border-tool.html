@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Story Border — iCaptureHomes</title>
+<title>iCaptureHomes | Border Tool</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
@@ -14,7 +14,7 @@
     --line: #2e2e2e;
     --text: #eae7e1;
     --dim: #8a8580;
-    --accent: #e8703a;
+    --accent: #c8a96e;
     --mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
     --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
@@ -36,9 +36,7 @@
   }
   h1{
     font-size:14px;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    color:var(--dim);
+    letter-spacing:.06em;
     font-weight:600;
     margin:0 0 4px;
   }
@@ -88,7 +86,21 @@
   .mode-btn.active{
     border-color:var(--accent);
     color:var(--text);
-    background:#241a14;
+    background:#26221a;
+  }
+
+  .mode-select{
+    display:none;
+    width:100%;
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--text);
+    font-family:var(--mono);
+    font-size:12px;
+    padding:11px 10px;
+    -webkit-appearance:none;
+    appearance:none;
+    border-radius:0;
   }
 
   .upload-tabs{
@@ -371,20 +383,8 @@
 
     .utab{ padding:9px 4px; font-size:11px; }
 
-    .modes{
-      flex-wrap:nowrap;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
-      scrollbar-width:none;
-    }
-    .modes::-webkit-scrollbar{ display:none; }
-    .mode-btn{
-      flex:0 0 auto;
-      min-width:104px;
-      padding:8px 10px;
-      font-size:10.5px;
-    }
-    .mode-btn b{ font-size:10.5px; margin-bottom:1px; }
+    .modes{ display:none; }
+    .mode-select{ display:block; }
 
     .frame{
       width:auto;
@@ -419,8 +419,7 @@
 <body>
 
 <div class="masthead">
-  <h1>STORY <span>BORDER</span></h1>
-  <div class="sub">iCaptureHomes — white-frame export for social &amp; personal shots</div>
+  <h1>iCaptureHomes <span>|</span> Border Tool</h1>
 </div>
 
 <div class="app">
@@ -430,13 +429,20 @@
       <div class="utab" data-upload="batch">Batch</div>
     </div>
 
-    <div class="modes">
+    <div class="modes" id="modesGrid">
       <div class="mode-btn active" data-mode="story"><b>STORY</b>9:16</div>
       <div class="mode-btn" data-mode="portrait"><b>FEED PORTRAIT</b>4:5</div>
       <div class="mode-btn" data-mode="feed"><b>FEED LANDSCAPE</b>1.91:1</div>
       <div class="mode-btn" data-mode="square"><b>FEED SQUARE</b>1:1</div>
       <div class="mode-btn" data-mode="original"><b>ORIGINAL</b>full photo, any shape</div>
     </div>
+    <select class="mode-select" id="modeSelect">
+      <option value="story">Story — 9:16</option>
+      <option value="portrait">Feed Portrait — 4:5</option>
+      <option value="feed">Feed Landscape — 1.91:1</option>
+      <option value="square">Feed Square — 1:1</option>
+      <option value="original">Original — full photo, any shape</option>
+    </select>
 
     <div class="frame" id="frame">
       <canvas id="canvas" width="1080" height="1920"></canvas>
@@ -490,7 +496,7 @@
         <div class="swatch" data-color="#000000" style="background:#000000"></div>
         <div class="swatch" data-color="#141414" style="background:#141414"></div>
         <label class="swatch custom-swatch" id="customSwatch" title="Custom color">
-          <input type="color" id="customColorInput" value="#e8703a">
+          <input type="color" id="customColorInput" value="#c8a96e">
         </label>
       </div>
     </div>
@@ -551,6 +557,7 @@ const fileInput = document.getElementById('fileInput');
 const hintText = document.getElementById('hintText');
 const thumbs = document.getElementById('thumbs');
 const lightbox = document.getElementById('lightbox');
+const modeSelect = document.getElementById('modeSelect');
 const lightboxImg = document.getElementById('lightboxImg');
 
 function activeItem(){ return activeIndex >= 0 ? queue[activeIndex] : null; }
@@ -826,22 +833,25 @@ document.querySelectorAll('.utab').forEach(tab => {
   });
 });
 
+function applyMode(key){
+  mode = key;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === key));
+  modeSelect.value = key;
+
+  const m = MODES[mode];
+  borderPx = m.border; borderSlider.value = borderPx; borderVal.textContent = borderPx + 'px';
+  bottomExtra = m.bottom; bottomSlider.value = bottomExtra; bottomVal.textContent = bottomExtra + 'px';
+  fillFrame = m.fill; fillSwitch.classList.toggle('on', fillFrame);
+
+  fillRow.style.display = (mode === 'original') ? 'none' : 'flex';
+
+  render();
+}
+
 document.querySelectorAll('.mode-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    mode = btn.dataset.mode;
-
-    const m = MODES[mode];
-    borderPx = m.border; borderSlider.value = borderPx; borderVal.textContent = borderPx + 'px';
-    bottomExtra = m.bottom; bottomSlider.value = bottomExtra; bottomVal.textContent = bottomExtra + 'px';
-    fillFrame = m.fill; fillSwitch.classList.toggle('on', fillFrame);
-
-    fillRow.style.display = (mode === 'original') ? 'none' : 'flex';
-
-    render();
-  });
+  btn.addEventListener('click', () => applyMode(btn.dataset.mode));
 });
+modeSelect.addEventListener('change', () => applyMode(modeSelect.value));
 
 borderSlider.addEventListener('input', () => {
   borderPx = parseInt(borderSlider.value);
