@@ -492,6 +492,11 @@
       <input type="range" id="border" min="0" max="180" value="60">
     </div>
 
+    <div class="field">
+      <div class="field-label">Photo corners <b id="radiusVal">0px</b></div>
+      <input type="range" id="radius" min="0" max="120" value="0">
+    </div>
+
     <div class="toggle-row" id="fillRow">
       <span class="toggle-label">Fill frame (crop to fit)</span>
       <div class="switch on" id="fillSwitch"></div>
@@ -560,6 +565,7 @@ let borderPx = MODES.story.border;
 let bottomExtra = MODES.story.bottom;
 let polaroid = false;
 let fillFrame = MODES.story.fill;
+let cornerRadius = 0;
 let bgColor = '#ffffff';
 let showExif = false;
 let exifFontScale = 1.0;
@@ -574,6 +580,8 @@ const bottomField = document.getElementById('bottomField');
 const polaroidSwitch = document.getElementById('polaroidSwitch');
 const fillSwitch = document.getElementById('fillSwitch');
 const fillRow = document.getElementById('fillRow');
+const radiusSlider = document.getElementById('radius');
+const radiusVal = document.getElementById('radiusVal');
 const exifSwitch = document.getElementById('exifSwitch');
 const exifSizeField = document.getElementById('exifSizeField');
 const exifSizeSlider = document.getElementById('exifSize');
@@ -677,6 +685,25 @@ function updateExifStatus(){
   }
 }
 
+function roundedDrawImage(img, sx, sy, sw, sh, dx, dy, dw, dh, canvasW){
+  const r = Math.min(cornerRadius * (canvasW / 1080), dw/2, dh/2);
+  if(r <= 0){
+    ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+    return;
+  }
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(dx + r, dy);
+  ctx.arcTo(dx + dw, dy, dx + dw, dy + dh, r);
+  ctx.arcTo(dx + dw, dy + dh, dx, dy + dh, r);
+  ctx.arcTo(dx, dy + dh, dx, dy, r);
+  ctx.arcTo(dx, dy, dx + dw, dy, r);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+  ctx.restore();
+}
+
 function render(){
   const item = activeItem();
   const size = currentCanvasSize();
@@ -698,7 +725,7 @@ function render(){
   const dark = (bgColor === '#000000' || bgColor === '#141414');
 
   if(mode === 'original'){
-    ctx.drawImage(item.img, borderPx, borderPx, size.photoW, size.photoH);
+    roundedDrawImage(item.img, 0, 0, item.img.width, item.img.height, borderPx, borderPx, size.photoW, size.photoH, size.w);
     const bottomB = polaroid ? bottomExtra : borderPx;
     if(showExif) drawExifCaption(size.w, size.h, bottomB, item.exif, dark);
     updateHint();
@@ -729,7 +756,7 @@ function render(){
     sy = Math.min(Math.max(sy, 0), item.img.height - sh);
     item.focusX = (sx + sw/2) / item.img.width;
     item.focusY = (sy + sh/2) / item.img.height;
-    ctx.drawImage(item.img, sx, sy, sw, sh, x0, y0, innerW, innerH);
+    roundedDrawImage(item.img, sx, sy, sw, sh, x0, y0, innerW, innerH, size.w);
   } else {
     let drawW, drawH;
     if(imgRatio > boxRatio){
@@ -741,7 +768,7 @@ function render(){
     }
     const x = x0 + (innerW - drawW)/2;
     const y = y0 + (innerH - drawH)/2;
-    ctx.drawImage(item.img, x, y, drawW, drawH);
+    roundedDrawImage(item.img, 0, 0, item.img.width, item.img.height, x, y, drawW, drawH, size.w);
   }
 
   if(showExif) drawExifCaption(size.w, size.h, bottomB, item.exif, dark);
@@ -894,6 +921,12 @@ modeSelect.addEventListener('change', () => applyMode(modeSelect.value));
 borderSlider.addEventListener('input', () => {
   borderPx = parseInt(borderSlider.value);
   borderVal.textContent = borderPx + 'px';
+  render();
+});
+
+radiusSlider.addEventListener('input', () => {
+  cornerRadius = parseInt(radiusSlider.value);
+  radiusVal.textContent = cornerRadius + 'px';
   render();
 });
 
