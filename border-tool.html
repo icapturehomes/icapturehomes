@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Story Border — iCaptureHomes</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  :root{
+    --bg: #141414;
+    --panel: #1c1c1c;
+    --line: #2e2e2e;
+    --text: #eae7e1;
+    --dim: #8a8580;
+    --accent: #e8703a;
+    --mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:36px 16px 70px;
+  }
+  .masthead{
+    text-align:center;
+    margin-bottom:36px;
+  }
+  h1{
+    font-size:14px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--dim);
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  h1 span{color:var(--accent);}
+  .sub{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--dim);
+  }
+
+  .app{
+    display:flex;
+    gap:32px;
+    flex-wrap:wrap;
+    justify-content:center;
+    width:100%;
+    max-width:920px;
+  }
+  .stage{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    width:280px;
+  }
+
+  .modes{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    width:100%;
+  }
+  .mode-btn{
+    flex:1 1 calc(50% - 6px);
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--dim);
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:.04em;
+    padding:9px 6px;
+    cursor:pointer;
+    text-align:center;
+    transition:border-color .15s, color .15s, background .15s;
+  }
+  .mode-btn b{display:block; color:inherit; font-size:10.5px; margin-bottom:1px;}
+  .mode-btn.active{
+    border-color:var(--accent);
+    color:var(--text);
+    background:#241a14;
+  }
+
+  .upload-tabs{
+    display:flex;
+    width:100%;
+    border:1px solid var(--line);
+  }
+  .utab{
+    flex:1;
+    text-align:center;
+    padding:7px 4px;
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--dim);
+    cursor:pointer;
+    transition:background .15s, color .15s;
+  }
+  .utab.active{
+    background:var(--accent);
+    color:#141414;
+    font-weight:700;
+  }
+
+  .frame{
+    width:100%;
+    background:#000;
+    overflow:hidden;
+    position:relative;
+    border:1px solid var(--line);
+    box-shadow:0 20px 50px -20px rgba(0,0,0,.8);
+    border-radius:0;
+    transition:aspect-ratio .15s ease;
+  }
+  canvas{
+    width:100%;
+    height:100%;
+    display:block;
+  }
+  .empty{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:20px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--dim);
+    line-height:1.6;
+  }
+  .dropzone{
+    width:100%;
+    padding:10px;
+    text-align:center;
+    border:1px dashed var(--line);
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:var(--dim);
+    cursor:pointer;
+    transition:border-color .15s, color .15s;
+  }
+  .dropzone:hover, .dropzone.drag{
+    border-color:var(--accent);
+    color:var(--text);
+  }
+  input[type=file]{display:none;}
+
+  .thumbs{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    width:100%;
+  }
+  .thumb{
+    width:44px;height:44px;
+    position:relative;
+    border:2px solid var(--line);
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .thumb.active{border-color:var(--accent);}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .thumb .rm{
+    position:absolute;
+    top:-6px; right:-6px;
+    width:16px;height:16px;
+    background:#141414;
+    border:1px solid var(--line);
+    color:var(--dim);
+    font-size:10px;
+    line-height:14px;
+    text-align:center;
+    cursor:pointer;
+  }
+  .thumb .rm:hover{color:var(--accent); border-color:var(--accent);}
+
+  .panel{
+    width:280px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:22px 22px 24px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    height:fit-content;
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .field-label{
+    display:flex;
+    justify-content:space-between;
+    font-family:var(--mono);
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--dim);
+  }
+  .field-label b{
+    color:var(--text);
+    font-weight:500;
+  }
+  input[type=range]{
+    -webkit-appearance:none;
+    width:100%;
+    height:2px;
+    background:var(--line);
+    outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:14px;height:14px;
+    border-radius:50%;
+    background:var(--accent);
+    cursor:pointer;
+    border:2px solid #141414;
+  }
+  .toggle-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .toggle-label{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text);
+  }
+  .switch{
+    width:36px;height:20px;
+    background:var(--line);
+    border-radius:10px;
+    position:relative;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:background .15s;
+  }
+  .switch.on{background:var(--accent);}
+  .switch::after{
+    content:'';
+    position:absolute;
+    top:2px;left:2px;
+    width:16px;height:16px;
+    border-radius:50%;
+    background:#fff;
+    transition:transform .15s;
+  }
+  .switch.on::after{transform:translateX(16px);}
+
+  .swatches{
+    display:flex;
+    gap:8px;
+  }
+  .swatch{
+    width:28px;height:28px;
+    border-radius:50%;
+    border:2px solid var(--line);
+    cursor:pointer;
+  }
+  .swatch.active{border-color:var(--accent);}
+
+  .custom-swatch{
+    position:relative;
+    overflow:hidden;
+    background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red);
+    display:block;
+  }
+  .custom-swatch input[type=color]{
+    position:absolute;
+    top:-4px; left:-4px;
+    width:calc(100% + 8px);
+    height:calc(100% + 8px);
+    border:none;
+    padding:0;
+    cursor:pointer;
+    opacity:0;
+  }
+
+  button.dl{
+    margin-top:4px;
+    background:var(--accent);
+    color:#141414;
+    border:none;
+    padding:12px;
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    font-weight:700;
+    cursor:pointer;
+    transition:opacity .15s;
+  }
+  button.dl:disabled{
+    opacity:.35;
+    cursor:not-allowed;
+  }
+  button.dl:not(:disabled):hover{opacity:.88;}
+
+  .hint{
+    font-family:var(--mono);
+    font-size:10px;
+    color:var(--dim);
+    line-height:1.5;
+  }
+  .exif-status{
+    font-family:var(--mono);
+    font-size:10px;
+    color:var(--dim);
+    line-height:1.5;
+    word-break:break-word;
+  }
+
+  @media (max-width: 600px){
+    body{ padding:16px 14px 24px; }
+    .masthead{ margin-bottom:14px; }
+    h1{ font-size:14px; }
+    .sub{ font-size:10.5px; }
+
+    .app{ gap:14px; }
+    .stage, .panel{ width:100%; max-width:440px; }
+
+    .utab{ padding:9px 4px; font-size:11px; }
+
+    .modes{
+      flex-wrap:nowrap;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .modes::-webkit-scrollbar{ display:none; }
+    .mode-btn{
+      flex:0 0 auto;
+      min-width:104px;
+      padding:8px 10px;
+      font-size:10.5px;
+    }
+    .mode-btn b{ font-size:10.5px; margin-bottom:1px; }
+
+    .frame{
+      width:auto;
+      height:min(30vh, 300px);
+      margin:0 auto;
+    }
+
+    .dropzone{ padding:10px; font-size:11px; }
+
+    .panel{ padding:16px 16px 18px; gap:12px; }
+    .field{ gap:5px; }
+    .field-label{ font-size:11px; }
+    .toggle-label{ font-size:12px; }
+
+    input[type=range]{ height:4px; }
+    input[type=range]::-webkit-slider-thumb{ width:20px; height:20px; border-width:3px; }
+
+    .switch{ width:40px; height:23px; }
+    .switch::after{ width:19px; height:19px; }
+    .switch.on::after{ transform:translateX(17px); }
+
+    .swatch{ width:30px; height:30px; }
+
+    button.dl{ padding:12px; font-size:12px; margin-top:0; }
+
+    .hint, .exif-status{ font-size:10.5px; line-height:1.5; }
+
+    .thumb{ width:44px; height:44px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <h1>STORY <span>BORDER</span></h1>
+  <div class="sub">iCaptureHomes — white-frame export for social &amp; personal shots</div>
+</div>
+
+<div class="app">
+  <div class="stage">
+    <div class="upload-tabs">
+      <div class="utab active" data-upload="single">Single</div>
+      <div class="utab" data-upload="batch">Batch</div>
+    </div>
+
+    <div class="modes">
+      <div class="mode-btn active" data-mode="story"><b>STORY</b>9:16</div>
+      <div class="mode-btn" data-mode="portrait"><b>FEED PORTRAIT</b>4:5</div>
+      <div class="mode-btn" data-mode="feed"><b>FEED LANDSCAPE</b>1.91:1</div>
+      <div class="mode-btn" data-mode="square"><b>FEED SQUARE</b>1:1</div>
+      <div class="mode-btn" data-mode="original"><b>ORIGINAL</b>full photo, any shape</div>
+    </div>
+
+    <div class="frame" id="frame">
+      <canvas id="canvas" width="1080" height="1920"></canvas>
+      <div class="empty" id="emptyMsg">Upload a photo to preview the frame</div>
+    </div>
+
+    <label class="dropzone" id="drop">
+      DROP IMAGE(S) OR CLICK TO UPLOAD
+      <input type="file" id="fileInput" accept="image/*">
+    </label>
+
+    <div class="thumbs" id="thumbs" style="display:none;"></div>
+  </div>
+
+  <div class="panel">
+    <div class="field">
+      <div class="field-label">Border <b id="borderVal">60px</b></div>
+      <input type="range" id="border" min="0" max="180" value="60">
+    </div>
+
+    <div class="toggle-row" id="fillRow">
+      <span class="toggle-label">Fill frame (crop to fit)</span>
+      <div class="switch on" id="fillSwitch"></div>
+    </div>
+
+    <div class="toggle-row">
+      <span class="toggle-label">Polaroid bottom</span>
+      <div class="switch" id="polaroidSwitch"></div>
+    </div>
+
+    <div class="field" id="bottomField" style="display:none;">
+      <div class="field-label">Bottom border <b id="bottomVal">260px</b></div>
+      <input type="range" id="bottom" min="0" max="500" value="260">
+    </div>
+
+    <div class="toggle-row">
+      <span class="toggle-label">Show EXIF caption</span>
+      <div class="switch" id="exifSwitch"></div>
+    </div>
+    <div class="field" id="exifSizeField" style="display:none;">
+      <div class="field-label">EXIF text size <b id="exifSizeVal">100%</b></div>
+      <input type="range" id="exifSize" min="50" max="300" step="10" value="100">
+    </div>
+    <div class="exif-status" id="exifStatus" style="display:none;"></div>
+
+    <div class="field">
+      <div class="field-label">Frame color</div>
+      <div class="swatches">
+        <div class="swatch active" data-color="#ffffff" style="background:#ffffff"></div>
+        <div class="swatch" data-color="#f4f1ea" style="background:#f4f1ea"></div>
+        <div class="swatch" data-color="#000000" style="background:#000000"></div>
+        <div class="swatch" data-color="#141414" style="background:#141414"></div>
+        <label class="swatch custom-swatch" id="customSwatch" title="Custom color">
+          <input type="color" id="customColorInput" value="#e8703a">
+        </label>
+      </div>
+    </div>
+
+    <button class="dl" id="downloadBtn" disabled>Download PNG</button>
+    <div class="hint" id="hintText">Exports full resolution 1080×1920, ready to drop straight into the Stories composer.</div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const MODES = {
+  story:    { w:1080, h:1920, label:'1080×1920', hint:'Ready to drop straight into the Stories composer.', border:60, bottom:260, fill:true },
+  portrait: { w:1080, h:1350, label:'1080×1350', hint:'The most-used feed ratio — more vertical presence in the grid than square.', border:50, bottom:200, fill:true },
+  feed:     { w:1080, h:608,  label:'1080×608',  hint:"Instagram's native landscape feed ratio (1.91:1).", border:40, bottom:100, fill:false },
+  square:   { w:1080, h:1080, label:'1080×1080', hint:'Classic square post, border crops evenly on all sides.', border:50, bottom:180, fill:true },
+  original: { w:null, h:null, label:'photo + border', hint:'Full photo, uncropped — canvas matches your image exactly.', border:60, bottom:260, fill:false }
+};
+
+let mode = 'story';
+let uploadMode = 'single';
+let queue = [];        // { id, file, img, name, exif }
+let activeIndex = -1;
+
+let borderPx = MODES.story.border;
+let bottomExtra = MODES.story.bottom;
+let polaroid = false;
+let fillFrame = MODES.story.fill;
+let bgColor = '#ffffff';
+let showExif = false;
+let exifFontScale = 1.0;
+let uid = 0;
+
+const frame = document.getElementById('frame');
+const borderSlider = document.getElementById('border');
+const bottomSlider = document.getElementById('bottom');
+const borderVal = document.getElementById('borderVal');
+const bottomVal = document.getElementById('bottomVal');
+const bottomField = document.getElementById('bottomField');
+const polaroidSwitch = document.getElementById('polaroidSwitch');
+const fillSwitch = document.getElementById('fillSwitch');
+const fillRow = document.getElementById('fillRow');
+const exifSwitch = document.getElementById('exifSwitch');
+const exifSizeField = document.getElementById('exifSizeField');
+const exifSizeSlider = document.getElementById('exifSize');
+const exifSizeVal = document.getElementById('exifSizeVal');
+const exifStatus = document.getElementById('exifStatus');
+const emptyMsg = document.getElementById('emptyMsg');
+const downloadBtn = document.getElementById('downloadBtn');
+const drop = document.getElementById('drop');
+const fileInput = document.getElementById('fileInput');
+const hintText = document.getElementById('hintText');
+const thumbs = document.getElementById('thumbs');
+
+function activeItem(){ return activeIndex >= 0 ? queue[activeIndex] : null; }
+
+function currentCanvasSize(){
+  const item = activeItem();
+  if(mode !== 'original'){
+    return { w: MODES[mode].w, h: MODES[mode].h };
+  }
+  if(!item) return { w:1080, h:1350 };
+  const maxDim = 2000;
+  let w = item.img.naturalWidth, h = item.img.naturalHeight;
+  if(Math.max(w,h) > maxDim){
+    const scale = maxDim / Math.max(w,h);
+    w = Math.round(w*scale);
+    h = Math.round(h*scale);
+  }
+  const bottomB = polaroid ? bottomExtra : borderPx;
+  return { w: w + borderPx*2, h: h + borderPx + bottomB, photoW: w, photoH: h };
+}
+
+function updateFrameAspect(){
+  const size = currentCanvasSize();
+  frame.style.aspectRatio = size.w + ' / ' + size.h;
+}
+
+function updateHint(){
+  const m = MODES[mode];
+  let sizeLabel = m.label;
+  if(mode === 'original'){
+    const s = currentCanvasSize();
+    sizeLabel = s.w + '×' + s.h;
+  }
+  hintText.textContent = 'Exports ' + sizeLabel + '. ' + m.hint;
+}
+
+function fmtShutter(t){
+  if(!t) return null;
+  if(t >= 1) return Math.round(t) + 's';
+  return '1/' + Math.round(1/t) + 's';
+}
+function fmtAperture(f){ return f ? 'f/' + (Math.round(f*10)/10) : null; }
+function fmtFocal(f){ return f ? Math.round(f) + 'mm' : null; }
+function fmtISO(i){ return i ? 'ISO ' + i : null; }
+
+function exifCaptionParts(exif){
+  if(!exif) return null;
+  const cam = [exif.make, exif.model].filter(Boolean).join(' ').trim();
+  const specs = [fmtFocal(exif.focalLength), fmtAperture(exif.fNumber), fmtShutter(exif.exposureTime), fmtISO(exif.iso)].filter(Boolean).join('   ·   ');
+  if(!cam && !specs) return null;
+  return { cam, specs };
+}
+
+function drawExifCaption(canvasW, canvasH, bottomB, exif, dark){
+  const parts = exifCaptionParts(exif);
+  if(!parts) return;
+  const scale = (canvasW / 1080) * exifFontScale;
+  const color = dark ? '#eae7e1' : '#2a2a2a';
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  const centerX = canvasW/2;
+  const areaTop = canvasH - bottomB;
+  const centerY = areaTop + bottomB/2;
+
+  if(parts.cam && parts.specs){
+    ctx.font = (20*scale) + 'px "SF Mono", Consolas, monospace';
+    ctx.fillText(parts.cam, centerX, centerY - 12*scale);
+    ctx.font = (15*scale) + 'px "SF Mono", Consolas, monospace';
+    ctx.fillText(parts.specs, centerX, centerY + 16*scale);
+  } else {
+    ctx.font = (18*scale) + 'px "SF Mono", Consolas, monospace';
+    ctx.fillText(parts.cam || parts.specs, centerX, centerY + 6*scale);
+  }
+}
+
+function updateExifStatus(){
+  const item = activeItem();
+  if(!showExif || !item){ exifStatus.style.display = 'none'; return; }
+  exifStatus.style.display = 'block';
+  const parts = exifCaptionParts(item.exif);
+  if(!item.exif){
+    exifStatus.textContent = 'Reading EXIF data…';
+  } else if(!parts){
+    exifStatus.textContent = 'No EXIF data found in this file.';
+  } else {
+    exifStatus.textContent = [parts.cam, parts.specs].filter(Boolean).join(' — ');
+  }
+}
+
+function render(){
+  const item = activeItem();
+  const size = currentCanvasSize();
+  canvas.width = size.w;
+  canvas.height = size.h;
+  updateFrameAspect();
+
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(0,0,size.w,size.h);
+
+  if(!item){ updateHint(); updateExifStatus(); return; }
+
+  const dark = (bgColor === '#000000' || bgColor === '#141414');
+
+  if(mode === 'original'){
+    ctx.drawImage(item.img, borderPx, borderPx, size.photoW, size.photoH);
+    const bottomB = polaroid ? bottomExtra : borderPx;
+    if(showExif) drawExifCaption(size.w, size.h, bottomB, item.exif, dark);
+    updateHint();
+    updateExifStatus();
+    return;
+  }
+
+  const bottomB = polaroid ? bottomExtra : borderPx;
+  const innerW = size.w - borderPx*2;
+  const innerH = size.h - borderPx - bottomB;
+  const x0 = borderPx, y0 = borderPx;
+
+  const imgRatio = item.img.width / item.img.height;
+  const boxRatio = innerW / innerH;
+
+  if(fillFrame){
+    let sx, sy, sw, sh;
+    if(imgRatio > boxRatio){
+      sh = item.img.height;
+      sw = sh * boxRatio;
+      sx = (item.img.width - sw) / 2;
+      sy = 0;
+    } else {
+      sw = item.img.width;
+      sh = sw / boxRatio;
+      sy = (item.img.height - sh) / 2;
+      sx = 0;
+    }
+    ctx.drawImage(item.img, sx, sy, sw, sh, x0, y0, innerW, innerH);
+  } else {
+    let drawW, drawH;
+    if(imgRatio > boxRatio){
+      drawW = innerW;
+      drawH = innerW / imgRatio;
+    } else {
+      drawH = innerH;
+      drawW = innerH * imgRatio;
+    }
+    const x = x0 + (innerW - drawW)/2;
+    const y = y0 + (innerH - drawH)/2;
+    ctx.drawImage(item.img, x, y, drawW, drawH);
+  }
+
+  if(showExif) drawExifCaption(size.w, size.h, bottomB, item.exif, dark);
+  updateHint();
+  updateExifStatus();
+}
+
+function renderThumbs(){
+  thumbs.innerHTML = '';
+  if(uploadMode !== 'batch' || queue.length === 0){
+    thumbs.style.display = 'none';
+    return;
+  }
+  thumbs.style.display = 'flex';
+  queue.forEach((item, i) => {
+    const t = document.createElement('div');
+    t.className = 'thumb' + (i === activeIndex ? ' active' : '');
+    const im = document.createElement('img');
+    im.src = item.img.src;
+    t.appendChild(im);
+    const rm = document.createElement('div');
+    rm.className = 'rm';
+    rm.textContent = '×';
+    rm.addEventListener('click', ev => {
+      ev.stopPropagation();
+      queue.splice(i, 1);
+      if(activeIndex >= queue.length) activeIndex = queue.length - 1;
+      if(queue.length === 0){
+        emptyMsg.style.display = 'flex';
+        downloadBtn.disabled = true;
+      }
+      renderThumbs();
+      render();
+    });
+    t.appendChild(rm);
+    t.addEventListener('click', () => {
+      activeIndex = i;
+      renderThumbs();
+      render();
+    });
+    thumbs.appendChild(t);
+  });
+}
+
+function parseExif(item){
+  try{
+    EXIF.getData(item.file, function(){
+      item.exif = {
+        make: EXIF.getTag(this, 'Make'),
+        model: EXIF.getTag(this, 'Model'),
+        fNumber: EXIF.getTag(this, 'FNumber'),
+        exposureTime: EXIF.getTag(this, 'ExposureTime'),
+        iso: EXIF.getTag(this, 'ISOSpeedRatings'),
+        focalLength: EXIF.getTag(this, 'FocalLength')
+      };
+      if(activeItem() === item) render();
+    });
+  } catch(e){ item.exif = null; }
+}
+
+function addFiles(fileList){
+  const files = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+  if(files.length === 0) return;
+
+  if(uploadMode === 'single'){
+    queue = [];
+    activeIndex = -1;
+  }
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const im = new Image();
+      im.onload = () => {
+        const item = {
+          id: uid++,
+          file,
+          img: im,
+          name: file.name.replace(/\.[^/.]+$/, ''),
+          exif: null
+        };
+        queue.push(item);
+        activeIndex = queue.length - 1;
+        emptyMsg.style.display = 'none';
+        downloadBtn.disabled = false;
+        parseExif(item);
+        renderThumbs();
+        render();
+      };
+      im.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+drop.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => addFiles(e.target.files));
+['dragover','dragenter'].forEach(evt =>
+  drop.addEventListener(evt, e => { e.preventDefault(); drop.classList.add('drag'); })
+);
+['dragleave','drop'].forEach(evt =>
+  drop.addEventListener(evt, e => { e.preventDefault(); drop.classList.remove('drag'); })
+);
+drop.addEventListener('drop', e => {
+  e.preventDefault();
+  addFiles(e.dataTransfer.files);
+});
+
+document.querySelectorAll('.utab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.utab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    uploadMode = tab.dataset.upload;
+    fileInput.multiple = (uploadMode === 'batch');
+
+    if(uploadMode === 'single' && queue.length > 1){
+      const keep = activeItem();
+      queue = keep ? [keep] : [];
+      activeIndex = queue.length ? 0 : -1;
+    }
+
+    downloadBtn.textContent = uploadMode === 'batch' ? 'Download All (ZIP)' : 'Download PNG';
+    renderThumbs();
+    render();
+  });
+});
+
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    mode = btn.dataset.mode;
+
+    const m = MODES[mode];
+    borderPx = m.border; borderSlider.value = borderPx; borderVal.textContent = borderPx + 'px';
+    bottomExtra = m.bottom; bottomSlider.value = bottomExtra; bottomVal.textContent = bottomExtra + 'px';
+    fillFrame = m.fill; fillSwitch.classList.toggle('on', fillFrame);
+
+    fillRow.style.display = (mode === 'original') ? 'none' : 'flex';
+
+    render();
+  });
+});
+
+borderSlider.addEventListener('input', () => {
+  borderPx = parseInt(borderSlider.value);
+  borderVal.textContent = borderPx + 'px';
+  render();
+});
+
+bottomSlider.addEventListener('input', () => {
+  bottomExtra = parseInt(bottomSlider.value);
+  bottomVal.textContent = bottomExtra + 'px';
+  render();
+});
+
+polaroidSwitch.addEventListener('click', () => {
+  polaroid = !polaroid;
+  polaroidSwitch.classList.toggle('on', polaroid);
+  bottomField.style.display = polaroid ? 'flex' : 'none';
+  render();
+});
+
+fillSwitch.addEventListener('click', () => {
+  fillFrame = !fillFrame;
+  fillSwitch.classList.toggle('on', fillFrame);
+  render();
+});
+
+exifSwitch.addEventListener('click', () => {
+  showExif = !showExif;
+  exifSwitch.classList.toggle('on', showExif);
+  exifSizeField.style.display = showExif ? 'flex' : 'none';
+  render();
+});
+
+exifSizeSlider.addEventListener('input', () => {
+  exifFontScale = parseInt(exifSizeSlider.value) / 100;
+  exifSizeVal.textContent = exifSizeSlider.value + '%';
+  render();
+});
+
+document.querySelectorAll('.swatch[data-color]').forEach(sw => {
+  sw.addEventListener('click', () => {
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    sw.classList.add('active');
+    bgColor = sw.dataset.color;
+    render();
+  });
+});
+
+const customSwatch = document.getElementById('customSwatch');
+const customColorInput = document.getElementById('customColorInput');
+customColorInput.addEventListener('input', () => {
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+  customSwatch.classList.add('active');
+  customSwatch.style.background = customColorInput.value;
+  bgColor = customColorInput.value;
+  render();
+});
+
+async function downloadAll(){
+  const prevIndex = activeIndex;
+  downloadBtn.disabled = true;
+
+  if(uploadMode === 'single' || queue.length <= 1){
+    render();
+    const link = document.createElement('a');
+    link.download = 'story-border-' + mode + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    downloadBtn.disabled = false;
+    return;
+  }
+
+  downloadBtn.textContent = 'Zipping…';
+  const zip = new JSZip();
+  for(let i = 0; i < queue.length; i++){
+    activeIndex = i;
+    render();
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+    zip.file(queue[i].name + '-border.png', blob);
+  }
+  activeIndex = prevIndex;
+  renderThumbs();
+  render();
+
+  const content = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(content);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'story-border-batch.zip';
+  link.click();
+  URL.revokeObjectURL(url);
+
+  downloadBtn.disabled = false;
+  downloadBtn.textContent = 'Download All (ZIP)';
+}
+
+downloadBtn.addEventListener('click', downloadAll);
+
+updateFrameAspect();
+render();
+</script>
+</body>
+</html>
