@@ -97,10 +97,25 @@
     color:var(--text);
     font-family:var(--mono);
     font-size:12px;
-    padding:11px 10px;
+    padding:11px 34px 11px 10px;
     -webkit-appearance:none;
     appearance:none;
     border-radius:0;
+  }
+  .mode-select-wrap{
+    position:relative;
+    width:100%;
+    display:none;
+  }
+  .mode-select-wrap .mode-select{ display:block; }
+  .mode-select-arrow{
+    position:absolute;
+    top:50%;
+    right:12px;
+    transform:translateY(-55%);
+    color:var(--accent);
+    font-size:12px;
+    pointer-events:none;
   }
 
   .upload-tabs{
@@ -371,6 +386,12 @@
     line-height:1.5;
     word-break:break-word;
   }
+  .focus-hint{
+    font-family:var(--mono);
+    font-size:10px;
+    color:var(--dim);
+    text-align:center;
+  }
 
   @media (max-width: 600px){
     body{ padding:16px 14px 24px; }
@@ -384,11 +405,13 @@
     .utab{ padding:9px 4px; font-size:11px; }
 
     .modes{ display:none; }
-    .mode-select{ display:block; }
+    .mode-select-wrap{ display:block; }
 
     .frame{
       width:auto;
-      height:min(30vh, 300px);
+      height:auto;
+      max-width:100%;
+      max-height:min(32vh, 300px);
       margin:0 auto;
     }
 
@@ -436,13 +459,16 @@
       <div class="mode-btn" data-mode="square"><b>FEED SQUARE</b>1:1</div>
       <div class="mode-btn" data-mode="original"><b>ORIGINAL</b>full photo, any shape</div>
     </div>
-    <select class="mode-select" id="modeSelect">
-      <option value="story">Story — 9:16</option>
-      <option value="portrait">Feed Portrait — 4:5</option>
-      <option value="feed">Feed Landscape — 1.91:1</option>
-      <option value="square">Feed Square — 1:1</option>
-      <option value="original">Original — full photo, any shape</option>
-    </select>
+    <div class="mode-select-wrap">
+      <select class="mode-select" id="modeSelect">
+        <option value="story">Story — 9:16</option>
+        <option value="portrait">Feed Portrait — 4:5</option>
+        <option value="feed">Feed Landscape — 1.91:1</option>
+        <option value="square">Feed Square — 1:1</option>
+        <option value="original">Original — full photo, any shape</option>
+      </select>
+      <div class="mode-select-arrow">▾</div>
+    </div>
 
     <div class="frame" id="frame">
       <canvas id="canvas" width="1080" height="1920"></canvas>
@@ -453,6 +479,8 @@
       DROP IMAGE(S) OR CLICK TO UPLOAD
       <input type="file" id="fileInput" accept="image/*">
     </label>
+
+    <div class="focus-hint" id="focusHint" style="display:none;">Drag photo to reposition · double-tap to recenter</div>
 
     <div class="thumbs" id="thumbs" style="display:none;"></div>
   </div>
@@ -556,6 +584,7 @@ const drop = document.getElementById('drop');
 const fileInput = document.getElementById('fileInput');
 const hintText = document.getElementById('hintText');
 const thumbs = document.getElementById('thumbs');
+const focusHint = document.getElementById('focusHint');
 const lightbox = document.getElementById('lightbox');
 const modeSelect = document.getElementById('modeSelect');
 const lightboxImg = document.getElementById('lightboxImg');
@@ -659,6 +688,10 @@ function render(){
 
   frame.classList.toggle('has-image', !!item);
 
+  const draggable = !!item && fillFrame && mode !== 'original';
+  canvas.style.cursor = draggable ? 'move' : 'default';
+  focusHint.style.display = draggable ? 'block' : 'none';
+
   if(!item){ updateHint(); updateExifStatus(); return; }
 
   const dark = (bgColor === '#000000' || bgColor === '#141414');
@@ -681,18 +714,18 @@ function render(){
   const boxRatio = innerW / innerH;
 
   if(fillFrame){
-    let sx, sy, sw, sh;
+    let sw, sh;
     if(imgRatio > boxRatio){
       sh = item.img.height;
       sw = sh * boxRatio;
-      sx = (item.img.width - sw) / 2;
-      sy = 0;
     } else {
       sw = item.img.width;
       sh = sw / boxRatio;
-      sy = (item.img.height - sh) / 2;
-      sx = 0;
     }
+    let sx = item.focusX * item.img.width - sw/2;
+    let sy = item.focusY * item.img.height - sh/2;
+    sx = Math.min(Math.max(sx, 0), item.img.width - sw);
+    sy = Math.min(Math.max(sy, 0), item.img.height - sh);
     ctx.drawImage(item.img, sx, sy, sw, sh, x0, y0, innerW, innerH);
   } else {
     let drawW, drawH;
@@ -785,7 +818,9 @@ function addFiles(fileList){
           file,
           img: im,
           name: file.name.replace(/\.[^/.]+$/, ''),
-          exif: null
+          exif: null,
+          focusX: 0.5,
+          focusY: 0.5
         };
         queue.push(item);
         activeIndex = queue.length - 1;
@@ -950,7 +985,69 @@ async function downloadAll(){
 
 downloadBtn.addEventListener('click', downloadAll);
 
+let dragging = false;
+let didDrag = false;
+
+function updateFocusFromEvent(e){
+  const item = activeItem();
+  if(!item || !fillFrame || mode === 'original') return;
+
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const px = (e.clientX - rect.left) * scaleX;
+  const py = (e.clientY - rect.top) * scaleY;
+
+  const size = currentCanvasSize();
+  const bottomB = polaroid ? bottomExtra : borderPx;
+  const innerW = size.w - borderPx*2;
+  const innerH = size.h - borderPx - bottomB;
+  const x0 = borderPx, y0 = borderPx;
+
+  const relX = Math.min(Math.max((px - x0) / innerW, 0), 1);
+  const relY = Math.min(Math.max((py - y0) / innerH, 0), 1);
+
+  const imgRatio = item.img.width / item.img.height;
+  const boxRatio = innerW / innerH;
+  let sw, sh;
+  if(imgRatio > boxRatio){ sh = item.img.height; sw = sh * boxRatio; }
+  else { sw = item.img.width; sh = sw / boxRatio; }
+
+  let sx = item.focusX * item.img.width - sw/2;
+  let sy = item.focusY * item.img.height - sh/2;
+  sx = Math.min(Math.max(sx, 0), item.img.width - sw);
+  sy = Math.min(Math.max(sy, 0), item.img.height - sh);
+
+  item.focusX = (sx + relX * sw) / item.img.width;
+  item.focusY = (sy + relY * sh) / item.img.height;
+  render();
+}
+
+canvas.addEventListener('pointerdown', e => {
+  const item = activeItem();
+  if(!item || !fillFrame || mode === 'original') return;
+  dragging = true;
+  didDrag = false;
+  canvas.setPointerCapture(e.pointerId);
+  updateFocusFromEvent(e);
+});
+canvas.addEventListener('pointermove', e => {
+  if(!dragging) return;
+  didDrag = true;
+  updateFocusFromEvent(e);
+});
+canvas.addEventListener('pointerup', () => { dragging = false; });
+canvas.addEventListener('pointercancel', () => { dragging = false; });
+canvas.addEventListener('dblclick', () => {
+  const item = activeItem();
+  if(!item) return;
+  item.focusX = 0.5;
+  item.focusY = 0.5;
+  render();
+});
+
 frame.addEventListener('click', () => {
+  if(didDrag){ didDrag = false; return; }
   if(!activeItem()) return;
   lightboxImg.src = canvas.toDataURL('image/png');
   lightbox.classList.add('open');
