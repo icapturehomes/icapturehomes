@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>London — iCaptureHomes Photography</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{--gold:#c8a96e;--bg:#f5f5f3;--bg-mid:#efefed;--text:#1a1a1a;--text-muted:rgba(26,26,26,0.55);--text-dim:rgba(26,26,26,0.4);--border:rgba(26,26,26,0.1)}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;cursor:none}
+    .cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+    .cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(200,169,110,0.6);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+    header{display:flex;align-items:center;justify-content:space-between;padding:24px 48px;border-bottom:.5px solid var(--border);position:sticky;top:0;background:rgba(245,245,243,0.95);backdrop-filter:blur(16px);z-index:100}
+    .logo{font-family:'Playfair Display',serif;font-size:18px;color:var(--text);text-decoration:none}
+    .logo span{color:var(--gold);font-style:italic}
+    .header-right{display:flex;align-items:center;gap:24px}
+    .gallery-title{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim)}
+    .header-count{font-size:11px;color:var(--text-dim)}
+    .back-link{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:6px}
+    .back-link:hover{color:var(--gold)}
+    .back-link::before{content:'←'}
+    .gallery-intro{padding:48px 48px 32px;border-bottom:.5px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between}
+    .gallery-intro h1{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,48px);font-weight:500;line-height:1.1}
+    .gallery-meta{text-align:right}
+    .gallery-meta-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px}
+    .gallery-meta-val{font-size:13px;color:var(--text-muted)}
+    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:12px;align-items:start}
+    @media(max-width:600px){.gallery-grid{grid-template-columns:1fr}}
+    .gi{position:relative;cursor:zoom-in;background:#e8e8e6}
+    .gi img{width:100%;height:auto;display:block;transition:transform .5s ease}
+    .gi:hover img{transform:scale(1.02)}
+    .gi-num{position:absolute;bottom:8px;left:10px;font-size:10px;letter-spacing:.1em;color:rgba(26,26,26,0.5);opacity:0;transition:opacity .2s}
+    .gi:hover .gi-num{opacity:1}
+    .lb{display:none;position:fixed;inset:0;z-index:9000;background:rgba(5,5,5,0.98);flex-direction:column;align-items:center;justify-content:center}
+    .lb.open{display:flex}
+    .lb-img-wrap{max-width:92vw;max-height:82vh;display:flex;align-items:center;justify-content:center}
+    .lb-img-wrap img{max-width:92vw;max-height:82vh;object-fit:contain;display:block}
+    .lb-close{position:fixed;top:20px;right:24px;background:none;border:none;color:rgba(240,237,230,0.5);font-size:28px;cursor:pointer;z-index:9001;line-height:1;transition:color .2s}
+    .lb-close:hover{color:var(--gold)}
+    .lb-prev,.lb-next{position:fixed;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(240,237,230,0.4);font-size:44px;cursor:pointer;z-index:9001;padding:20px;transition:color .2s;line-height:1}
+    .lb-prev{left:4px}.lb-next{right:4px}
+    .lb-prev:hover,.lb-next:hover{color:var(--gold)}
+    .lb-meta{margin-top:14px;text-align:center;font-size:11px;color:rgba(240,237,230,0.4);letter-spacing:.08em}
+    footer{padding:32px 48px;border-top:.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+    .footer-logo{font-family:'Playfair Display',serif;font-size:14px;color:var(--text-dim)}
+    .footer-note{font-size:11px;color:var(--text-dim)}
+    @media(max-width:600px){header{padding:16px 20px}.gallery-intro{padding:32px 20px 28px;flex-direction:column;gap:16px}.gallery-meta{text-align:left}footer{padding:24px 20px;flex-direction:column;gap:12px;text-align:center}}
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cur"></div>
+  <div class="cursor-ring" id="ring"></div>
+  <header>
+    <a href="https://www.icapturehomes.com" class="logo">iCaptureHomes<span>.</span></a>
+    <div class="header-right">
+      <span class="gallery-title">London</span>
+      <span class="header-count">17 images</span>
+      <a href="galleries-index.html" class="back-link">All Galleries</a>
+    </div>
+  </header>
+  <div class="gallery-intro">
+    <h1>London</h1>
+    <div class="gallery-meta">
+      <div class="gallery-meta-label">Photography</div>
+      <div class="gallery-meta-val">April 2026</div>
+    </div>
+  </div>
+  <div class="gallery-grid">
+    <div class="gi" onclick="openLb(0)">
+      <img src="https://lh3.googleusercontent.com/d/1wv1Rd5JvijDeYkZfUqKXlPMKNrCWlzpG" alt="London 01" loading="lazy">
+      <span class="gi-num">1 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(1)">
+      <img src="https://lh3.googleusercontent.com/d/1Vmyp74nZxkbP1bbtI3X5CKu6tqFvltQB" alt="London 02" loading="lazy">
+      <span class="gi-num">2 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(2)">
+      <img src="https://lh3.googleusercontent.com/d/1b11EH2G06JldzHpAoaeUNj1tRprMqcqr" alt="London 03" loading="lazy">
+      <span class="gi-num">3 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(3)">
+      <img src="https://lh3.googleusercontent.com/d/1YXounaVtPJERZnoBaDUyGcPi19_8s2OC" alt="London 04" loading="lazy">
+      <span class="gi-num">4 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(4)">
+      <img src="https://lh3.googleusercontent.com/d/1vSi_cP1r1aQVhrXXICYKsm8pJP7MsjQW" alt="London 05" loading="lazy">
+      <span class="gi-num">5 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(5)">
+      <img src="https://lh3.googleusercontent.com/d/15ro54-Xy7f2BFJ-D3Xcsv8TqRYDCRTBo" alt="London 06" loading="lazy">
+      <span class="gi-num">6 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(6)">
+      <img src="https://lh3.googleusercontent.com/d/1miXy0hTuCrllR-r6YZ_iyBwyDMGoJFJJ" alt="London 07" loading="lazy">
+      <span class="gi-num">7 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(7)">
+      <img src="https://lh3.googleusercontent.com/d/1b6c9Sc4adfBDLMsEkHFWWnShkl3fn9W1" alt="London 08" loading="lazy">
+      <span class="gi-num">8 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(8)">
+      <img src="https://lh3.googleusercontent.com/d/18uwEXfr5_FhHrNf2ylWf9hM4UZqjTGlx" alt="London 09" loading="lazy">
+      <span class="gi-num">9 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(9)">
+      <img src="https://lh3.googleusercontent.com/d/1IRSxTt8racb0xV8cWXpMtoCs25eZ6T5F" alt="London 10" loading="lazy">
+      <span class="gi-num">10 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(10)">
+      <img src="https://lh3.googleusercontent.com/d/15O8SM7As01llgESdKlXvUaNReihtbaG5" alt="London 11" loading="lazy">
+      <span class="gi-num">11 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(11)">
+      <img src="https://lh3.googleusercontent.com/d/1OjpAi9dBwoGNn12h2VQHsr-L5IvJ_HCG" alt="London 12" loading="lazy">
+      <span class="gi-num">12 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(12)">
+      <img src="https://lh3.googleusercontent.com/d/1NFudNnjJ9ElGxQtYyfzqQ-UR1qQB7JRB" alt="London 13" loading="lazy">
+      <span class="gi-num">13 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(13)">
+      <img src="https://lh3.googleusercontent.com/d/1YiiHZYG4YrT-uzm1eFLPbiRtDmiCXppK" alt="London 14" loading="lazy">
+      <span class="gi-num">14 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(14)">
+      <img src="https://lh3.googleusercontent.com/d/12ANtQgvr4BW8B7rsNcIC94yx-uasS2lE" alt="London 15" loading="lazy">
+      <span class="gi-num">15 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(15)">
+      <img src="https://lh3.googleusercontent.com/d/1z5LWfprAdm783Yc9iLVROX0jxc55X-eN" alt="London 16" loading="lazy">
+      <span class="gi-num">16 / 17</span>
+    </div>
+    <div class="gi" onclick="openLb(16)">
+      <img src="https://lh3.googleusercontent.com/d/1mlDEixeo9qvzWanzag-57RwoO7qUBVlI" alt="London 17" loading="lazy">
+      <span class="gi-num">17 / 17</span>
+    </div>
+  </div>
+  <div class="lb" id="lb">
+    <button class="lb-close" onclick="closeLb()">&#215;</button>
+    <button class="lb-prev" onclick="navLb(-1)">&#8249;</button>
+    <div class="lb-img-wrap"><img id="lb-img" src="" alt=""></div>
+    <button class="lb-next" onclick="navLb(1)">&#8250;</button>
+    <div class="lb-meta" id="lb-meta"></div>
+  </div>
+  <footer>
+    <span class="footer-logo">iCaptureHomes Photography</span>
+    <span class="footer-note">Private client gallery &mdash; not for public distribution</span>
+  </footer>
+  <script>
+    const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+    let rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';setTimeout(()=>{rx+=(e.clientX-rx)*.15;ry+=(e.clientY-ry)*.15;ring.style.left=rx+'px';ring.style.top=ry+'px';},0)});
+    const imgs=[
+    "https://lh3.googleusercontent.com/d/1wv1Rd5JvijDeYkZfUqKXlPMKNrCWlzpG",
+    "https://lh3.googleusercontent.com/d/1Vmyp74nZxkbP1bbtI3X5CKu6tqFvltQB",
+    "https://lh3.googleusercontent.com/d/1b11EH2G06JldzHpAoaeUNj1tRprMqcqr",
+    "https://lh3.googleusercontent.com/d/1YXounaVtPJERZnoBaDUyGcPi19_8s2OC",
+    "https://lh3.googleusercontent.com/d/1vSi_cP1r1aQVhrXXICYKsm8pJP7MsjQW",
+    "https://lh3.googleusercontent.com/d/15ro54-Xy7f2BFJ-D3Xcsv8TqRYDCRTBo",
+    "https://lh3.googleusercontent.com/d/1miXy0hTuCrllR-r6YZ_iyBwyDMGoJFJJ",
+    "https://lh3.googleusercontent.com/d/1b6c9Sc4adfBDLMsEkHFWWnShkl3fn9W1",
+    "https://lh3.googleusercontent.com/d/18uwEXfr5_FhHrNf2ylWf9hM4UZqjTGlx",
+    "https://lh3.googleusercontent.com/d/1IRSxTt8racb0xV8cWXpMtoCs25eZ6T5F",
+    "https://lh3.googleusercontent.com/d/15O8SM7As01llgESdKlXvUaNReihtbaG5",
+    "https://lh3.googleusercontent.com/d/1OjpAi9dBwoGNn12h2VQHsr-L5IvJ_HCG",
+    "https://lh3.googleusercontent.com/d/1NFudNnjJ9ElGxQtYyfzqQ-UR1qQB7JRB",
+    "https://lh3.googleusercontent.com/d/1YiiHZYG4YrT-uzm1eFLPbiRtDmiCXppK",
+    "https://lh3.googleusercontent.com/d/12ANtQgvr4BW8B7rsNcIC94yx-uasS2lE",
+    "https://lh3.googleusercontent.com/d/1z5LWfprAdm783Yc9iLVROX0jxc55X-eN",
+    "https://lh3.googleusercontent.com/d/1mlDEixeo9qvzWanzag-57RwoO7qUBVlI"
+  ];
+    let ci=0;
+    const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),lbMeta=document.getElementById('lb-meta');
+    function openLb(i){ci=i;lbImg.src=imgs[i];lbMeta.textContent=(i+1)+' / '+imgs.length;lb.classList.add('open');document.body.style.overflow='hidden'}
+    function closeLb(){lb.classList.remove('open');document.body.style.overflow=''}
+    function navLb(d){ci=(ci+d+imgs.length)%imgs.length;lbImg.src=imgs[ci];lbMeta.textContent=(ci+1)+' / '+imgs.length}
+    document.addEventListener('keydown',e=>{if(!lb.classList.contains('open'))return;if(e.key==='ArrowRight')navLb(1);if(e.key==='ArrowLeft')navLb(-1);if(e.key==='Escape')closeLb()});
+    lb.addEventListener('click',e=>{if(e.target===lb)closeLb()});
+  </script>
+</body>
+</html>
