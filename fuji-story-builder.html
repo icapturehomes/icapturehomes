@@ -6,7 +6,7 @@
 <title>Fuji Story Builder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;700&family=Bebas+Neue&family=Caveat:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0a0a;--bg-mid:#0d0d0d;--bg-card:#111111;--text:#f0ede6;--text-muted:rgba(240,237,230,0.55);--text-dim:rgba(240,237,230,0.35);--gold:#c8a96e;--gold-light:#d4ba85;--border:rgba(240,237,230,0.1);--border-hover:rgba(240,237,230,0.2)}
 *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',Arial,Helvetica,sans-serif}
@@ -87,20 +87,14 @@ button:disabled{opacity:.4;cursor:not-allowed}.row{display:grid;grid-template-co
       <input type="range" id="coverOpacity" min="25" max="90" value="60">
     </div>
     <label>Top line</label><input id="top" type="text" value="" placeholder="e.g. A FEW DAYS IN">
-    <div class="row" style="margin-top:6px">
-      <select id="topFont"><option value="DM Sans" selected>DM Sans</option><option value="Playfair Display">Playfair Display</option><option value="Bebas Neue">Bebas Neue</option><option value="Caveat">Caveat</option><option value="Space Mono">Space Mono</option></select>
-      <input type="range" id="topSize" min="18" max="60" value="32" title="Size">
-    </div>
+    <label style="margin-top:6px;font-size:11px">Size</label>
+    <input type="range" id="topSize" min="18" max="60" value="32">
     <label>Main title</label><input id="title" type="text" value="" placeholder="e.g. London">
-    <div class="row" style="margin-top:6px">
-      <select id="titleFont"><option value="Playfair Display" selected>Playfair Display</option><option value="DM Sans">DM Sans</option><option value="Bebas Neue">Bebas Neue</option><option value="Caveat">Caveat</option><option value="Space Mono">Space Mono</option></select>
-      <input type="range" id="titleSize" min="40" max="140" value="84" title="Size">
-    </div>
+    <label style="margin-top:6px;font-size:11px">Size</label>
+    <input type="range" id="titleSize" min="40" max="140" value="84">
     <label>Bottom line</label><input id="tap" type="text" value="Shot on Fujifilm X100VI →">
-    <div class="row" style="margin-top:6px">
-      <select id="tapFont"><option value="DM Sans" selected>DM Sans</option><option value="Playfair Display">Playfair Display</option><option value="Bebas Neue">Bebas Neue</option><option value="Caveat">Caveat</option><option value="Space Mono">Space Mono</option></select>
-      <input type="range" id="tapSize" min="16" max="40" value="26" title="Size">
-    </div>
+    <label style="margin-top:6px;font-size:11px">Size</label>
+    <input type="range" id="tapSize" min="16" max="40" value="26">
     <button id="saveStyleBtn" class="secondary" style="margin-top:12px">💾 Save fonts &amp; sizes as my default</button>
     </div>
   </div>
@@ -125,24 +119,6 @@ button:disabled{opacity:.4;cursor:not-allowed}.row{display:grid;grid-template-co
   <button id="exportWeb" class="secondary" style="margin-top:8px" disabled>Export as shareable webpage</button>
   <button id="exportPdf" class="secondary" style="margin-top:8px" disabled>Export as PDF</button>
 
-  <div class="card" style="margin-top:14px">
-    <h2>4 · Caption &amp; hashtags</h2>
-    <p class="small">Rule-based suggestions from your photo count, dates, and cover title — not true image understanding. Edit freely before posting.</p>
-    <label>Anything to mention? (optional)</label>
-    <input id="capDesc" type="text" placeholder="e.g. hiked up at sunrise, first time seeing snow">
-    <button id="suggestCapBtn" class="secondary" style="margin-top:10px">✨ Suggest caption &amp; hashtags</button>
-    <label style="margin-top:10px">Caption</label>
-    <textarea id="capOutput" rows="2" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:2px;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;resize:vertical"></textarea>
-    <label>Hashtags</label>
-    <textarea id="hashOutput" rows="1" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:2px;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;resize:vertical"></textarea>
-    <div class="row" style="margin-top:8px">
-      <button id="regenCapBtn" class="secondary">🔄 Regenerate</button>
-      <button id="copyCapBtn" class="secondary">📋 Copy caption</button>
-    </div>
-    <button id="copyPromptBtn" class="secondary" style="margin-top:8px">📋 Copy prompt for real AI caption</button>
-    <p class="small" style="margin-top:6px">This one preps a prompt for pasting into an AI chat (with a photo or two attached) if you want a caption that actually reflects what's in the shot.</p>
-    <div id="capStatus" class="status"></div>
-  </div>
   <div id="buildStatus" class="status"></div>
 </aside>
 
@@ -573,21 +549,7 @@ async function unzip(f){let z=await JSZip.loadAsync(f),a=[];for(let e of Object.
 async function load(list){$("loadStatus").textContent="Reading files…";let a=[],failed=0;for(let f of [...list]){if(f.name.toLowerCase().endsWith(".zip"))a.push(...await unzip(f));else if(f.type.startsWith("image/"))a.push(f)}S.batch++;let batch=S.batch,total=a.length,done=0;for(let f of a){let u=URL.createObjectURL(f);try{let i=await img(u);let folder=f.__folder||(f.webkitRelativePath?f.webkitRelativePath.split("/").slice(0,-1).join("/"):null);let exifTime=await readExifDate(f);let captureTime=exifTime||f.lastModified||0;S.photos.push({f,name:f.name,url:u,img:i,t:tone(i),orient:orientOf(i),captureTime,fx:.5,fy:.5,id:crypto.randomUUID(),folder,batch})}catch{URL.revokeObjectURL(u);failed++}done++;if(total>15)$("loadStatus").textContent=`Loading photo ${done} of ${total}…`}sort("name");thumbs();controls();let added=a.length-failed;$("loadStatus").textContent=`Trip ${batch} added: ${added} photo${added===1?"":"s"}.`+(failed?` (${failed} file${failed>1?"s":""} skipped — unreadable)`:"")}
 function groupKey(p){return p.folder||("batch"+p.batch)}
 function colorFamily(t){if(t.sat<0.12)return 6;let h=t.h;if(h<20||h>=340)return 0;if(h<45)return 1;if(h<70)return 2;if(h<170)return 3;if(h<255)return 4;return 5}
-const CAP_WITH_PLACE=["{place}, in {count} frames.","A few days in {place} 📍","Chasing light through {place}.","{place} — {count} moments worth keeping.","Somewhere in {place}.","{place}, as seen through the X100VI.","Notes from {place}.","Still thinking about {place}."];
-const CAP_NO_PLACE=["A few frames from a recent trip.","Shot on Fujifilm X100VI.","{count} moments worth keeping.","Chasing light, one frame at a time.","Some recent favorites.","Just a few frames I keep coming back to."];
-const HASH_CAMERA=["#fujifilmx100vi","#fujifilm","#x100vi","#fujifeed","#fujifilm_street","#x100viphotography"];
-const HASH_GENERAL=["#travelphotography","#streetphotography","#photooftheday","#filmisnotdead","#photographylovers","#everydayphotography"];
-const HASH_WARM=["#goldenhour","#warmtones","#sunsetphotography"];
-const HASH_COOL=["#bluehour","#cooltones","#moodyphotography"];
-const HASH_BW=["#blackandwhite","#bw_photooftheday","#monochrome"];
-function pickRandom(arr){return arr[Math.floor(Math.random()*arr.length)]}
-function computeCaptionContext(){let place=($("title").value||"").trim(),placeTag=place?place.toLowerCase().replace(/[^a-z0-9]+/g,""):"",desc=($("capDesc").value||"").trim(),count=S.photos.length,times=S.photos.map(p=>p.captureTime).filter(t=>t>0),days=null,month=null;if(times.length){let mn=Math.min(...times),mx=Math.max(...times);days=Math.max(1,Math.round((mx-mn)/86400000)+1);month=new Date(mn).toLocaleString("en-US",{month:"long"})}let bw=0,warm=0,cool=0;S.photos.forEach(p=>{if(p.t.sat<0.12){bw++;return}let f=colorFamily(p.t);if(f===0||f===1||f===2)warm++;else if(f===4||f===5)cool++});let mood=null;if(bw>count*0.5)mood="bw";else if(warm>cool&&warm>count*0.25)mood="warm";else if(cool>warm&&cool>count*0.25)mood="cool";return{place,placeTag,desc,count,days,month,mood}}
-function generateCaption(ctx){let pool=ctx.place?CAP_WITH_PLACE.slice():CAP_NO_PLACE.slice();if(ctx.desc){pool.push(ctx.place?`{desc} — {place}.`:`{desc}.`,ctx.place?`{place}: {desc}.`:`{desc} 📍`,`{desc}`)}return pickRandom(pool).replace(/{place}/g,ctx.place).replace(/{count}/g,ctx.count).replace(/{days}/g,ctx.days||ctx.count).replace(/{desc}/g,ctx.desc)}
-function generateHashtags(ctx){let picks=[pickRandom(HASH_CAMERA)];let c2=pickRandom(HASH_CAMERA.filter(h=>!picks.includes(h)));if(c2)picks.push(c2);picks.push(pickRandom(HASH_GENERAL));if(ctx.placeTag)picks.push("#"+ctx.placeTag);if(ctx.mood==="warm")picks.push(pickRandom(HASH_WARM));else if(ctx.mood==="cool")picks.push(pickRandom(HASH_COOL));else if(ctx.mood==="bw")picks.push(pickRandom(HASH_BW));else{let g2=pickRandom(HASH_GENERAL.filter(h=>!picks.includes(h)));if(g2)picks.push(g2)}picks=[...new Set(picks)];let all=[...HASH_CAMERA,...HASH_GENERAL,...HASH_WARM,...HASH_COOL,...HASH_BW];while(picks.length<5){let extra=pickRandom(all);if(!picks.includes(extra))picks.push(extra)}return picks.slice(0,5).join(" ")}
-function suggestCaption(){if(!S.photos.length){$("capStatus").textContent="Load some photos first.";return}let ctx=computeCaptionContext();$("capOutput").value=generateCaption(ctx);$("hashOutput").value=generateHashtags(ctx);$("capStatus").textContent="Suggestion generated — edit freely, or hit Regenerate for another option."}
-async function copyToClipboard(text){try{await navigator.clipboard.writeText(text);return true}catch{try{let ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.focus();ta.select();let ok=document.execCommand("copy");document.body.removeChild(ta);return ok}catch{return false}}}
-async function copyCaption(){let text=(($("capOutput").value||"")+"\n\n"+($("hashOutput").value||"")).trim();if(!text){$("capStatus").textContent="Nothing to copy yet — generate a suggestion first.";return}let ok=await copyToClipboard(text);$("capStatus").textContent=ok?"Copied to clipboard.":"Couldn't copy automatically — select the text above and copy manually."}
-async function copyPromptForAI(){if(!S.photos.length){$("capStatus").textContent="Load some photos first.";return}let ctx=computeCaptionContext();let prompt=`Write a short, engaging Instagram caption and 5 relevant hashtags for a photo story`+(ctx.place?` from ${ctx.place}`:"")+`. Context: ${ctx.count} photos, shot on a Fujifilm X100VI`+(ctx.days?`, captured over ${ctx.days} day${ctx.days>1?"s":""}`:"")+(ctx.month?` in ${ctx.month}`:"")+`.`+(ctx.desc?` Additional context from the photographer: ${ctx.desc}.`:"")+` Style: candid, warm, and editorial — avoid clichés and generic travel-caption language. I'll attach a couple of the actual photos for context.`;let ok=await copyToClipboard(prompt);$("capStatus").textContent=ok?"Prompt copied — paste it into an AI chat and attach a photo or two for a caption that actually knows what's in the shot.":"Couldn't copy automatically. Prompt: "+prompt}
+
 function sort(m){if(m==="name")S.photos.sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));if(m==="tone")S.photos.sort((a,b)=>(a.t.sat<.1?999:a.t.h)-(b.t.sat<.1?999:b.t.h)||a.t.light-b.t.light);if(m==="light")S.photos.sort((a,b)=>a.t.light-b.t.light);if(m==="exif")S.photos.sort((a,b)=>(a.captureTime-b.captureTime)||a.name.localeCompare(b.name,undefined,{numeric:true}));if(m==="colorFamily")S.photos.sort((a,b)=>colorFamily(a.t)-colorFamily(b.t)||a.t.light-b.t.light);if(m==="shuffle"){for(let i=S.photos.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[S.photos[i],S.photos[j]]=[S.photos[j],S.photos[i]]}}if(m==="bw"){let toneSort=(a,b)=>(a.t.sat<.1?999:a.t.h)-(b.t.sat<.1?999:b.t.h)||a.t.light-b.t.light,bwG=S.photos.filter(p=>p.t.sat<0.12).sort((a,b)=>a.t.light-b.t.light),colorG=S.photos.filter(p=>p.t.sat>=0.12).sort(toneSort);S.photos=[...bwG,...colorG]}}
 const TRIP_COLORS=["#e0685a","#5dade2","#52c98d","#b579e0","#e0a05d","#4fc4ae","#e07aa8","#c8a96e"];
 let coverId=null,poolDrag=null,placingPhoto=null,poolLocked=false;function thumbs(){$("thumbs").innerHTML="";$("thumbs").classList.toggle("locked",poolLocked);let groups=[],seen=new Set();S.photos.forEach(p=>{let k=groupKey(p);if(!seen.has(k)){seen.add(k);groups.push(k)}});let multi=groups.length>1;let usedIds=usedPhotoIds();let unusedCount=S.photos.filter(p=>!usedIds.has(p.id)).length;if($("addUnusedBtn"))$("addUnusedBtn").textContent=`+ Add unused photos (${unusedCount})`;$("placeStatus").textContent=poolLocked?"Pool locked — scrolling only. Unlock to drag or tap-place photos.":(placingPhoto?`Tap a spot on any page to place "${placingPhoto.photo.name}" — tap it again to cancel.`:"Tap any photo — in this panel or on a page — then tap where it should go. Use 🔍 on a page to preview it instead. A gold dot means a photo isn't used anywhere yet.");S.photos.forEach((p,i)=>{let d=document.createElement("div");d.className="thumb"+(coverId===p.id?" cover-selected":"")+(placingPhoto&&placingPhoto.photo===p?" placing":"");d.__photoId=p.id;if(multi)d.style.boxShadow=`inset 3px 0 0 ${TRIP_COLORS[groups.indexOf(groupKey(p))%TRIP_COLORS.length]}`;d.innerHTML=`<img src="${p.url}"><span>${String(i+1).padStart(3,"0")} · ${p.name}</span><button class="star${coverId===p.id?" active":""}" title="Use as cover background">★</button><button class="rm" title="Remove photo" aria-label="Remove photo">×</button>`+(!usedIds.has(p.id)?`<span class="unused-dot" title="Not used on any page">NEW</span>`:"");
@@ -602,11 +564,10 @@ function crop(x,i,px,py,pw,ph,fx=.5,fy=.5){let ir=i.naturalWidth/i.naturalHeight
 function theme(){let dark=$("pageBg").value==="black";return dark?{bg:"#0a0a0a",ink:"#f0ede6",muted:"rgba(240,237,230,0.55)",gold:"#c8a96e"}:{bg:"#ffffff",ink:"#151515",muted:"rgba(21,21,21,0.55)",gold:"#9c7a3f"}}
 function fitText(x,text,maxW,startPx,weight="",minPx=28,fam="'DM Sans',Arial"){let px=startPx;do{x.font=`${weight}${px}px ${fam}`.trim();if(x.measureText(text).width<=maxW||px<=minPx)break;px-=2}while(true);return px}
 function wrapLines(x,text,maxW){let words=text.split(" "),lines=[],cur="";for(let w of words){let t=cur?cur+" "+w:w;if(x.measureText(t).width>maxW&&cur){lines.push(cur);cur=w}else cur=t}if(cur)lines.push(cur);return lines}
-function fontFallback(fam){return fam==="Playfair Display"?"serif":fam==="Space Mono"?"monospace":fam==="Caveat"?"cursive":"sans-serif"}
 function cover(c,photo){let x=c.getContext("2d"),maxW=W-160,T=theme(),hs=hScale();if(photo){crop(x,photo.img,0,0,W,H,photo.fx,photo.fy);let scrimAlpha=($("coverOpacity").value||60)/100;x.fillStyle=T.bg==="#0a0a0a"?`rgba(10,10,10,${scrimAlpha})`:`rgba(255,255,255,${scrimAlpha})`;x.fillRect(0,0,W,H)}else{x.fillStyle=T.bg;x.fillRect(0,0,W,H)}x.textAlign="center";
-let topFam=$("topFont").value,topFB=fontFallback(topFam),topSize=+$("topSize").value,top=($("top").value||"").toUpperCase();if(top){x.fillStyle=T.gold;let px=fitText(x,top,maxW,topSize,"",Math.min(16,topSize),`'${topFam}',${topFB}`);x.font=`${px}px '${topFam}',${topFB}`;x.fillText(top,W/2,720*hs)}
-let titleFam=$("titleFont").value,titleFB=fontFallback(titleFam),titleSize=+$("titleSize").value,title=($("title").value||"");if(title){x.fillStyle=T.ink;let px=fitText(x,title,maxW,titleSize,"700 ",Math.min(28,titleSize),`'${titleFam}',${titleFB}`);x.font=`700 ${px}px '${titleFam}',${titleFB}`;let lines=wrapLines(x,title,maxW).slice(0,3),lh=px*1.15,startY=845*hs-(lines.length-1)*lh/2;lines.forEach((ln,i)=>x.fillText(ln,W/2,startY+i*lh))}
-let tapFam=$("tapFont").value,tapFB=fontFallback(tapFam),tapSize=+$("tapSize").value;x.fillStyle=T.muted;x.font=`${tapSize}px '${tapFam}',${tapFB}`;x.fillText(($("tap").value||"").slice(0,60),W/2,1715*hs);return[{photo:photo||null,slotIndex:0,px:0,py:0,pw:W,ph:H}]}
+let topSize=+$("topSize").value,top=($("top").value||"").toUpperCase();if(top){x.fillStyle=T.gold;let px=fitText(x,top,maxW,topSize,"",Math.min(16,topSize),"'DM Sans',Arial");x.font=`${px}px 'DM Sans',Arial`;x.fillText(top,W/2,720*hs)}
+let titleSize=+$("titleSize").value,title=($("title").value||"").toUpperCase();if(title){x.fillStyle=T.ink;let px=fitText(x,title,maxW,titleSize,"700 ",Math.min(28,titleSize),"'Playfair Display',serif");x.font=`700 ${px}px 'Playfair Display',serif`;let lines=wrapLines(x,title,maxW).slice(0,3),lh=px*1.15,startY=845*hs-(lines.length-1)*lh/2;lines.forEach((ln,i)=>x.fillText(ln,W/2,startY+i*lh))}
+let tapSize=+$("tapSize").value;x.fillStyle=T.muted;x.font=`${tapSize}px 'DM Sans',Arial`;x.fillText(($("tap").value||"").slice(0,60),W/2,1715*hs);return[{photo:photo||null,slotIndex:0,px:0,py:0,pw:W,ph:H}]}
 function hero(c,p){let x=c.getContext("2d");if(p[0])crop(x,p[0].img,0,0,W,H,p[0].fx,p[0].fy);else{x.fillStyle=theme().bg;x.fillRect(0,0,W,H)}return[{photo:p[0]||null,slotIndex:0,px:0,py:0,pw:W,ph:H}]}
 function splitPanel(c,entry){let x=c.getContext("2d");let photo=entry.p[0];x.fillStyle=theme().bg;x.fillRect(0,0,W,H);if(!photo)return[{photo:null,slotIndex:0,px:0,py:0,pw:W,ph:H}];if(entry.slice&&entry.slicePhotoId===photo.id){x.drawImage(photo.img,entry.slice.sx,entry.slice.sy,entry.slice.sw,entry.slice.sh,0,0,W,H)}else{crop(x,photo.img,0,0,W,H,photo.fx,photo.fy)}let bw=12,half=bw/2,isFirst=entry.sliceIndex===0,isLast=entry.sliceTotal!=null&&entry.sliceIndex===entry.sliceTotal-1;x.strokeStyle="#ffffff";x.lineWidth=bw;x.beginPath();x.moveTo(0,half);x.lineTo(W,half);x.stroke();x.beginPath();x.moveTo(0,H-half);x.lineTo(W,H-half);x.stroke();if(entry.sliceTotal==null||isFirst){x.beginPath();x.moveTo(half,0);x.lineTo(half,H);x.stroke()}if(entry.sliceTotal==null||isLast){x.beginPath();x.moveTo(W-half,0);x.lineTo(W-half,H);x.stroke()}return[{photo,slotIndex:0,px:0,py:0,pw:W,ph:H}]}
 function blurFrame(c,p){let x=c.getContext("2d");if(!p[0]){x.fillStyle="#000";x.fillRect(0,0,W,H);return[{photo:null,slotIndex:0,px:0,py:0,pw:W,ph:H}]}let photo=p[0],overscan=1.18,bw=W*overscan,bh=H*overscan,bx=-(bw-W)/2,by=-(bh-H)/2;x.save();x.filter="blur(30px)";crop(x,photo.img,bx,by,bw,bh,photo.fx,photo.fy);x.restore();x.fillStyle="rgba(0,0,0,0.22)";x.fillRect(0,0,W,H);let pad=W*0.026,frameW=W*0.8,innerW=frameW-2*pad,innerH=innerW*1.25,frameH=innerH+2*pad,fx2=(W-frameW)/2,fy2=(H-frameH)/2-H*0.03;x.save();x.shadowColor="rgba(0,0,0,0.5)";x.shadowBlur=40;x.shadowOffsetY=14;x.fillStyle="#ffffff";x.fillRect(fx2,fy2,frameW,frameH);x.restore();crop(x,photo.img,fx2+pad,fy2+pad,innerW,innerH,photo.fx,photo.fy);return[{photo,slotIndex:0,px:fx2+pad,py:fy2+pad,pw:innerW,ph:innerH}]}
@@ -698,7 +659,7 @@ $("lbPrev").onclick=()=>{lbIndex=(lbIndex-1+S.pages.length)%S.pages.length;showL
 $("lbNext").onclick=()=>{lbIndex=(lbIndex+1)%S.pages.length;showLightbox()};
 $("lightbox").onclick=e=>{if(e.target.id==="lightbox")closeLightbox()};
 $("coverPhoto").onchange=()=>{let on=$("coverPhoto").checked;$("coverOpacityWrap").style.display=on?"block":"none";$("coverPickHint").style.display=on?"block":"none";liveCoverUpdate()};
-["top","title","tap","coverOpacity","topFont","topSize","titleFont","titleSize","tapFont","tapSize"].forEach(id=>$(id).addEventListener("input",liveCoverUpdate));
+["top","title","tap","coverOpacity","topSize","titleSize","tapSize"].forEach(id=>$(id).addEventListener("input",liveCoverUpdate));
 $("format").addEventListener("change",updateCoverPreview);
 $("pageBg").addEventListener("change",()=>{S.pages.forEach(p=>{p.slots=drawPage(p.canvasEl,p)});if($("lightbox").style.display==="flex")drawPage($("lbCanvas"),S.pages[lbIndex]);updateCoverPreview()});
 document.addEventListener("keydown",e=>{if($("lightbox").style.display!=="flex")return;if(e.key==="Escape")closeLightbox();else if(e.key==="ArrowLeft"&&!adjustMode)$("lbPrev").click();else if(e.key==="ArrowRight"&&!adjustMode)$("lbNext").click()});
@@ -706,15 +667,15 @@ function setupCollapsible(h2Id,bodyId){let h2=$(h2Id),body=$(bodyId);h2.addEvent
 function collapseSetupCards(){["coverH2","seqSettingsH2"].forEach(id=>{let h2=$(id);if(!h2.classList.contains("collapsed")){h2.classList.add("collapsed");$(id==="coverH2"?"coverBody":"seqSettingsBody").style.display="none"}})}
 setupCollapsible("coverH2","coverBody");setupCollapsible("seqSettingsH2","seqSettingsBody");
 $("lockPoolBtn").onclick=e=>{e.stopPropagation();poolLocked=!poolLocked;$("lockPoolBtn").textContent=poolLocked?"🔓 Unlock pool":"🔒 Lock pool";$("lockPoolBtn").classList.toggle("active",poolLocked);thumbs()};
-function saveStyleDefaults(){try{let style={topFont:$("topFont").value,topSize:$("topSize").value,titleFont:$("titleFont").value,titleSize:$("titleSize").value,tapFont:$("tapFont").value,tapSize:$("tapSize").value,pageBg:$("pageBg").value,coverOpacity:$("coverOpacity").value};localStorage.setItem("fujiStoryBuilderStyle",JSON.stringify(style));$("buildStatus").textContent="Saved — new covers will start with these fonts, sizes, and background."}catch{$("buildStatus").textContent="Couldn't save a default here (browser storage unavailable)."}}
-function loadStyleDefaults(){try{let raw=localStorage.getItem("fujiStoryBuilderStyle");if(!raw)return;let style=JSON.parse(raw);["topFont","topSize","titleFont","titleSize","tapFont","tapSize","pageBg","coverOpacity"].forEach(k=>{if(style[k]!==undefined&&$(k))$(k).value=style[k]})}catch{}}
+function saveStyleDefaults(){try{let style={topSize:$("topSize").value,titleSize:$("titleSize").value,tapSize:$("tapSize").value,pageBg:$("pageBg").value,coverOpacity:$("coverOpacity").value};localStorage.setItem("fujiStoryBuilderStyle",JSON.stringify(style));$("buildStatus").textContent="Saved — new covers will start with these sizes and background."}catch{$("buildStatus").textContent="Couldn't save a default here (browser storage unavailable)."}}
+function loadStyleDefaults(){try{let raw=localStorage.getItem("fujiStoryBuilderStyle");if(!raw)return;let style=JSON.parse(raw);["topSize","titleSize","tapSize","pageBg","coverOpacity"].forEach(k=>{if(style[k]!==undefined&&$(k))$(k).value=style[k]})}catch{}}
 function resetAllFocus(){if(!S.photos.length)return;pushUndo();S.photos.forEach(p=>{p.fx=.5;p.fy=.5});S.pages.forEach(entry=>{if(entry.canvasEl)entry.slots=drawPage(entry.canvasEl,entry)});if($("lightbox").style.display==="flex"&&S.pages[lbIndex])drawPage($("lbCanvas"),S.pages[lbIndex]);$("buildStatus").textContent="All focus points reset to center."}
 $("addPageBtn").onclick=()=>addPage($("addPageType").value);
 $("addUnusedBtn").onclick=addUnusedAsPages;
 $("undoBtn").onclick=doUndo;
 $("resetFocusBtn").onclick=resetAllFocus;
 $("splitPhotoBtn").onclick=()=>splitPhotoAcrossPages(2);
-$("files").onchange=e=>load(e.target.files);$("folder").onchange=e=>load(e.target.files);["dragenter","dragover"].forEach(v=>$("drop").addEventListener(v,e=>{e.preventDefault();$("drop").classList.add("on")}));["dragleave","drop"].forEach(v=>$("drop").addEventListener(v,e=>{e.preventDefault();$("drop").classList.remove("on")}));$("drop").ondrop=e=>load(e.dataTransfer.files);$("make").onclick=make;$("zip").onclick=zipall;$("exportWeb").onclick=exportAsWebpage;$("exportPdf").onclick=exportAsPdf;$("suggestCapBtn").onclick=suggestCaption;$("regenCapBtn").onclick=suggestCaption;$("copyCapBtn").onclick=copyCaption;$("copyPromptBtn").onclick=copyPromptForAI;$("toneBtn").onclick=()=>{sort("tone");thumbs();$("order").value="tone"};$("nameBtn").onclick=()=>{sort("name");thumbs();$("order").value="name"};$("clearBtn").onclick=()=>{S.photos.forEach(p=>URL.revokeObjectURL(p.url));S.photos=[];S.pages=[];coverId=null;$("thumbs").innerHTML="";$("pages").innerHTML="";$("empty").style.display="grid";$("zip").disabled=true;$("exportWeb").disabled=true;$("exportPdf").disabled=true;closeLightbox();controls()};controls();
+$("files").onchange=e=>load(e.target.files);$("folder").onchange=e=>load(e.target.files);["dragenter","dragover"].forEach(v=>$("drop").addEventListener(v,e=>{e.preventDefault();$("drop").classList.add("on")}));["dragleave","drop"].forEach(v=>$("drop").addEventListener(v,e=>{e.preventDefault();$("drop").classList.remove("on")}));$("drop").ondrop=e=>load(e.dataTransfer.files);$("make").onclick=make;$("zip").onclick=zipall;$("exportWeb").onclick=exportAsWebpage;$("exportPdf").onclick=exportAsPdf;$("toneBtn").onclick=()=>{sort("tone");thumbs();$("order").value="tone"};$("nameBtn").onclick=()=>{sort("name");thumbs();$("order").value="name"};$("clearBtn").onclick=()=>{S.photos.forEach(p=>URL.revokeObjectURL(p.url));S.photos=[];S.pages=[];coverId=null;$("thumbs").innerHTML="";$("pages").innerHTML="";$("empty").style.display="grid";$("zip").disabled=true;$("exportWeb").disabled=true;$("exportPdf").disabled=true;closeLightbox();controls()};controls();
 $("saveStyleBtn").onclick=saveStyleDefaults;
 loadStyleDefaults();
 updateCoverPreview();document.fonts.ready.then(updateCoverPreview);
