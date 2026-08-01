@@ -1094,6 +1094,7 @@
     }
     .alacarte-row span:last-child { color: var(--text); font-weight: 400; white-space: nowrap; }
     .alacarte-addon { opacity: 0.7; }
+    @media (max-width: 700px) { .alacarte-grid-3col { grid-template-columns: 1fr !important; } }
 
 
     /* LIGHTBOX */
@@ -2336,7 +2337,7 @@
           <li>Aerial Photos</li>
           <li>2D + Interactive Floor Plan</li>
           <li>Signature Video (60–90 sec)</li>
-          <li style="font-size:11px;color:var(--text-dim);font-style:italic;">Upgrade to Editorial +$125</li>
+          <li style="font-size:11px;color:var(--text-dim);font-style:italic;">Upgrade to Editorial (dynamic cuts &amp; speed ramps) +$125</li>
           <li>Custom Property Website</li>
           <li>Marketing Kit</li>
         </ul>
@@ -2350,7 +2351,7 @@
           <li>Aerial Photos</li>
           <li>2D + Interactive Floor Plan</li>
           <li>Signature Video (60–90 sec)</li>
-          <li style="font-size:11px;color:var(--text-dim);font-style:italic;">Upgrade to Editorial +$125</li>
+          <li style="font-size:11px;color:var(--text-dim);font-style:italic;">Upgrade to Editorial (dynamic cuts &amp; speed ramps) +$125</li>
           <li>Custom Property Website</li>
           <li>Marketing Kit</li>
         </ul>
@@ -2364,7 +2365,7 @@
         <div style="width:24px;height:1px;background:var(--gold);flex-shrink:0;"></div>
         <span style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);">À La Carte</span>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:rgba(240,237,230,0.08);">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(240,237,230,0.08);" class="alacarte-grid-3col">
 
         <div style="background:var(--bg-mid);padding:32px 28px;">
           <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;">Photography</div>
@@ -2523,7 +2524,7 @@
         <h3 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:500;color:var(--text);line-height:1.2;margin-bottom:16px;">Schedule your shoot<br>online in minutes.</h3>
         <p style="font-size:13px;font-weight:300;color:var(--text-muted);line-height:1.75;max-width:320px;margin-bottom:32px;">Select your services, check live availability, and lock in your date — all in one place.</p>
         <a href="https://icapturehomes.hd.pics/order" target="_blank" class="btn-primary" style="font-size:12px;padding:16px 44px;display:inline-block;letter-spacing:0.14em;">Book Now →</a>
-        <div style="margin-top:18px;font-size:11px;color:var(--text-dim);">Or call <a href="tel:4049735557" style="color:var(--gold);text-decoration:none;">(404) 973-5557</a></div>
+        <div style="margin-top:18px;font-size:11px;color:var(--text-dim);">Or text or call <a href="tel:4049735557" style="color:var(--gold);text-decoration:none;">(404) 973-5557</a></div>
       </div>
     </div>
   </section>
