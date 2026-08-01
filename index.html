@@ -444,6 +444,7 @@
     }
     .service-card:hover { background: #111; }
     .service-card:hover::before { transform: scaleX(1); }
+    @media (max-width: 768px) { .service-card::before { transform: scaleX(1); } }
     .service-num {
       font-family: 'Playfair Display', serif;
       font-size: 12px;
@@ -1502,44 +1503,37 @@
     </div>
     <div class="services-grid">
       <div class="service-card reveal">
-        <div class="service-num">01</div>
         <div class="service-name">Photography + Aerial/Drone</div>
         <div class="service-desc">Professional interior and exterior photography that showcases every property at its finest. FAA Part 107-certified aerial photography available as an add-on.</div>
         <a href="#portfolio" class="service-link" onclick="activatePanel('photo')">View examples →</a>
       </div>
       <div class="service-card reveal reveal-delay-1">
-        <div class="service-num">02</div>
         <div class="service-name">Horizontal Video &amp; Social Media Reels</div>
         <div class="service-desc">Choose between our <strong style="color:var(--text);">Signature</strong> style — slow, cinematic and elegant — or our <strong style="color:var(--text);">Editorial</strong> style, featuring dynamic speed ramps and creative transitions. Available in horizontal or vertical format. Plus social media reels and IG Carousel Clips — everything you need to spotlight your listings across social media.</div>
         <a href="#portfolio" class="service-link" onclick="activatePanel('video')">View examples →</a>
       </div>
 
       <div class="service-card reveal reveal-delay-1">
-        <div class="service-num">03</div>
         <div class="service-name">Virtual Staging</div>
         <div class="service-desc">Digitally furnish empty rooms so buyers can envision the lifestyle waiting for them — without the cost of physical staging.</div>
         <a href="#portfolio" class="service-link" onclick="activatePanel('staging')">View examples →</a>
       </div>
       <div class="service-card reveal reveal-delay-2">
-        <div class="service-num">04</div>
         <div class="service-name">Floor Plans</div>
         <div class="service-desc">2D and interactive clickable floor plans with room-by-room photo points. Helps buyers visualize the layout before they visit.</div>
         <a href="#portfolio" class="service-link" onclick="activatePanel('floorplan')">View examples →</a>
       </div>
       <div class="service-card reveal reveal-delay-3">
-        <div class="service-num">05</div>
         <div class="service-name">AI Photo-to-Video</div>
         <div class="service-desc">Bring still listing photos to life with AI-animated cinematic motion. Available in horizontal or vertical format — from $75.</div>
         <a href="#portfolio" class="service-link" onclick="activatePanel('ai')">View examples →</a>
       </div>
       <div class="service-card reveal reveal-delay-1">
-        <div class="service-num">06</div>
         <div class="service-name">Marketing Tools &amp; Templates</div>
         <div class="service-desc">Customizable flyers, social media templates, and email marketing materials — designed to make you look polished across every platform.</div>
         <a href="#portfolio" class="service-link" onclick="activatePanel('marketing')">View examples →</a>
       </div>
       <div class="service-card reveal reveal-delay-2">
-        <div class="service-num">07</div>
         <div class="service-name">Property Listing Websites</div>
         <div class="service-desc">A dedicated property website for every listing — beautifully showcasing whatever media is captured, from photos and video to floor plans and more. Ready to share on social or via direct link.</div>
         <a href="#portfolio" class="service-link" onclick="activatePanel('website')">View examples →</a>
