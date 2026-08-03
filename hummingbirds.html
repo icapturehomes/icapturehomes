@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hummingbirds — iCaptureHomes Photography</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --white:#ffffff;--off:#f7f6f4;--ink:#1c1c1a;
+      --ink-mid:rgba(28,28,26,0.55);--ink-dim:rgba(28,28,26,0.35);
+      --gold:#b8924a;--border:rgba(28,28,26,0.1);
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--ink);min-height:100vh}
+
+    /* HERO */
+    .hero{position:relative;height:100svh;min-height:560px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+    .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transition:opacity 0.6s ease}
+    .hero-vignette{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,8,0.72) 0%,rgba(10,10,8,0.18) 55%,transparent 100%)}
+    .hero-content{position:relative;padding:0 40px 48px;color:#fff}
+    .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,9vw,88px);font-weight:300;line-height:0.95;letter-spacing:-0.01em;margin-bottom:28px}
+    .hero-title em{font-style:italic;color:rgba(255,255,255,0.75)}
+    .hero-scroll{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:2px;transition:color 0.2s,border-color 0.2s}
+    .hero-scroll:hover{color:#fff;border-color:rgba(255,255,255,0.8)}
+    .hero-scroll::after{content:'↓'}
+    .hero-count{position:absolute;right:40px;bottom:52px;font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:0.08em}
+
+    /* HEADER */
+    .gallery-header{display:flex;align-items:center;justify-content:space-between;padding:24px 40px;border-bottom:0.5px solid var(--border);background:var(--off);position:sticky;top:0;z-index:50}
+    .logo{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;letter-spacing:0.04em;color:var(--ink);text-decoration:none}
+    .back-link{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-dim);text-decoration:none;transition:color 0.2s}
+    .back-link:hover{color:var(--gold)}
+
+    /* GRID */
+    .gallery-section{padding:32px 0 0}
+    .gallery-meta{padding:0 40px 24px;display:flex;align-items:baseline;gap:16px}
+    .gallery-meta-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;font-style:italic;color:var(--ink)}
+    .gallery-meta-count{font-size:11px;color:var(--ink-dim);letter-spacing:0.06em}
+    .gallery-grid{columns:3;column-gap:10px;padding:0 10px 10px}
+    .gi{break-inside:avoid;margin-bottom:10px;position:relative;cursor:zoom-in;background:#e2e1de;overflow:hidden}
+    .gi img{width:100%;height:auto;display:block;transition:transform 0.45s ease}
+    .gi:hover img{transform:scale(1.025)}
+    @media(max-width:900px){.gallery-grid{columns:2}}
+    @media(max-width:600px){
+      .gallery-grid{columns:1;padding:0 6px 6px;column-gap:6px}
+      .gi{margin-bottom:6px}
+      .hero-content{padding:0 24px 36px}
+      .hero-count{right:24px;bottom:40px}
+      .gallery-header{padding:20px 24px}
+      .gallery-meta{padding:0 24px 20px}
+    }
+
+    /* STAR */
+    .star-btn{position:absolute;top:8px;right:8px;width:30px;height:30px;background:rgba(0,0,0,0.45);border:none;border-radius:50%;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.15s,background 0.15s;z-index:2;backdrop-filter:blur(4px)}
+    .gi:hover .star-btn{opacity:1}
+    .star-btn:hover{background:rgba(0,0,0,0.7)}
+    .star-btn.active{opacity:1;background:var(--gold);color:#fff}
+
+    /* LIGHTBOX */
+    .lb{display:none;position:fixed;inset:0;z-index:9000;background:rgba(10,10,8,0.97);flex-direction:column;align-items:center;justify-content:center}
+    .lb.open{display:flex}
+    .lb-img-wrap{max-width:92vw;max-height:84vh;display:flex;align-items:center;justify-content:center;position:relative}
+    .lb-img-wrap img{max-width:92vw;max-height:84vh;object-fit:contain;display:block}
+    .lb-star{position:absolute;top:12px;right:12px;width:36px;height:36px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);border-radius:50%;color:rgba(255,255,255,0.7);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:background 0.2s,color 0.2s}
+    .lb-star:hover{background:rgba(184,146,74,0.6);color:#fff}
+    .lb-star.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+    .lb-close{position:fixed;top:20px;right:24px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:26px;cursor:pointer;z-index:9001;line-height:1;transition:color 0.2s}
+    .lb-close:hover{color:#fff}
+    .lb-prev,.lb-next{position:fixed;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,0.35);font-size:48px;cursor:pointer;z-index:9001;padding:20px;transition:color 0.2s;line-height:1}
+    .lb-prev{left:0}.lb-next{right:0}
+    .lb-prev:hover,.lb-next:hover{color:rgba(255,255,255,0.9)}
+    .lb-meta{margin-top:16px;font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:0.1em;display:flex;align-items:center;gap:16px}
+    .lb-hero-note{font-size:10px;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;opacity:0;transition:opacity 0.3s}
+    .lb-hero-note.show{opacity:1}
+
+    /* BACK TO TOP */
+    .btt{position:fixed;bottom:28px;right:28px;width:42px;height:42px;background:var(--ink);color:#fff;border:none;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;transform:translateY(10px);transition:opacity 0.25s,transform 0.25s,background 0.2s;pointer-events:none}
+    .btt.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+    .btt:hover{background:var(--gold)}
+
+    footer{padding:32px 40px;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+    .footer-logo{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;color:var(--ink-dim)}
+    .footer-note{font-size:11px;color:var(--ink-dim)}
+    @media(max-width:600px){footer{padding:24px;flex-direction:column;gap:10px;text-align:center}}
+  </style>
+</head>
+<body>
+
+  <section class="hero" id="hero">
+    <img class="hero-img" id="hero-img" src="https://lh3.googleusercontent.com/d/1X4Jc67cBFBWRYSQ-rBkNQl4jtjBn1DYu" alt="Hummingbirds cover">
+    <div class="hero-vignette"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">Humming<br><em>birds</em></h1>
+      <a class="hero-scroll" href="#gallery">View gallery</a>
+    </div>
+    <span class="hero-count">10 images</span>
+  </section>
+
+  <header class="gallery-header">
+    <a href="https://www.icapturehomes.com" class="logo">iCaptureHomes</a>
+    <a href="index.html" class="back-link">← All galleries</a>
+  </header>
+
+  <section class="gallery-section" id="gallery">
+    <div class="gallery-meta">
+      <span class="gallery-meta-title">Hummingbirds</span>
+      <span class="gallery-meta-count">10 photographs · August 2026</span>
+    </div>
+    <div class="gallery-grid">
+      <div class="gi" onclick="openLb(0)">
+        <img src="https://lh3.googleusercontent.com/d/14k5KZJMOYlnp9gKYDOjWBBKVANbHYi1R" alt="1" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,0)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(1)">
+        <img src="https://lh3.googleusercontent.com/d/10sDSn2qeiNWWt6IJR1pYtxnaCnyqjQIw" alt="2" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,1)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(2)">
+        <img src="https://lh3.googleusercontent.com/d/1de8DgJ2uGxPQPeyafqj7B4OeG5hXZC3I" alt="3" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,2)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(3)">
+        <img src="https://lh3.googleusercontent.com/d/1X4Jc67cBFBWRYSQ-rBkNQl4jtjBn1DYu" alt="4" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,3)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(4)">
+        <img src="https://lh3.googleusercontent.com/d/1gGVqjcC2yRfubXM546Bh3G-9xpvkv5DK" alt="5" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,4)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(5)">
+        <img src="https://lh3.googleusercontent.com/d/1fpsGQY0awjJPSeF67ClFwptJ8IxMaeOh" alt="6" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,5)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(6)">
+        <img src="https://lh3.googleusercontent.com/d/1X6eI_Cs6n1uvpzBjrevWjDFrUyRGghWw" alt="7" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,6)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(7)">
+        <img src="https://lh3.googleusercontent.com/d/1GCRSu3VIwgwBs26Yf7ThwbFz8vmOmKO9" alt="8" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,7)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(8)">
+        <img src="https://lh3.googleusercontent.com/d/1n04GF1ktZkR6jattJ-DVCjLJY7AuOObl" alt="9" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,8)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(9)">
+        <img src="https://lh3.googleusercontent.com/d/1blQmZ9q64ljmOB3CDWSnxjRquISW2ury" alt="10" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,9)" title="Set as cover">☆</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="lb" id="lb">
+    <button class="lb-close" onclick="closeLb()">&#215;</button>
+    <button class="lb-prev" onclick="navLb(-1)">&#8249;</button>
+    <div class="lb-img-wrap">
+      <img id="lb-img" src="" alt="">
+      <button class="lb-star" id="lb-star" onclick="toggleHeroFromLb()" title="Set as cover photo">☆</button>
+    </div>
+    <button class="lb-next" onclick="navLb(1)">&#8250;</button>
+    <div class="lb-meta">
+      <span id="lb-counter"></span>
+      <span class="lb-hero-note" id="lb-hero-note">✦ Cover photo</span>
+    </div>
+  </div>
+
+  <button class="btt" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+  <footer>
+    <span class="footer-logo">iCaptureHomes Photography</span>
+    <span class="footer-note">Private client gallery &mdash; not for public distribution</span>
+  </footer>
+
+  <script>
+    const imgs = [
+    "https://lh3.googleusercontent.com/d/14k5KZJMOYlnp9gKYDOjWBBKVANbHYi1R",
+    "https://lh3.googleusercontent.com/d/10sDSn2qeiNWWt6IJR1pYtxnaCnyqjQIw",
+    "https://lh3.googleusercontent.com/d/1de8DgJ2uGxPQPeyafqj7B4OeG5hXZC3I",
+    "https://lh3.googleusercontent.com/d/1X4Jc67cBFBWRYSQ-rBkNQl4jtjBn1DYu",
+    "https://lh3.googleusercontent.com/d/1gGVqjcC2yRfubXM546Bh3G-9xpvkv5DK",
+    "https://lh3.googleusercontent.com/d/1fpsGQY0awjJPSeF67ClFwptJ8IxMaeOh",
+    "https://lh3.googleusercontent.com/d/1X6eI_Cs6n1uvpzBjrevWjDFrUyRGghWw",
+    "https://lh3.googleusercontent.com/d/1GCRSu3VIwgwBs26Yf7ThwbFz8vmOmKO9",
+    "https://lh3.googleusercontent.com/d/1n04GF1ktZkR6jattJ-DVCjLJY7AuOObl",
+    "https://lh3.googleusercontent.com/d/1blQmZ9q64ljmOB3CDWSnxjRquISW2ury"
+  ];
+    let ci = 0;
+    let heroIdx = 3;
+
+    const lb = document.getElementById('lb');
+    const lbImg = document.getElementById('lb-img');
+    const lbCounter = document.getElementById('lb-counter');
+    const lbStar = document.getElementById('lb-star');
+    const lbHeroNote = document.getElementById('lb-hero-note');
+    const heroImgEl = document.getElementById('hero-img');
+
+    function updateStars() {
+      document.querySelectorAll('.star-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === heroIdx);
+        btn.innerHTML = i === heroIdx ? '<span>★</span>' : '<span>☆</span>';
+        btn.title = i === heroIdx ? 'Current cover photo' : 'Set as cover photo';
+      });
+    }
+
+    function updateLbStar() {
+      const isHero = ci === heroIdx;
+      lbStar.classList.toggle('active', isHero);
+      lbStar.textContent = isHero ? '★' : '☆';
+      lbHeroNote.classList.toggle('show', isHero);
+    }
+
+    function setHero(e, idx) {
+      e.stopPropagation();
+      heroIdx = idx;
+      heroImgEl.style.opacity = '0';
+      setTimeout(() => { heroImgEl.src = imgs[idx]; heroImgEl.style.opacity = '1'; }, 300);
+      updateStars();
+      if (lb.classList.contains('open')) updateLbStar();
+    }
+
+    function toggleHeroFromLb() { setHero({ stopPropagation: () => {} }, ci); }
+
+    function openLb(i) {
+      ci = i; lbImg.src = imgs[i];
+      lbCounter.textContent = (i + 1) + ' / ' + imgs.length;
+      lb.classList.add('open'); document.body.style.overflow = 'hidden';
+      updateLbStar();
+    }
+
+    function closeLb() { lb.classList.remove('open'); document.body.style.overflow = ''; }
+
+    function navLb(d) {
+      ci = (ci + d + imgs.length) % imgs.length;
+      lbImg.src = imgs[ci];
+      lbCounter.textContent = (ci + 1) + ' / ' + imgs.length;
+      updateLbStar();
+    }
+
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'ArrowRight') navLb(1);
+      if (e.key === 'ArrowLeft') navLb(-1);
+      if (e.key === 'Escape') closeLb();
+    });
+    lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+
+    updateStars();
+
+    const btt = document.getElementById('btt');
+    window.addEventListener('scroll', () => {
+      btt.classList.toggle('visible', window.scrollY > window.innerHeight * 0.8);
+    }, {passive:true});
+  </script>
+</body>
+</html>
