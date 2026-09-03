@@ -47,8 +47,6 @@
     .section-toggle{font-size:18px;color:var(--ink-dim);transition:transform .3s;line-height:1}
     .section-expand-hint{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-dim);margin-right:8px;transition:opacity .2s}
     .section-header:hover .section-expand-hint{color:var(--ink)}
-    .section-header.collapsed .section-expand-hint::before{content:'Tap to expand'}
-    .section-header:not(.collapsed) .section-expand-hint::before{content:'Tap to collapse'}
     .section-header.collapsed .section-toggle{transform:rotate(-90deg)}
     .section-divider{height:0.5px;background:var(--border);margin:16px 40px 0}
     .section-body{overflow:hidden;transition:max-height 0.4s ease}
@@ -138,7 +136,7 @@
         <span class="section-title">Pre-Renovation</span>
         <span class="section-count">Furnished &nbsp;&middot;&nbsp; 16 photos</span>
       </div>
-      <span class="section-expand-hint" id="hint-<span class="section-toggle" id="toggle-pf">">Tap to expand</span><span class="section-expand-hint"></span><span class="section-toggle" id="toggle-pf">&#8964;</span>
+      <span class="section-expand-hint" id="hint-<span class="section-toggle" id="toggle-pf">">Tap to expand</span><span class="section-expand-hint">Tap to expand</span><span class="section-toggle" id="toggle-pf">&#8964;</span>
     </div>
     <div class="section-divider"></div>
     <div class="section-body" id="body-pf">
@@ -202,7 +200,7 @@
         <span class="section-title">Pre-Renovation</span>
         <span class="section-count">Unfurnished &nbsp;&middot;&nbsp; 16 photos</span>
       </div>
-      <span class="section-expand-hint" id="hint-<span class="section-toggle" id="toggle-pu">">Tap to expand</span><span class="section-expand-hint"></span><span class="section-toggle" id="toggle-pu">&#8964;</span>
+      <span class="section-expand-hint" id="hint-<span class="section-toggle" id="toggle-pu">">Tap to expand</span><span class="section-expand-hint">Tap to expand</span><span class="section-toggle" id="toggle-pu">&#8964;</span>
     </div>
     <div class="section-divider"></div>
     <div class="section-body" id="body-pu">
@@ -266,7 +264,7 @@
         <span class="section-title">During Renovation</span>
         <span class="section-count">69 photos</span>
       </div>
-      <span class="section-expand-hint" id="hint-<span class="section-toggle" id="toggle-du">">Tap to expand</span><span class="section-expand-hint"></span><span class="section-toggle" id="toggle-du">&#8964;</span>
+      <span class="section-expand-hint" id="hint-<span class="section-toggle" id="toggle-du">">Tap to expand</span><span class="section-expand-hint">Tap to expand</span><span class="section-toggle" id="toggle-du">&#8964;</span>
     </div>
     <div class="section-divider"></div>
     <div class="section-body" id="body-du">
@@ -486,7 +484,7 @@
         <span class="section-title">Post Renovation</span>
         <span class="section-count">51 photos</span>
       </div>
-      <span class="section-expand-hint" id="hint-<span class="section-toggle" id="toggle-po">">Tap to expand</span><span class="section-expand-hint"></span><span class="section-toggle" id="toggle-po">&#8964;</span>
+      <span class="section-expand-hint" id="hint-<span class="section-toggle" id="toggle-po">">Tap to expand</span><span class="section-expand-hint">Tap to expand</span><span class="section-toggle" id="toggle-po">&#8964;</span>
     </div>
     <div class="section-divider"></div>
     <div class="section-body" id="body-po">
@@ -655,7 +653,7 @@
         <span class="section-title">Before &amp; After</span>
         <span class="section-count">5 comparisons</span>
       </div>
-      <span class="section-expand-hint" id="hint-<span class="section-toggle" id="toggle-ba">">Tap to expand</span><span class="section-expand-hint"></span><span class="section-toggle" id="toggle-ba">&#8964;</span>
+      <span class="section-expand-hint" id="hint-<span class="section-toggle" id="toggle-ba">">Tap to expand</span><span class="section-expand-hint">Tap to expand</span><span class="section-toggle" id="toggle-ba">&#8964;</span>
     </div>
     <div class="section-divider"></div>
     <div class="section-body" id="body-ba">
@@ -754,19 +752,21 @@
       const hdr = body.previousElementSibling.previousElementSibling;
       const toggle = document.getElementById('toggle-' + id);
       const isOpen = !body.classList.contains('collapsed');
-      if (isOpen) {
+      const hint = hdr.querySelector('.section-expand-hint');      if (isOpen) {
         body.style.maxHeight = body.scrollHeight + 'px';
         requestAnimationFrame(() => {
           body.style.maxHeight = '0';
           body.classList.add('collapsed');
           hdr.classList.add('collapsed');
           toggle.style.transform = 'rotate(-90deg)';
+          if (hint) hint.textContent = 'Tap to expand';
         });
       } else {
         body.classList.remove('collapsed');
         hdr.classList.remove('collapsed');
         toggle.style.transform = '';
         body.style.maxHeight = body.scrollHeight + 'px';
+        if (hint) hint.textContent = 'Tap to collapse';
         setTimeout(() => { body.style.maxHeight = 'none'; }, 420);
       }
     }
