@@ -32,8 +32,6 @@ button,.pick{display:block;width:100%;border:0;border-radius:2px;padding:11px;fo
 button.primary{background:var(--gold);color:#0a0a0a}.secondary,.pick{background:var(--bg-card);color:var(--text);text-align:center;border:1px solid var(--border)}
 button.primary:hover{background:var(--gold-light)}.secondary:hover,.pick:hover{border-color:var(--border-hover)}
 .secondary.active{background:var(--gold);color:#0a0a0a;border-color:var(--gold)}
-.colorSwatch{width:100%;aspect-ratio:1;border-radius:50%;border:2px solid var(--border);cursor:pointer;padding:0}
-.colorSwatch.active{border-color:var(--text);box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--text)}
 button:disabled{opacity:.4;cursor:not-allowed}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .drop{border:1.5px dashed var(--border-hover);border-radius:4px;padding:18px;text-align:center;background:var(--bg)}
 .drop.on{background:var(--bg-card);border-color:var(--gold)}.small{font-size:12px;color:var(--text-muted);line-height:1.45}.status{font-size:12px;color:var(--text-muted);margin-top:9px}
@@ -106,34 +104,22 @@ button:disabled{opacity:.4;cursor:not-allowed}.row{display:grid;grid-template-co
       <input type="range" id="coverOpacity" min="25" max="90" value="60">
     </div>
     <label>Top line</label><input id="top" type="text" value="" placeholder="e.g. A FEW DAYS IN">
-    <label style="margin-top:6px;font-size:11px">Size</label>
-    <input type="range" id="topSize" min="18" max="60" value="32">
+    <div class="row" style="margin-top:6px;grid-template-columns:2fr 1fr">
+      <div><label style="font-size:11px">Size</label><input type="range" id="topSize" min="18" max="60" value="32"></div>
+      <div><label style="font-size:11px">Color</label><input type="color" id="topColor" value="#9c7a3f" style="width:100%;height:34px;padding:2px;border:1px solid var(--border);border-radius:2px;background:var(--bg);cursor:pointer"></div>
+    </div>
     <label>Main title</label><input id="title" type="text" value="" placeholder="e.g. London">
-    <label style="margin-top:6px;font-size:11px">Size</label>
-    <input type="range" id="titleSize" min="40" max="140" value="84">
+    <div class="row" style="margin-top:6px;grid-template-columns:2fr 1fr">
+      <div><label style="font-size:11px">Size</label><input type="range" id="titleSize" min="40" max="140" value="84"></div>
+      <div><label style="font-size:11px">Color</label><input type="color" id="titleColor" value="#151515" style="width:100%;height:34px;padding:2px;border:1px solid var(--border);border-radius:2px;background:var(--bg);cursor:pointer"></div>
+    </div>
     <label>Bottom line</label><input id="tap" type="text" value="Shot on Fujifilm X100VI →">
-    <label style="margin-top:6px;font-size:11px">Size</label>
-    <input type="range" id="tapSize" min="16" max="40" value="26">
-
-    <label style="margin-top:14px">Style preset</label>
-    <div class="row" style="grid-template-columns:1fr 1fr 1fr;gap:6px">
-      <button id="presetMinimal" class="secondary" style="width:auto;padding:8px 4px;font-size:11px">Minimal</button>
-      <button id="presetEditorial" class="secondary" style="width:auto;padding:8px 4px;font-size:11px">Editorial</button>
-      <button id="presetBold" class="secondary" style="width:auto;padding:8px 4px;font-size:11px">Bold</button>
+    <div class="row" style="margin-top:6px;grid-template-columns:2fr 1fr">
+      <div><label style="font-size:11px">Size</label><input type="range" id="tapSize" min="16" max="40" value="26"></div>
+      <div><label style="font-size:11px">Color</label><input type="color" id="tapColor" value="#666666" style="width:100%;height:34px;padding:2px;border:1px solid var(--border);border-radius:2px;background:var(--bg);cursor:pointer"></div>
     </div>
 
-    <label style="margin-top:12px">Accent color (top line)</label>
-    <div class="row" style="grid-template-columns:repeat(6,1fr);gap:6px">
-      <button class="colorSwatch active" data-accent="gold" style="background:#c8a96e" title="Gold"></button>
-      <button class="colorSwatch" data-accent="rust" style="background:#c2703f" title="Rust"></button>
-      <button class="colorSwatch" data-accent="sage" style="background:#8fa377" title="Sage"></button>
-      <button class="colorSwatch" data-accent="blue" style="background:#7fa8bf" title="Dusty blue"></button>
-      <button class="colorSwatch" data-accent="blush" style="background:#d9a3ae" title="Blush"></button>
-      <button class="colorSwatch" data-accent="neutral" style="background:#8a8a86" title="Neutral"></button>
-    </div>
-
-    <label style="display:flex;align-items:center;gap:8px;margin-top:12px;cursor:pointer"><input type="checkbox" id="coverGrain" style="width:auto;margin:0"> <span style="font-size:12px;color:var(--text-muted)">Film grain texture</span></label>
-    <label style="display:flex;align-items:center;gap:8px;margin-top:8px;cursor:pointer"><input type="checkbox" id="coverDateStamp" style="width:auto;margin:0"> <span style="font-size:12px;color:var(--text-muted)">Show capture date (month + year, from photo EXIF)</span></label>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:12px;cursor:pointer"><input type="checkbox" id="coverDateStamp" style="width:auto;margin:0"> <span style="font-size:12px;color:var(--text-muted)">Show capture date (month + year, from photo EXIF)</span></label>
 
     <button id="saveStyleBtn" class="secondary" style="margin-top:12px">💾 Save fonts &amp; sizes as my default</button>
     </div>
@@ -613,16 +599,11 @@ function crop(x,i,px,py,pw,ph,fx=.5,fy=.5,zoom=1){let ir=i.naturalWidth/i.natura
 function theme(){let dark=$("pageBg").value==="black";return dark?{bg:"#0a0a0a",ink:"#f0ede6",muted:"rgba(240,237,230,0.55)",gold:"#c8a96e"}:{bg:"#ffffff",ink:"#151515",muted:"rgba(21,21,21,0.55)",gold:"#9c7a3f"}}
 function fitText(x,text,maxW,startPx,weight="",minPx=28,fam="'DM Sans',Arial"){let px=startPx;do{x.font=`${weight}${px}px ${fam}`.trim();if(x.measureText(text).width<=maxW||px<=minPx)break;px-=2}while(true);return px}
 function wrapLines(x,text,maxW){let words=text.split(" "),lines=[],cur="";for(let w of words){let t=cur?cur+" "+w:w;if(x.measureText(t).width>maxW&&cur){lines.push(cur);cur=w}else cur=t}if(cur)lines.push(cur);return lines}
-const ACCENT_COLORS={gold:{dark:"#c8a96e",light:"#9c7a3f"},rust:{dark:"#c2703f",light:"#a8542a"},sage:{dark:"#8fa377",light:"#6b7d55"},blue:{dark:"#7fa8bf",light:"#5a7d92"},blush:{dark:"#d9a3ae",light:"#b97485"},neutral:null};
-let coverAccent="gold";
-function addGrain(x,w,h,opacity){let ts=120,tile=document.createElement("canvas");tile.width=ts;tile.height=ts;let tx=tile.getContext("2d"),id=tx.createImageData(ts,ts);for(let i=0;i<id.data.length;i+=4){let v=Math.floor(Math.random()*255);id.data[i]=v;id.data[i+1]=v;id.data[i+2]=v;id.data[i+3]=255}tx.putImageData(id,0,0);x.save();x.globalAlpha=opacity;x.globalCompositeOperation="overlay";x.fillStyle=x.createPattern(tile,"repeat");x.fillRect(0,0,w,h);x.restore()}
 function computeCoverDateStamp(){let times=S.photos.map(p=>p.captureTime).filter(t=>t>0);if(!times.length)return null;let mn=new Date(Math.min(...times)),mx=new Date(Math.max(...times)),mnFull=mn.toLocaleString("en-US",{month:"long",year:"numeric"}).toUpperCase(),mxFull=mx.toLocaleString("en-US",{month:"long",year:"numeric"}).toUpperCase();if(mnFull===mxFull)return mnFull;return`${mn.toLocaleString("en-US",{month:"short"}).toUpperCase()} ${mn.getFullYear()} – ${mx.toLocaleString("en-US",{month:"short"}).toUpperCase()} ${mx.getFullYear()}`}
-function cover(c,photo){let x=c.getContext("2d"),maxW=W-160,T=theme(),hs=hScale();if(photo){crop(x,photo.img,0,0,W,H,photo.fx,photo.fy,photo.zoom||1);let scrimAlpha=($("coverOpacity").value||60)/100,rgb=T.bg==="#0a0a0a"?"10,10,10":"255,255,255",grad=x.createLinearGradient(0,0,0,H);grad.addColorStop(0,`rgba(${rgb},0)`);grad.addColorStop(0.35,`rgba(${rgb},0)`);grad.addColorStop(0.55,`rgba(${rgb},${scrimAlpha})`);grad.addColorStop(1,`rgba(${rgb},${scrimAlpha})`);x.fillStyle=grad;x.fillRect(0,0,W,H)}else{x.fillStyle=T.bg;x.fillRect(0,0,W,H)}x.textAlign="center";
-let accentDef=ACCENT_COLORS[coverAccent],accentColor=accentDef?(T.bg==="#0a0a0a"?accentDef.dark:accentDef.light):T.ink;
-let topSize=+$("topSize").value,top=($("top").value||"").toUpperCase();if(top){x.fillStyle=accentColor;let px=fitText(x,top,maxW,topSize,"",Math.min(16,topSize),"'DM Sans',Arial");x.font=`${px}px 'DM Sans',Arial`;x.fillText(top,W/2,720*hs)}
-let titleSize=+$("titleSize").value,title=($("title").value||"").toUpperCase();if(title){x.fillStyle=T.ink;let px=fitText(x,title,maxW,titleSize,"700 ",Math.min(28,titleSize),"'Playfair Display',serif");x.font=`700 ${px}px 'Playfair Display',serif`;let lines=wrapLines(x,title,maxW).slice(0,3),lh=px*1.15,startY=845*hs-(lines.length-1)*lh/2;lines.forEach((ln,i)=>x.fillText(ln,W/2,startY+i*lh))}
-let tapSize=+$("tapSize").value;x.fillStyle=T.muted;x.font=`${tapSize}px 'DM Sans',Arial`;x.fillText(($("tap").value||"").slice(0,60),W/2,1715*hs);
-if($("coverGrain")&&$("coverGrain").checked)addGrain(x,W,H,0.06);
+function cover(c,photo){let x=c.getContext("2d"),maxW=W-160,T=theme(),hs=hScale();if(photo){crop(x,photo.img,0,0,W,H,photo.fx,photo.fy,photo.zoom||1);let scrimAlpha=($("coverOpacity").value||60)/100,grad=x.createLinearGradient(0,0,0,H);grad.addColorStop(0,"rgba(0,0,0,0)");grad.addColorStop(0.35,"rgba(0,0,0,0)");grad.addColorStop(0.55,`rgba(0,0,0,${scrimAlpha})`);grad.addColorStop(1,`rgba(0,0,0,${scrimAlpha})`);x.fillStyle=grad;x.fillRect(0,0,W,H)}else{x.fillStyle=T.bg;x.fillRect(0,0,W,H)}x.textAlign="center";
+let topSize=+$("topSize").value,top=($("top").value||"").toUpperCase();if(top){x.fillStyle=$("topColor").value;let px=fitText(x,top,maxW,topSize,"",Math.min(16,topSize),"'DM Sans',Arial");x.font=`${px}px 'DM Sans',Arial`;x.fillText(top,W/2,720*hs)}
+let titleSize=+$("titleSize").value,title=($("title").value||"").toUpperCase();if(title){x.fillStyle=$("titleColor").value;let px=fitText(x,title,maxW,titleSize,"700 ",Math.min(28,titleSize),"'Playfair Display',serif");x.font=`700 ${px}px 'Playfair Display',serif`;let lines=wrapLines(x,title,maxW).slice(0,3),lh=px*1.15,startY=845*hs-(lines.length-1)*lh/2;lines.forEach((ln,i)=>x.fillText(ln,W/2,startY+i*lh))}
+let tapSize=+$("tapSize").value;x.fillStyle=$("tapColor").value;x.font=`${tapSize}px 'DM Sans',Arial`;x.fillText(($("tap").value||"").slice(0,60),W/2,1715*hs);
 if($("coverDateStamp")&&$("coverDateStamp").checked){let stamp=computeCoverDateStamp();if(stamp){x.save();x.textAlign="right";x.font="26px 'DM Sans',Arial";x.fillStyle="#ff9142";x.shadowColor="rgba(0,0,0,0.6)";x.shadowBlur=6;x.fillText(stamp,W-44,H-50*hs);x.restore()}}
 return[{photo:photo||null,slotIndex:0,px:0,py:0,pw:W,ph:H}]}
 function hero(c,p){let x=c.getContext("2d");if(p[0])crop(x,p[0].img,0,0,W,H,p[0].fx,p[0].fy,p[0].zoom||1);else{x.fillStyle=theme().bg;x.fillRect(0,0,W,H)}return[{photo:p[0]||null,slotIndex:0,px:0,py:0,pw:W,ph:H}]}
@@ -720,20 +701,14 @@ $("lbPrev").onclick=()=>{lbIndex=(lbIndex-1+S.pages.length)%S.pages.length;showL
 $("lbNext").onclick=()=>{lbIndex=(lbIndex+1)%S.pages.length;showLightbox()};
 $("lightbox").onclick=e=>{if(e.target.id==="lightbox")closeLightbox()};
 $("coverPhoto").onchange=()=>{let on=$("coverPhoto").checked;$("coverOpacityWrap").style.display=on?"block":"none";$("coverPickHint").style.display=on?"block":"none";liveCoverUpdate()};
-["top","title","tap","coverOpacity","topSize","titleSize","tapSize"].forEach(id=>$(id).addEventListener("input",liveCoverUpdate));
-$("coverGrain").addEventListener("change",liveCoverUpdate);
+["top","title","tap","coverOpacity","topSize","titleSize","tapSize","topColor","titleColor","tapColor"].forEach(id=>$(id).addEventListener("input",liveCoverUpdate));
 $("coverDateStamp").addEventListener("change",liveCoverUpdate);
-document.querySelectorAll(".colorSwatch").forEach(btn=>{btn.onclick=()=>{document.querySelectorAll(".colorSwatch").forEach(b=>b.classList.remove("active"));btn.classList.add("active");coverAccent=btn.dataset.accent;liveCoverUpdate()}});
-function applyCoverPreset(name){let presets={minimal:{topSize:26,titleSize:64,tapSize:20,coverOpacity:45,accent:"neutral",grain:false},editorial:{topSize:32,titleSize:84,tapSize:26,coverOpacity:60,accent:"gold",grain:true},bold:{topSize:38,titleSize:110,tapSize:30,coverOpacity:72,accent:"rust",grain:true}}[name];if(!presets)return;$("topSize").value=presets.topSize;$("titleSize").value=presets.titleSize;$("tapSize").value=presets.tapSize;$("coverOpacity").value=presets.coverOpacity;$("coverGrain").checked=presets.grain;coverAccent=presets.accent;document.querySelectorAll(".colorSwatch").forEach(b=>b.classList.toggle("active",b.dataset.accent===presets.accent));liveCoverUpdate()}
-$("presetMinimal").onclick=()=>applyCoverPreset("minimal");
-$("presetEditorial").onclick=()=>applyCoverPreset("editorial");
-$("presetBold").onclick=()=>applyCoverPreset("bold");
 $("format").addEventListener("change",updateCoverPreview);
 $("pageBg").addEventListener("change",()=>{S.pages.forEach(p=>{p.slots=drawPage(p.canvasEl,p)});if($("lightbox").style.display==="flex")drawPage($("lbCanvas"),S.pages[lbIndex]);updateCoverPreview()});
 document.addEventListener("keydown",e=>{if($("lightbox").style.display!=="flex")return;if(e.key==="Escape")closeLightbox();else if(e.key==="ArrowLeft"&&!adjustMode)$("lbPrev").click();else if(e.key==="ArrowRight"&&!adjustMode)$("lbNext").click()});
 $("lockPoolBtn").onclick=e=>{e.stopPropagation();poolLocked=!poolLocked;$("lockPoolBtn").textContent=poolLocked?"🔓 Unlock pool":"🔒 Lock pool";$("lockPoolBtn").classList.toggle("active",poolLocked);thumbs()};
-function saveStyleDefaults(){try{let style={topSize:$("topSize").value,titleSize:$("titleSize").value,tapSize:$("tapSize").value,pageBg:$("pageBg").value,coverOpacity:$("coverOpacity").value,coverAccent,coverGrain:$("coverGrain").checked};localStorage.setItem("fujiStoryBuilderStyle",JSON.stringify(style));$("buildStatus").textContent="Saved — new covers will start with these sizes, colors, and background."}catch{$("buildStatus").textContent="Couldn't save a default here (browser storage unavailable)."}}
-function loadStyleDefaults(){try{let raw=localStorage.getItem("fujiStoryBuilderStyle");if(!raw)return;let style=JSON.parse(raw);["topSize","titleSize","tapSize","pageBg","coverOpacity"].forEach(k=>{if(style[k]!==undefined&&$(k))$(k).value=style[k]});if(style.coverAccent){coverAccent=style.coverAccent;document.querySelectorAll(".colorSwatch").forEach(b=>b.classList.toggle("active",b.dataset.accent===coverAccent))}if(style.coverGrain!==undefined)$("coverGrain").checked=style.coverGrain}catch{}}
+function saveStyleDefaults(){try{let style={topSize:$("topSize").value,titleSize:$("titleSize").value,tapSize:$("tapSize").value,pageBg:$("pageBg").value,coverOpacity:$("coverOpacity").value,topColor:$("topColor").value,titleColor:$("titleColor").value,tapColor:$("tapColor").value};localStorage.setItem("fujiStoryBuilderStyle",JSON.stringify(style));$("buildStatus").textContent="Saved — new covers will start with these sizes, colors, and background."}catch{$("buildStatus").textContent="Couldn't save a default here (browser storage unavailable)."}}
+function loadStyleDefaults(){try{let raw=localStorage.getItem("fujiStoryBuilderStyle");if(!raw)return;let style=JSON.parse(raw);["topSize","titleSize","tapSize","pageBg","coverOpacity","topColor","titleColor","tapColor"].forEach(k=>{if(style[k]!==undefined&&$(k))$(k).value=style[k]})}catch{}}
 function switchFormat(){if(!S.pages.length){$("buildStatus").textContent="Generate a deck first.";return}let toFeed=H!==1350;W=1080;H=toFeed?1350:1920;$("format").value=toFeed?"feed":"stories";S.pages.forEach(entry=>{if(entry.canvasEl){entry.canvasEl.width=W;entry.canvasEl.height=H;entry.canvasEl.style.aspectRatio=`${W}/${H}`}entry.slots=drawPage(entry.canvasEl,entry)});if($("lightbox").style.display==="flex"){$("lbCanvas").width=W;$("lbCanvas").height=H;$("lbCanvas").style.aspectRatio=`${W}/${H}`;let cur=S.pages[lbIndex];if(cur)drawPage($("lbCanvas"),cur)}updateCoverPreview();$("buildStatus").textContent=`Switched to ${toFeed?"Feed post (4:5)":"Stories (9:16)"} — same layout, same photos, re-cropped for the new shape. Click again to switch back. Any split-photo pages may need a touch-up.`}
 $("addPageBtn").onclick=()=>addPage($("addPageType").value);
 $("addUnusedBtn").onclick=addUnusedAsPages;
