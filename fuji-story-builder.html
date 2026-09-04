@@ -18,6 +18,8 @@ main{display:grid;grid-template-columns:340px 1fr;min-height:calc(100vh - 85px);
 main.sidebar-collapsed{grid-template-columns:0 1fr}
 main.sidebar-collapsed aside{overflow:hidden;min-width:0;padding:0;border:none}
 #sidebarToggle{position:fixed;top:50%;left:340px;transform:translateY(-50%);z-index:50;width:26px;height:56px;border-radius:0 6px 6px 0;padding:0;border:1px solid var(--border);border-left:0;background:var(--bg-card);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:left .15s}
+#helpBtn{position:fixed;top:16px;right:20px;z-index:50;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#helpBtn:hover{border-color:var(--gold);color:var(--gold)}
 #sidebarToggle:hover{color:var(--gold);border-color:var(--border-hover)}
 #sidebarToggle.collapsed-pos{left:0}
 @media(max-width:800px){#sidebarToggle{left:0!important;top:12px;transform:none}}
@@ -70,6 +72,7 @@ button:disabled{opacity:.4;cursor:not-allowed}.row{display:grid;grid-template-co
 <body>
 <header><h1 style="text-align:center">FUJI STORY BUILDER</h1></header>
 <button id="sidebarToggle" title="Show/hide the setup panel">‹</button>
+<button id="helpBtn" title="Guide & feature help">?</button>
 <main>
 <aside>
   <div class="card" style="padding:10px">
@@ -178,6 +181,69 @@ button:disabled{opacity:.4;cursor:not-allowed}.row{display:grid;grid-template-co
     <input type="range" id="lbZoom" min="1" max="3" step="0.02" value="1" style="width:100%">
   </div>
   <div id="lbCaption" class="lbCaption"></div>
+</div>
+
+<div id="helpModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:100;padding:24px 16px;overflow:auto">
+  <div style="max-width:640px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:30px 26px 36px;position:relative">
+    <button id="helpClose" title="Close" style="position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;cursor:pointer">×</button>
+    <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:500;margin:0 0 4px;color:var(--text)">Fuji Story Builder — Guide</h2>
+    <p class="small" style="margin-bottom:22px">Turns your own photos into Instagram Story or feed-post pages, entirely in your browser. Nothing is uploaded anywhere.</p>
+
+    <h3 style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:20px 0 8px">Quick start</h3>
+    <ol class="small" style="margin:0;padding-left:18px;line-height:1.7">
+      <li>Load photos — drag & drop, choose files, choose a folder, or a ZIP.</li>
+      <li>Arrange the sequence in the thumbnail panel (drag, or use the sort dropdown).</li>
+      <li>Set up your cover — background, optional cover photo, and your three text lines.</li>
+      <li>Click <strong>Generate Pages</strong> — it builds a full deck automatically.</li>
+      <li>Fine-tune anything, then export.</li>
+    </ol>
+
+    <h3 style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:20px 0 8px">Moving photos around</h3>
+    <ul class="small" style="margin:0;padding-left:18px;line-height:1.7">
+      <li><strong>Drag</strong> a photo from the panel (or from one page) onto any page — works with the mouse.</li>
+      <li><strong>Or tap once</strong> to arm a photo (it pulses gold), then tap where it should go — easier on mobile, no dragging needed.</li>
+      <li>Dropping onto an empty slot duplicates the photo there; dropping onto an occupied slot swaps the two.</li>
+      <li>The <strong>★</strong> on a thumbnail picks it as your cover background. A gold <strong>NEW</strong> badge means that photo isn't used on any page yet.</li>
+      <li><strong>🔒 Lock pool</strong> stops accidental dragging when you just want to scroll through lots of photos.</li>
+    </ul>
+
+    <h3 style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:20px 0 8px">Editing a generated page</h3>
+    <ul class="small" style="margin:0;padding-left:18px;line-height:1.7">
+      <li><strong>🔍</strong> opens a full-size preview.</li>
+      <li>Inside the preview: <strong>✥ Adjust</strong> lets you drag a photo to reposition its crop, tap a photo to select it and reveal a zoom slider, and double-click to reset both. <strong>🗑 Clear</strong> lets you blank a slot without deleting the photo from your library.</li>
+      <li>Each page's footer has a layout-swap dropdown, a position number (to reorder), and Download/Remove buttons.</li>
+      <li><strong>↗ Expand</strong> (on dense grids) breaks a page into several smaller, more prominent pages.</li>
+      <li><strong>+ Add blank page</strong>, <strong>+ Add unused photos</strong>, and <strong>✂ Split photo across 2 pages</strong> live in the toolbar above your pages.</li>
+      <li><strong>↩ Undo</strong> reverses your last several edits.</li>
+    </ul>
+
+    <h3 style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:20px 0 8px">Cover</h3>
+    <ul class="small" style="margin:0;padding-left:18px;line-height:1.7">
+      <li>Three text lines, each with its own size and color picker.</li>
+      <li>Optional cover photo background, with adjustable scrim strength.</li>
+      <li>Optional capture-date stamp — auto-detects month/year from your photos' EXIF data, and shows a range if a trip spans more than one month.</li>
+      <li><strong>💾 Save fonts & sizes as my default</strong> remembers your preferred look for next time.</li>
+    </ul>
+
+    <h3 style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:20px 0 8px">Sequence &amp; layouts</h3>
+    <ul class="small" style="margin:0;padding-left:18px;line-height:1.7">
+      <li>Sort by filename, actual capture date (EXIF), color, black &amp; white grouping, brightness, or shuffle.</li>
+      <li><strong>Match photo shape to layout slot</strong> auto-prefers portrait/landscape photos for the slots suited to them.</li>
+      <li><strong>Avoid dense grids</strong> keeps photos out of the 6–9-photo grid layouts if you'd rather each one stand out.</li>
+      <li>Layouts include Hero, Editorial, Blurred/Soft-color/Arch framed, side-by-side and stacked splits, Big+small, Framed+full-bleed, Triptych/Stack, Split-top, and Grid/Mosaic variants.</li>
+    </ul>
+
+    <h3 style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:20px 0 8px">Export</h3>
+    <ul class="small" style="margin:0;padding-left:18px;line-height:1.7">
+      <li><strong>ZIP</strong> — every page as a PNG.</li>
+      <li><strong>PDF</strong> — one file, one page per slide.</li>
+      <li><strong>Shareable webpage</strong> — a single scrollable HTML file, perfect for sending to someone directly.</li>
+      <li><strong>Export resolution</strong> — Standard is tuned for screens; 2×–4× re-reads your original photo files for actual print quality (slower, but worth it for printing).</li>
+      <li><strong>🔁 Switch format</strong> re-renders your whole current deck at the other aspect ratio (Stories 9:16 ↔ Feed 4:5) without redoing your arrangement.</li>
+    </ul>
+
+    <p class="small" style="margin-top:20px;color:var(--text-dim)">Tap the ‹ tab on the left edge anytime to show/hide this setup panel.</p>
+  </div>
 </div>
 
 <script>/*!
@@ -721,6 +787,10 @@ try{setAppTheme(localStorage.getItem("fujiAppTheme")||"dark")}catch{setAppTheme(
 function toggleSidebar(){let main=document.querySelector("main"),collapsed=main.classList.toggle("sidebar-collapsed");$("sidebarToggle").textContent=collapsed?"›":"‹";$("sidebarToggle").classList.toggle("collapsed-pos",collapsed)}
 function collapseSidebarNow(){let main=document.querySelector("main");if(!main.classList.contains("sidebar-collapsed")){main.classList.add("sidebar-collapsed");$("sidebarToggle").textContent="›";$("sidebarToggle").classList.add("collapsed-pos")}}
 $("sidebarToggle").onclick=toggleSidebar;
+$("helpBtn").onclick=()=>{$("helpModal").style.display="block"};
+$("helpClose").onclick=()=>{$("helpModal").style.display="none"};
+$("helpModal").addEventListener("click",e=>{if(e.target.id==="helpModal")$("helpModal").style.display="none"});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("helpModal").style.display==="block")$("helpModal").style.display="none"});
 $("splitPhotoBtn").onclick=()=>splitPhotoAcrossPages(2);
 $("switchFormatBtn").onclick=switchFormat;
 $("files").onchange=e=>load(e.target.files);$("folder").onchange=e=>load(e.target.files);["dragenter","dragover"].forEach(v=>$("drop").addEventListener(v,e=>{e.preventDefault();$("drop").classList.add("on")}));["dragleave","drop"].forEach(v=>$("drop").addEventListener(v,e=>{e.preventDefault();$("drop").classList.remove("on")}));$("drop").ondrop=e=>load(e.dataTransfer.files);$("make").onclick=make;$("zip").onclick=zipall;$("exportWeb").onclick=exportAsWebpage;$("exportPdf").onclick=exportAsPdf;$("toneBtn").onclick=()=>{sort("tone");thumbs();$("order").value="tone"};$("nameBtn").onclick=()=>{sort("name");thumbs();$("order").value="name"};$("clearBtn").onclick=()=>{S.photos.forEach(p=>URL.revokeObjectURL(p.url));S.photos=[];S.pages=[];coverId=null;$("thumbs").innerHTML="";$("pages").innerHTML="";$("empty").style.display="grid";$("zip").disabled=true;$("exportWeb").disabled=true;$("exportPdf").disabled=true;$("switchFormatBtn").disabled=true;closeLightbox();controls()};controls();
