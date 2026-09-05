@@ -41,10 +41,8 @@ button:disabled{opacity:.4;cursor:not-allowed}.row{display:grid;grid-template-co
 .thumb{aspect-ratio:1;border-radius:3px;overflow:hidden;position:relative;border:1px solid var(--border);cursor:grab;touch-action:none}
 #thumbs.locked .thumb{touch-action:auto;cursor:default}
 .thumb img{width:100%;height:100%;object-fit:cover}.thumb span{position:absolute;left:4px;bottom:4px;background:rgba(10,10,10,0.75);color:var(--text);padding:3px 5px;border-radius:2px;font-size:9px;max-width:90%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.thumb .rm{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(10,10,10,0.75);color:var(--text);border:0;font-size:13px;line-height:20px;text-align:center;padding:0;cursor:pointer;font-weight:700}
-.thumb .rm:hover{background:#c0392b;color:#fff}
-.thumb .star{position:absolute;top:4px;left:4px;width:20px;height:20px;border-radius:50%;background:rgba(10,10,10,0.75);color:var(--text);border:0;font-size:11px;line-height:20px;text-align:center;padding:0;cursor:pointer}
-.thumb .star.active{background:var(--gold);color:#0a0a0a}
+.thumb .preview{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(10,10,10,0.75);color:var(--text);border:0;font-size:12px;line-height:24px;text-align:center;padding:0;cursor:pointer}
+.thumb .preview:hover{background:var(--gold);color:#0a0a0a}
 .thumb.cover-selected{outline:2px solid var(--gold);outline-offset:-2px}
 .thumb.drop-target{outline:2px solid var(--gold);outline-offset:-2px}
 .thumb.placing{outline:2px dashed var(--gold);outline-offset:-2px;animation:pulse 1.1s ease-in-out infinite}
@@ -183,6 +181,18 @@ button:disabled{opacity:.4;cursor:not-allowed}.row{display:grid;grid-template-co
   <div id="lbCaption" class="lbCaption"></div>
 </div>
 
+<div id="poolPreview" class="lightbox" style="display:none;flex-direction:column;z-index:105">
+  <button id="poolPreviewClose" class="lbBtn" style="top:16px;right:16px" title="Close">×</button>
+  <button id="poolPrevBtn" class="lbBtn" style="left:16px;top:50%;transform:translateY(-50%)" title="Previous photo">‹</button>
+  <button id="poolNextBtn" class="lbBtn" style="right:16px;top:50%;transform:translateY(-50%)" title="Next photo">›</button>
+  <img id="poolPreviewImg" style="max-width:88vw;max-height:70vh;object-fit:contain;border-radius:4px">
+  <div style="display:flex;gap:10px;margin-top:18px">
+    <button id="poolStarBtn" class="secondary" style="width:auto">★ Set as cover</button>
+    <button id="poolDeleteBtn" class="secondary" style="width:auto">🗑 Remove photo</button>
+  </div>
+  <div id="poolPreviewCaption" class="lbCaption" style="position:static;margin-top:14px"></div>
+</div>
+
 <div id="helpModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:100;padding:24px 16px;overflow:auto">
   <div style="max-width:640px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:30px 26px 36px;position:relative">
     <button id="helpClose" title="Close" style="position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;cursor:pointer">×</button>
@@ -203,7 +213,8 @@ button:disabled{opacity:.4;cursor:not-allowed}.row{display:grid;grid-template-co
       <li><strong>Drag</strong> a photo from the panel (or from one page) onto any page — works with the mouse.</li>
       <li><strong>Or tap once</strong> to arm a photo (it pulses gold), then tap where it should go — easier on mobile, no dragging needed.</li>
       <li>Dropping onto an empty slot duplicates the photo there; dropping onto an occupied slot swaps the two.</li>
-      <li>The <strong>★</strong> on a thumbnail picks it as your cover background. A gold <strong>NEW</strong> badge means that photo isn't used on any page yet.</li>
+      <li>Tap the <strong>🔍</strong> on a thumbnail to open a larger preview — from there you can star it as your cover photo or remove it, and flip through the rest of your pool with ‹ ›.</li>
+      <li>A gold <strong>NEW</strong> badge means that photo isn't used on any page yet.</li>
       <li><strong>🔒 Lock pool</strong> stops accidental dragging when you just want to scroll through lots of photos.</li>
     </ul>
 
@@ -653,14 +664,26 @@ function colorFamily(t){if(t.sat<0.12)return 6;let h=t.h;if(h<20||h>=340)return 
 
 function sort(m){if(m==="name")S.photos.sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));if(m==="tone")S.photos.sort((a,b)=>(a.t.sat<.1?999:a.t.h)-(b.t.sat<.1?999:b.t.h)||a.t.light-b.t.light);if(m==="light")S.photos.sort((a,b)=>a.t.light-b.t.light);if(m==="exif")S.photos.sort((a,b)=>(a.captureTime-b.captureTime)||a.name.localeCompare(b.name,undefined,{numeric:true}));if(m==="colorFamily")S.photos.sort((a,b)=>colorFamily(a.t)-colorFamily(b.t)||a.t.light-b.t.light);if(m==="shuffle"){for(let i=S.photos.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[S.photos[i],S.photos[j]]=[S.photos[j],S.photos[i]]}}if(m==="bw"){let toneSort=(a,b)=>(a.t.sat<.1?999:a.t.h)-(b.t.sat<.1?999:b.t.h)||a.t.light-b.t.light,bwG=S.photos.filter(p=>p.t.sat<0.12).sort((a,b)=>a.t.light-b.t.light),colorG=S.photos.filter(p=>p.t.sat>=0.12).sort(toneSort);S.photos=[...bwG,...colorG]}}
 const TRIP_COLORS=["#e0685a","#5dade2","#52c98d","#b579e0","#e0a05d","#4fc4ae","#e07aa8","#c8a96e"];
-let coverId=null,poolDrag=null,placingPhoto=null,poolLocked=false;function thumbs(){$("thumbs").innerHTML="";$("thumbs").classList.toggle("locked",poolLocked);let groups=[],seen=new Set();S.photos.forEach(p=>{let k=groupKey(p);if(!seen.has(k)){seen.add(k);groups.push(k)}});let multi=groups.length>1;let usedIds=usedPhotoIds();let unusedCount=S.photos.filter(p=>!usedIds.has(p.id)).length;if($("addUnusedBtn"))$("addUnusedBtn").textContent=`+ Add unused photos (${unusedCount})`;$("placeStatus").textContent=poolLocked?"Pool locked — scrolling only. Unlock to drag or tap-place photos.":(placingPhoto?`Tap a spot on any page to place "${placingPhoto.photo.name}" — tap it again to cancel.`:"Tap any photo — in this panel or on a page — then tap where it should go. Use 🔍 on a page to preview it instead. A gold dot means a photo isn't used anywhere yet.");S.photos.forEach((p,i)=>{let d=document.createElement("div");d.className="thumb"+(coverId===p.id?" cover-selected":"")+(placingPhoto&&placingPhoto.photo===p?" placing":"");d.__photoId=p.id;if(multi)d.style.boxShadow=`inset 3px 0 0 ${TRIP_COLORS[groups.indexOf(groupKey(p))%TRIP_COLORS.length]}`;d.innerHTML=`<img src="${p.url}"><span>${String(i+1).padStart(3,"0")} · ${p.name}</span><button class="star${coverId===p.id?" active":""}" title="Use as cover background">★</button><button class="rm" title="Remove photo" aria-label="Remove photo">×</button>`+(!usedIds.has(p.id)?`<span class="unused-dot" title="Not used on any page">NEW</span>`:"");
+let coverId=null,poolDrag=null,placingPhoto=null,poolLocked=false;function thumbs(){$("thumbs").innerHTML="";$("thumbs").classList.toggle("locked",poolLocked);let groups=[],seen=new Set();S.photos.forEach(p=>{let k=groupKey(p);if(!seen.has(k)){seen.add(k);groups.push(k)}});let multi=groups.length>1;let usedIds=usedPhotoIds();let unusedCount=S.photos.filter(p=>!usedIds.has(p.id)).length;if($("addUnusedBtn"))$("addUnusedBtn").textContent=`+ Add unused photos (${unusedCount})`;$("placeStatus").textContent=poolLocked?"Pool locked — scrolling only. Unlock to drag or tap-place photos.":(placingPhoto?`Tap a spot on any page to place "${placingPhoto.photo.name}" — tap it again to cancel.`:"Tap any photo — in this panel or on a page — then tap where it should go. Use 🔍 on a page to preview it instead. A gold dot means a photo isn't used anywhere yet.");S.photos.forEach((p,i)=>{let d=document.createElement("div");d.className="thumb"+(coverId===p.id?" cover-selected":"")+(placingPhoto&&placingPhoto.photo===p?" placing":"");d.__photoId=p.id;if(multi)d.style.boxShadow=`inset 3px 0 0 ${TRIP_COLORS[groups.indexOf(groupKey(p))%TRIP_COLORS.length]}`;d.innerHTML=`<img src="${p.url}"><span>${String(i+1).padStart(3,"0")} · ${p.name}</span><button class="preview" title="Preview this photo">🔍</button>`+(!usedIds.has(p.id)?`<span class="unused-dot" title="Not used on any page">NEW</span>`:"");
 if(!poolLocked){
-d.addEventListener("pointerdown",e=>{if(e.target.closest(".star,.rm"))return;poolDrag={photo:p,startX:e.clientX,startY:e.clientY,moved:false};d.setPointerCapture(e.pointerId)});
+d.addEventListener("pointerdown",e=>{if(e.target.closest(".preview"))return;poolDrag={photo:p,startX:e.clientX,startY:e.clientY,moved:false};d.setPointerCapture(e.pointerId)});
 d.addEventListener("pointermove",e=>{if(!poolDrag||poolDrag.photo!==p)return;let dx=e.clientX-poolDrag.startX,dy=e.clientY-poolDrag.startY;if(!poolDrag.moved&&Math.hypot(dx,dy)>6){poolDrag.moved=true;d.style.cursor="grabbing"}if(poolDrag.moved){showGhost(e.clientX,e.clientY,p);highlightDropTarget(document.elementFromPoint(e.clientX,e.clientY))}});
 d.addEventListener("pointerup",e=>{if(!poolDrag||poolDrag.photo!==p){poolDrag=null;return}d.style.cursor="grab";hideGhost();clearHighlight();if(poolDrag.moved){let target=document.elementFromPoint(e.clientX,e.clientY),destThumb=target&&target.closest?target.closest(".thumb"):null;if(destThumb&&destThumb.__photoId&&destThumb.__photoId!==p.id){let f=S.photos.findIndex(x=>x.id===p.id),t=S.photos.findIndex(x=>x.id===destThumb.__photoId),m=S.photos.splice(f,1)[0];S.photos.splice(t,0,m);thumbs()}else if(target&&target.tagName==="CANVAS"&&target.__pageEntry){let entry=target.__pageEntry,{cx,cy}=pointOnCanvas(target,e),destSlot=findSlot(entry,cx,cy);if(destSlot){pushUndo();entry.p[destSlot.slotIndex]=p;entry.slots=drawPage(entry.canvasEl,entry);if(entry.type==="cover"){coverId=p.id;$("coverPhoto").checked=true;$("coverOpacityWrap").style.display="block";$("coverPickHint").style.display="block"}thumbs()}}}else{placingPhoto=(placingPhoto&&placingPhoto.photo===p)?null:{photo:p,from:null};refreshArmedHighlights();thumbs()}poolDrag=null});
 }
-d.querySelector(".rm").onclick=e=>{e.stopPropagation();removePhoto(p.id)};d.querySelector(".star").onclick=e=>{e.stopPropagation();coverId=coverId===p.id?null:p.id;let cov=S.pages.find(pg=>pg.type==="cover");if(coverId){$("coverPhoto").checked=true;$("coverOpacityWrap").style.display="block";$("coverPickHint").style.display="block";if(cov){cov.p=[p];liveCoverUpdate()}}else if(cov&&cov.p[0]===p){cov.p=[];liveCoverUpdate()}thumbs()};$("thumbs").appendChild(d)});updateCoverPreview()}
+d.querySelector(".preview").onclick=e=>{e.stopPropagation();openPoolPreview(p.id)};$("thumbs").appendChild(d)});updateCoverPreview()}
 function removePhoto(id){let i=S.photos.findIndex(p=>p.id===id);if(i<0)return;if(coverId===id)coverId=null;URL.revokeObjectURL(S.photos[i].url);S.photos.splice(i,1);thumbs();controls()}
+let poolPreviewIndex=-1;
+function openPoolPreview(photoId){let idx=S.photos.findIndex(p=>p.id===photoId);if(idx<0)return;poolPreviewIndex=idx;renderPoolPreview();$("poolPreview").style.display="flex"}
+function renderPoolPreview(){let p=S.photos[poolPreviewIndex];if(!p){closePoolPreview();return}$("poolPreviewImg").src=p.url;$("poolPreviewCaption").textContent=`${poolPreviewIndex+1} of ${S.photos.length} · ${p.name}`;$("poolStarBtn").classList.toggle("active",coverId===p.id);$("poolStarBtn").textContent=coverId===p.id?"★ Cover photo":"★ Set as cover"}
+function closePoolPreview(){$("poolPreview").style.display="none";poolPreviewIndex=-1}
+function poolPreviewNav(dir){if(poolPreviewIndex<0||!S.photos.length)return;poolPreviewIndex=(poolPreviewIndex+dir+S.photos.length)%S.photos.length;renderPoolPreview()}
+$("poolPreviewClose").onclick=closePoolPreview;
+$("poolPrevBtn").onclick=()=>poolPreviewNav(-1);
+$("poolNextBtn").onclick=()=>poolPreviewNav(1);
+$("poolPreview").addEventListener("click",e=>{if(e.target.id==="poolPreview")closePoolPreview()});
+$("poolStarBtn").onclick=()=>{let p=S.photos[poolPreviewIndex];if(!p)return;coverId=coverId===p.id?null:p.id;let cov=S.pages.find(pg=>pg.type==="cover");if(coverId){$("coverPhoto").checked=true;$("coverOpacityWrap").style.display="block";$("coverPickHint").style.display="block";if(cov){cov.p=[p];liveCoverUpdate()}}else if(cov&&cov.p[0]===p){cov.p=[];liveCoverUpdate()}thumbs();renderPoolPreview()};
+$("poolDeleteBtn").onclick=()=>{let p=S.photos[poolPreviewIndex];if(!p)return;removePhoto(p.id);if(!S.photos.length){closePoolPreview();return}poolPreviewIndex=Math.min(poolPreviewIndex,S.photos.length-1);renderPoolPreview()};
+document.addEventListener("keydown",e=>{if($("poolPreview").style.display!=="flex")return;if(e.key==="Escape")closePoolPreview();else if(e.key==="ArrowLeft")poolPreviewNav(-1);else if(e.key==="ArrowRight")poolPreviewNav(1)});
 function crop(x,i,px,py,pw,ph,fx=.5,fy=.5,zoom=1){let ir=i.naturalWidth/i.naturalHeight,tr=pw/ph,baseSw,baseSh;if(ir>tr){baseSh=i.naturalHeight;baseSw=baseSh*tr}else{baseSw=i.naturalWidth;baseSh=baseSw/tr}zoom=Math.max(1,zoom||1);let sw=baseSw/zoom,sh=baseSh/zoom,maxSx=Math.max(0,i.naturalWidth-sw),maxSy=Math.max(0,i.naturalHeight-sh),sx=maxSx*fx,sy=maxSy*fy;x.drawImage(i,sx,sy,sw,sh,px,py,pw,ph)}
 function theme(){let dark=$("pageBg").value==="black";return dark?{bg:"#0a0a0a",ink:"#f0ede6",muted:"rgba(240,237,230,0.55)",gold:"#c8a96e"}:{bg:"#ffffff",ink:"#151515",muted:"rgba(21,21,21,0.55)",gold:"#9c7a3f"}}
 function fitText(x,text,maxW,startPx,weight="",minPx=28,fam="'DM Sans',Arial"){let px=startPx;do{x.font=`${weight}${px}px ${fam}`.trim();if(x.measureText(text).width<=maxW||px<=minPx)break;px-=2}while(true);return px}
