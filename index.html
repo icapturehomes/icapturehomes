@@ -1095,7 +1095,8 @@
       gap: 8px;
     }
     .alacarte-row span:last-child { color: var(--text); font-weight: 400; white-space: nowrap; }
-    .alacarte-addon { opacity: 0.7; }
+    .alacarte-addon { opacity: 1; }
+    .alacarte-row span:first-child .ast { color: var(--gold); font-style: normal; }
     @media (max-width: 700px) { .alacarte-grid-3col { grid-template-columns: 1fr !important; } }
 
 
@@ -2360,7 +2361,7 @@
         <div style="width:24px;height:1px;background:var(--gold);flex-shrink:0;"></div>
         <span style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);">À La Carte</span>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(240,237,230,0.08);" class="alacarte-grid-3col">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(240,237,230,0.08);" class="alacarte-grid-3col">
 
         <div style="background:var(--bg-mid);padding:32px 28px;">
           <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;">Photography</div>
@@ -2369,13 +2370,13 @@
           <div class="alacarte-row"><span>35 Photos</span><span>$275</span></div>
           <div class="alacarte-row"><span>50 Photos</span><span>$375</span></div>
           <div class="alacarte-row"><span>75+ Photos</span><span>$500</span></div>
-          <div class="alacarte-row alacarte-addon"><span>Detail Photos*</span><span>$100</span></div>
-          <div class="alacarte-row alacarte-addon"><span>Neighborhood Amenities*</span><span>$35</span></div>
-          <div class="alacarte-row alacarte-addon"><span>Local Attractions*</span><span>$150</span></div>
+          <div class="alacarte-row alacarte-addon"><span>Aerial/Drone Add-on<span class="ast">*</span></span><span>$95</span></div>
+          <div class="alacarte-row alacarte-addon"><span>Detail Photos<span class="ast">*</span></span><span>$100</span></div>
+          <div class="alacarte-row alacarte-addon"><span>Neighborhood Amenities<span class="ast">*</span></span><span>$35</span></div>
+          <div class="alacarte-row alacarte-addon"><span>Local Attractions<span class="ast">*</span></span><span>$150</span></div>
           <div class="alacarte-row"><span>True Twilight Photos</span><span>$375</span></div>
           <div style="font-size:10px;color:var(--text-dim);margin:-8px 0 10px;font-style:italic;line-height:1.5;">Available by request and subject to scheduling/location availability.</div>
-          <div class="alacarte-row alacarte-addon"><span>Grass Replacement*</span><span>$1/image</span></div>
-          <div class="alacarte-row alacarte-addon"><span>Aerial/Drone Add-on*</span><span>$95</span></div>
+          <div class="alacarte-row alacarte-addon"><span>Grass Replacement<span class="ast">*</span></span><span>$1/image</span></div>
         </div>
 
         <div style="background:var(--bg-mid);padding:32px 28px;">
@@ -2385,11 +2386,10 @@
           <div style="font-size:10px;color:var(--text-dim);margin:-8px 0 10px;font-style:italic;line-height:1.5;">Cinematic, slow &amp; elegant — 60–90 sec</div>
           <div class="alacarte-row"><span>Editorial Video</span><span>$475</span></div>
           <div style="font-size:10px;color:var(--text-dim);margin:-8px 0 10px;font-style:italic;line-height:1.5;">Dynamic cuts, speed ramps &amp; transitions — 45–75 sec</div>
-          <div class="alacarte-row alacarte-addon"><span>On-Camera Agent Intro/Outro*</span><span>$95</span></div>
-          <div class="alacarte-row alacarte-addon"><span>Twilight footage add-on*</span><span>$375</span></div>
-          <div class="alacarte-row alacarte-addon"><span>AI Photo-to-Video (20 photos)*</span><span>$75</span></div>
-          <div class="alacarte-row"><span>IG Carousel Clips (up to 12 clips)</span><span>$150</span></div>
-          <div class="alacarte-row alacarte-addon"><span>IG Carousel Clips w/ video package*</span><span>$80</span></div>
+          <div class="alacarte-row alacarte-addon"><span>On-Camera Agent Intro/Outro<span class="ast">*</span></span><span>$95</span></div>
+          <div class="alacarte-row alacarte-addon"><span>Twilight footage add-on<span class="ast">*</span></span><span>$375</span></div>
+          <div style="font-size:10px;color:var(--text-dim);margin:-8px 0 10px;font-style:italic;line-height:1.5;">Available by request and subject to scheduling/location availability.</div>
+          <div class="alacarte-row alacarte-addon"><span>AI Photo-to-Video (20 photos)<span class="ast">*</span></span><span>$75</span></div>
         </div>
 
         <div style="background:var(--bg-mid);padding:32px 28px;">
@@ -2406,6 +2406,7 @@
         </div>
 
       </div>
+      <style>@media (max-width:700px) { .alacarte-grid-3col { grid-template-columns: 1fr !important; } } @media (max-width:1000px) and (min-width:701px) { .alacarte-grid-3col { grid-template-columns: repeat(2,1fr) !important; } }</style>
       <p style="font-size:11px;color:var(--text-dim);margin-top:14px;line-height:1.7;">*Add-on services require a primary photography or video service. Travel fees may apply and will be calculated at the time of booking.</p>
       <div style="margin-top:28px;text-align:center;">
         <a href="https://icapturehomes.hd.pics/order" target="_blank" class="btn-primary" style="display:inline-block;">Book À La Carte →</a>
