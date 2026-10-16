@@ -40,9 +40,10 @@
     .gallery-meta{padding:0 40px 24px;display:flex;align-items:baseline;gap:16px}
     .gallery-meta-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;font-style:italic;color:var(--ink)}
     .gallery-meta-count{font-size:11px;color:var(--ink-dim);letter-spacing:0.06em}
-    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 10px 10px;align-items:start}
+    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:4px;column-gap:10px;row-gap:0;padding:0 10px 10px;align-items:start;--gap:10px}
+    .gallery-grid .gi{grid-row-end:span 50;margin-bottom:var(--gap)}
     @media(max-width:600px){
-      .gallery-grid{grid-template-columns:1fr;padding:0 6px 6px;gap:6px}
+      .gallery-grid{grid-template-columns:1fr;padding:0 6px 6px;column-gap:6px;--gap:6px}
       .hero-content{padding:0 24px 36px}
       .hero-count{right:24px;bottom:40px}
       .gallery-header{padding:20px 24px}
@@ -1226,6 +1227,23 @@
     });
     lb.addEventListener('click',e=>{if(e.target===lb)closeLb();});
     updateStars();
+
+    // Masonry: size each tile's row span to its photo so there are no gaps
+    const grid=document.querySelector('.gallery-grid');
+    function sizeTile(gi){
+      const img=gi.querySelector('img');
+      if(!img.naturalWidth)return;
+      const gap=parseFloat(getComputedStyle(grid).getPropertyValue('--gap'))||10;
+      const h=gi.clientWidth*img.naturalHeight/img.naturalWidth;
+      gi.style.gridRowEnd='span '+Math.ceil((h+gap)/4);
+    }
+    function sizeAll(){grid.querySelectorAll('.gi').forEach(sizeTile);}
+    grid.querySelectorAll('.gi').forEach(gi=>{
+      const img=gi.querySelector('img');
+      if(img.complete)sizeTile(gi);else img.addEventListener('load',()=>sizeTile(gi));
+    });
+    let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(sizeAll,120);});
+
     const btt=document.getElementById('btt');
     window.addEventListener('scroll',()=>{
       btt.classList.toggle('visible',window.scrollY>window.innerHeight*0.8);
