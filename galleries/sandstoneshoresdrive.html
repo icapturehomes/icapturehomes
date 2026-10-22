@@ -101,7 +101,7 @@
 <body>
 
   <section class="hero">
-    <img class="hero-img" id="hero-img" src="https://lh3.googleusercontent.com/d/1iRI0H1DXDRPtQd6GbdWPez3Zn4qB_1G_" alt="Sandstone Shores Drive">
+    <img class="hero-img" id="hero-img" src="https://lh3.googleusercontent.com/d/1xz44Lp7_xhq5vYDZouQZlv7O2P8vJLWc" alt="Sandstone Shores Drive">
     <div class="hero-vignette"></div>
     <div class="hero-content">
       <p class="hero-eyebrow">Private Client Gallery</p>
@@ -285,7 +285,8 @@
     "https://lh3.googleusercontent.com/d/1kSXs4jWF0myqpIcNZea1Z8xwymwffCul"
   ];
     const thumb = u => u + '=w80';
-    let ci = 0, heroIdx = 0;
+    let ci = 0, heroIdx = 9;
+    const solo = new Set([1, 8, 9, 104, 107, 109, 111, 114, 116, 127, 131]);   // VT twilight edits always get their own full frame
     const ratios = new Array(imgs.length).fill(1.5);
 
     /* 1 — measure every photo's shape from a tiny thumbnail */
@@ -327,11 +328,11 @@
       let i=0,n=0,rowsSinceFeature=0,chapter=1;
       while(i<imgs.length){
         // full-bleed feature: a landscape every ~4 rows
-        if(rowsSinceFeature>=4 && ratios[i]>1.2){
+        if(solo.has(i) || (rowsSinceFeature>=4 && ratios[i]>1.2)){
           const f=document.createElement('section');f.className='feature';
           const fr=row([i],90);f.appendChild(fr);
           const p=document.createElement('div');p.className='plate';p.style.maxWidth=fr.style.maxWidth;
-          p.innerHTML='<span>No. '+pad(i+1)+'</span><span>Sandstone Shores Drive</span>';
+          p.innerHTML='<span>No. '+pad(i+1)+'</span><span>'+(solo.has(i)?'Twilight':'Sandstone Shores Drive')+'</span>';
           f.appendChild(p);root.appendChild(f);
           i++;rowsSinceFeature=0;
           continue;
@@ -346,7 +347,7 @@
         }
         const target=targets[n%targets.length];
         const idx=[];let sum=0;
-        while(i<imgs.length && idx.length<4){
+        while(i<imgs.length && idx.length<4 && !(idx.length && solo.has(i))){
           idx.push(i);sum+=ratios[i];i++;
           if(sum>=target-0.25)break;
         }
