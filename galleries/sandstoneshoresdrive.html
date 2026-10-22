@@ -372,5 +372,11 @@
     const btt=document.getElementById('btt');
     window.addEventListener('scroll',()=>{btt.classList.toggle('visible',window.scrollY>window.innerHeight*0.8);},{passive:true});
   </script>
+  <!-- Discourage saving photos -->
+  <style>img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}</style>
+  <script>
+    document.addEventListener('contextmenu',e=>{if(e.target.tagName==='IMG')e.preventDefault();});
+    document.addEventListener('dragstart',e=>{if(e.target.tagName==='IMG')e.preventDefault();});
+  </script>
 </body>
 </html>
