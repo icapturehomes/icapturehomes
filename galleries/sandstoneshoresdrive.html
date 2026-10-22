@@ -11,19 +11,12 @@
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
     :root{
-      --white:#ffffff;--off:#f7f6f4;--ink:#1c1c1a;
+      --white:#ffffff;--off:#ffffff;--ink:#1c1c1a;
       --ink-mid:rgba(28,28,26,0.55);--ink-dim:rgba(28,28,26,0.38);
       --gold:#b8924a;--border:rgba(28,28,26,0.1);
       --gap:14px;--side:48px;
-      --tile:#e4e2de;--hdr:rgba(247,246,244,0.94);
+      --tile:#f1f0ed;--hdr:rgba(255,255,255,0.94);
     }
-    /* section moods — the page tone shifts as you move through the house */
-    body[data-mood="2"]{--off:#f5f1ea;--hdr:rgba(245,241,234,0.94)}
-    body[data-mood="3"]{--off:#f4efec;--hdr:rgba(244,239,236,0.94)}
-    body[data-mood="4"]{--off:#f6f3eb;--hdr:rgba(246,243,235,0.94)}
-    body[data-mood="5"]{--off:#eff2f1;--hdr:rgba(239,242,241,0.94)}
-    body[data-mood="6"]{--off:#1d1c1a;--ink:#ece8e1;--ink-mid:rgba(236,232,225,0.62);--ink-dim:rgba(236,232,225,0.42);--border:rgba(255,255,255,0.12);--tile:#2a2926;--hdr:rgba(29,28,26,0.9)}
-    body[data-mood="7"]{--off:#141a24;--ink:#e9ebef;--ink-mid:rgba(233,235,239,0.62);--ink-dim:rgba(233,235,239,0.42);--border:rgba(255,255,255,0.12);--tile:#1d2532;--hdr:rgba(20,26,36,0.9)}
     html{scroll-behavior:smooth}
     body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--off);color:var(--ink);min-height:100vh;transition:background-color 0.9s ease,color 0.9s ease}
     .gallery-header,.logo,.hdr-sec,.ch-title,.chapter,.chapter b,.ch-sub,.ch-line,.plate,.plate span,.toc,.toc *,footer,footer *{transition:color 0.9s ease,background-color 0.9s ease,border-color 0.9s ease}
@@ -94,15 +87,17 @@
     .plate{display:flex;justify-content:space-between;align-items:baseline;margin:0 auto;padding:14px 0 0;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim)}
     .plate span:first-child{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:0.02em;text-transform:none;color:var(--ink-mid)}
 
-    .chapter{display:flex;align-items:center;gap:18px;margin:84px 0 28px;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-dim)}
-    .chapter{flex-wrap:wrap;row-gap:8px}
-    .ch-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:30px;letter-spacing:0;text-transform:none;color:var(--ink);line-height:1}
-    .ch-line{flex:1;min-width:40px;height:0.5px;background:var(--border)}
-    .ch-sub{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim)}
+    .chapter{display:grid;grid-template-columns:auto 1fr;gap:0 28px;align-items:end;margin:120px 0 40px;padding-top:26px;border-top:1px solid var(--ink)}
+    .chapter{margin-top:0!important}
+    .sec{margin-top:130px}
+    .sec:first-child{margin-top:8px}
+    .chapter b{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(64px,8vw,112px);line-height:0.8;color:var(--gold);letter-spacing:-0.02em}
+    .ch-text{display:flex;flex-direction:column;gap:8px;padding-bottom:4px}
+    .ch-kicker{font-size:10px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold)}
+    .ch-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(34px,4.2vw,56px);line-height:1;letter-spacing:-0.01em;color:var(--ink)}
+    .ch-sub{font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-mid);line-height:1.8}
     .pair{margin:56px 0}
     .pair .row{margin-bottom:0}
-    .chapter:first-child{margin-top:0}
-    .chapter b{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:22px;letter-spacing:0;text-transform:none;color:var(--ink)}
 
     @media(max-width:700px){
       :root{--gap:6px;--side:18px}
@@ -111,10 +106,10 @@
       .row{flex-direction:column;max-width:none!important}
       .row .ph{flex:none!important;width:100%}
       .feature{margin:36px calc(var(--side) * -1)}
-      .chapter{margin:48px 0 18px}
-      .ch-title{font-size:24px}
-      .ch-line{display:none}
-      .ch-sub{flex-basis:100%;line-height:1.7}
+      .chapter{margin:64px 0 22px;gap:0 16px;padding-top:18px}
+      .sec{margin-top:64px}
+      .chapter b{font-size:56px}
+      .ch-title{font-size:30px}
       .pair{margin:28px 0}
       .toc-grid{grid-template-columns:repeat(2,1fr);gap:22px 8px}
       .toc-meta span{font-size:18px}
@@ -343,6 +338,8 @@
     const nums = [1, 1, 2, 3, 4, 5, 6, 7, 7, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 100, 101, 102, 102, 103, 103, 104, 104, 105, 106, 106, 107, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 117, 118, 119, 120, 120, 121];   // base file number of each photo
     const kind = ["", "VT", "", "", "", "", "", "", "VT", "VT", "", "", "", "", "", "", "", "", "", "", "VS", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "VT", "", "", "VT", "", "VT", "", "VT", "", "", "VT", "", "VT", "", "", "", "", "", "", "", "", "", "", "VT", "", "", "", "VT", ""];   // 'VT' twilight, 'VS' virtual staging, '' original
     const sectionStarts = [1,18,31,48,59,71,99];   // rooms / levels kept together
+    // contents cover per section: [file number, '' original | 'VT' twilight]
+    const tocCover = {3:[49,''],4:[61,''],5:[76,''],6:[104,'VT']};
     const sectionNames = [
       ['Front Exterior',''],
       ['Foyer &amp; Dining','Front Foyer · Stairs · Piano Room · Dining Room'],
@@ -350,7 +347,7 @@
       ['Living &amp; Kitchen','Living Room · Kitchen · Breakfast Area'],
       ['Upper Level','Bedrooms · Office'],
       ['Basement','Living Room · Bar · Rec Area · Gym · Music Studio · Half Bath · Theater'],
-      ['Rear Exterior &amp; Aerial','Back Exteriors · Drone']
+      ['Rear Exterior, Pool &amp; Aerial','Back Exteriors · Pool · Drone']
     ];
     const ratios = new Array(imgs.length).fill(1.5);
 
@@ -400,7 +397,7 @@
           sec=secOf(i);
           cur=document.createElement('section');cur.className='sec';cur.id='sec-'+(sec+1);cur.dataset.mood=sec+1;root.appendChild(cur);
           const c=document.createElement('div');c.className='chapter';
-          c.innerHTML='<b>'+RN[sec]+'</b><span class="ch-title">'+sectionNames[sec][0]+'</span><i class="ch-line"></i>'+(sectionNames[sec][1]?'<span class="ch-sub">'+sectionNames[sec][1]+'</span>':'');cur.appendChild(c);
+          c.innerHTML='<b>'+RN[sec]+'</b><div class="ch-text"><span class="ch-kicker">Section '+RN[sec]+' of '+RN[sectionNames.length-1]+'</span><span class="ch-title">'+sectionNames[sec][0]+'</span>'+(sectionNames[sec][1]?'<span class="ch-sub">'+sectionNames[sec][1]+'</span>':'')+'</div>';cur.appendChild(c);
         }
         // day + twilight / staged versions side by side
         if(hasVariant(i)){
@@ -408,10 +405,7 @@
           while(j<imgs.length && nums[j]===nums[i] && kind[j]!==''){idx.push(j);j++;}
           const f=document.createElement('section');f.className='pair';
           const pr=row(idx,70);f.appendChild(pr);
-          const p=document.createElement('div');p.className='plate';p.style.maxWidth=pr.style.maxWidth;
-          const label=kind[i+1]==='VS'?'Original &nbsp;·&nbsp; Virtually Staged':'Day &nbsp;·&nbsp; Twilight';
-          p.innerHTML='<span>No. '+pad(nums[i])+'</span><span>'+label+'</span>';
-          f.appendChild(p);cur.appendChild(f);
+          cur.appendChild(f);
           i=j;rowsSinceFeature++;continue;
         }
         // full-bleed feature: a landscape every ~4 rows
@@ -444,7 +438,8 @@
       let html='<div class="toc-label">Contents</div><div class="toc-grid">';
       sectionNames.forEach((s,k)=>{
         const members=imgs.map((_,i)=>i).filter(i=>secOf(i)===k);
-        const pick=members.find(i=>kind[i]==='VT')??members[0];
+        const want=tocCover[k];
+        const pick=(want&&members.find(i=>nums[i]===want[0]&&kind[i]===want[1]))??members.find(i=>kind[i]==='VT')??members[0];
         html+='<a href="#sec-'+(k+1)+'"><div class="toc-img"><img data-i="'+pick+'" alt="'+s[0]+'"></div>'+
               '<div class="toc-meta"><b>'+RN[k]+'</b><span>'+s[0]+'</span></div>'+
               '<span class="toc-count">'+members.length+' photographs</span></a>';
@@ -477,8 +472,8 @@
         secs.forEach((s,k)=>{const r=s.getBoundingClientRect();if(r.top<=mid&&r.bottom>mid)active=k;});
         if(active!==last){
           last=active;
-          if(active<0){delete document.body.dataset.mood;hdr.classList.remove('on');}
-          else{document.body.dataset.mood=active+1;hdr.innerHTML='<b>'+RN[active]+'</b>'+sectionNames[active][0];hdr.classList.add('on');}
+          if(active<0){hdr.classList.remove('on');}
+          else{hdr.innerHTML='<b>'+RN[active]+'</b>'+sectionNames[active][0];hdr.classList.add('on');}
         }
         const max=document.documentElement.scrollHeight-vh;
         prog.style.width=(max>0?scrollY/max*100:0)+'%';
