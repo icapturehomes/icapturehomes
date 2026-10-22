@@ -15,9 +15,18 @@
       --ink-mid:rgba(28,28,26,0.55);--ink-dim:rgba(28,28,26,0.38);
       --gold:#b8924a;--border:rgba(28,28,26,0.1);
       --gap:14px;--side:48px;
+      --tile:#e4e2de;--hdr:rgba(247,246,244,0.94);
     }
+    /* section moods — the page tone shifts as you move through the house */
+    body[data-mood="2"]{--off:#f5f1ea;--hdr:rgba(245,241,234,0.94)}
+    body[data-mood="3"]{--off:#f4efec;--hdr:rgba(244,239,236,0.94)}
+    body[data-mood="4"]{--off:#f6f3eb;--hdr:rgba(246,243,235,0.94)}
+    body[data-mood="5"]{--off:#eff2f1;--hdr:rgba(239,242,241,0.94)}
+    body[data-mood="6"]{--off:#1d1c1a;--ink:#ece8e1;--ink-mid:rgba(236,232,225,0.62);--ink-dim:rgba(236,232,225,0.42);--border:rgba(255,255,255,0.12);--tile:#2a2926;--hdr:rgba(29,28,26,0.9)}
+    body[data-mood="7"]{--off:#141a24;--ink:#e9ebef;--ink-mid:rgba(233,235,239,0.62);--ink-dim:rgba(233,235,239,0.42);--border:rgba(255,255,255,0.12);--tile:#1d2532;--hdr:rgba(20,26,36,0.9)}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--off);color:var(--ink);min-height:100vh}
+    body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--off);color:var(--ink);min-height:100vh;transition:background-color 0.9s ease,color 0.9s ease}
+    .gallery-header,.logo,.hdr-sec,.ch-title,.chapter,.chapter b,.ch-sub,.ch-line,.plate,.plate span,.toc,.toc *,footer,footer *{transition:color 0.9s ease,background-color 0.9s ease,border-color 0.9s ease}
 
     /* HERO */
     .hero{position:relative;height:100svh;min-height:560px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;background:#2a2926}
@@ -32,7 +41,12 @@
     .hero-scroll::after{content:'↓'}
 
     /* HEADER */
-    .gallery-header{display:flex;align-items:center;padding:22px var(--side);border-bottom:0.5px solid var(--border);background:rgba(247,246,244,0.94);backdrop-filter:blur(8px);position:sticky;top:0;z-index:50}
+    .gallery-header{display:flex;align-items:center;padding:22px var(--side);border-bottom:0.5px solid var(--border);background:var(--hdr);backdrop-filter:blur(8px);position:sticky;top:0;z-index:50;justify-content:space-between}
+    .hdr-sec{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-dim);opacity:0;transition:opacity 0.4s ease,color 0.9s ease}
+    .hdr-sec.on{opacity:1}
+    .hdr-sec b{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:15px;letter-spacing:0;text-transform:none;color:var(--ink);margin-right:8px}
+    .progress{position:absolute;left:0;right:0;bottom:-0.5px;height:1.5px}
+    .progress i{display:block;height:100%;width:0;background:var(--gold)}
     .logo{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;letter-spacing:0.04em;color:var(--ink);text-decoration:none}
 
     /* INTRO / SPEC SHEET */
@@ -47,13 +61,36 @@
     .spreads{max-width:1440px;margin:0 auto;padding:0 var(--side)}
     .loading{text-align:center;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-dim);padding:80px 0}
     .row{display:flex;gap:var(--gap);margin:0 auto var(--gap)}
-    .ph{position:relative;overflow:hidden;cursor:zoom-in;background:#e4e2de}
+    .ph{position:relative;overflow:hidden;cursor:zoom-in;background:var(--tile);transition:background-color 0.9s ease}
     .ph img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity 0.6s ease,transform 0.6s ease}
     .ph img.in{opacity:1}
     .ph:hover img{transform:scale(1.015)}
 
     .feature{margin:72px calc(var(--side) * -1) 72px}
     .feature .row{margin-bottom:0}
+    .feature .ph img{transform:translateY(var(--py,0px)) scale(1.12);transition:opacity 0.6s ease}
+    .feature .ph:hover img{transform:translateY(var(--py,0px)) scale(1.12)}
+
+    /* scroll reveal */
+    .reveal{opacity:0;transform:translateY(26px);transition:opacity 0.9s ease,transform 0.9s cubic-bezier(.2,.7,.2,1)}
+    .reveal.shown{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}.feature .ph img{transform:none}}
+
+    /* CONTENTS */
+    .toc{max-width:1440px;margin:0 auto;padding:0 var(--side) 40px}
+    .toc-label{display:flex;align-items:center;gap:18px;font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:24px}
+    .toc-label::after{content:'';flex:1;height:0.5px;background:var(--border)}
+    .toc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px 14px}
+    .toc a{text-decoration:none;color:var(--ink);display:block}
+    .toc-img{aspect-ratio:4/3;overflow:hidden;background:var(--tile)}
+    .toc-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.7s ease,opacity 0.6s ease;opacity:0}
+    .toc-img img.in{opacity:1}
+    .toc a:hover .toc-img img{transform:scale(1.04)}
+    .toc-meta{display:flex;align-items:baseline;gap:10px;margin-top:12px}
+    .toc-meta b{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:16px;color:var(--ink-mid)}
+    .toc-meta span{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:21px;line-height:1.1}
+    .toc-count{display:block;margin-top:4px;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim)}
+    .sec{scroll-margin-top:90px}
     .plate{display:flex;justify-content:space-between;align-items:baseline;margin:0 auto;padding:14px 0 0;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim)}
     .plate span:first-child{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:0.02em;text-transform:none;color:var(--ink-mid)}
 
@@ -79,6 +116,9 @@
       .ch-line{display:none}
       .ch-sub{flex-basis:100%;line-height:1.7}
       .pair{margin:28px 0}
+      .toc-grid{grid-template-columns:repeat(2,1fr);gap:22px 8px}
+      .toc-meta span{font-size:18px}
+      .hdr-sec{display:none}
     }
 
     /* LIGHTBOX */
@@ -98,7 +138,7 @@
     .lb-hero-note{font-size:10px;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;opacity:0;transition:opacity 0.3s}
     .lb-hero-note.show{opacity:1}
 
-    .btt{position:fixed;right:24px;bottom:24px;width:42px;height:42px;border-radius:50%;border:0.5px solid var(--border);background:var(--white);color:var(--ink);font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.08);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity 0.25s,transform 0.25s,color 0.2s;z-index:60}
+    .btt{position:fixed;right:24px;bottom:24px;width:42px;height:42px;border-radius:50%;border:0.5px solid var(--border);background:var(--hdr);backdrop-filter:blur(8px);color:var(--ink);font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.08);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity 0.25s,transform 0.25s,color 0.2s,background-color 0.9s;z-index:60}
     .btt.visible{opacity:1;pointer-events:auto;transform:none}
     .btt:hover{color:var(--gold)}
 
@@ -122,6 +162,8 @@
 
   <header class="gallery-header">
     <a href="https://www.icapturehomes.com" class="logo">iCaptureHomes</a>
+    <span class="hdr-sec" id="hdr-sec"></span>
+    <div class="progress"><i id="prog"></i></div>
   </header>
 
   <section class="intro" id="gallery">
@@ -132,6 +174,8 @@
       <dt>By</dt><dd>iCaptureHomes Photography</dd>
     </dl>
   </section>
+
+  <nav class="toc" id="toc" aria-label="Contents"></nav>
 
   <main class="spreads" id="spreads">
     <p class="loading" id="loading">Preparing gallery…</p>
@@ -349,13 +393,14 @@
       const RN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
       const secOf=i=>{let s=0;sectionStarts.forEach((v,k)=>{if(nums[i]>=v)s=k;});return s;};
       const hasVariant=i=>kind[i]==='' && i+1<imgs.length && nums[i+1]===nums[i] && kind[i+1]!=='';
-      let i=0,n=0,rowsSinceFeature=0,sec=-1;
+      let i=0,n=0,rowsSinceFeature=0,sec=-1,cur=root;
       while(i<imgs.length){
         // section marker
         if(secOf(i)!==sec){
           sec=secOf(i);
+          cur=document.createElement('section');cur.className='sec';cur.id='sec-'+(sec+1);cur.dataset.mood=sec+1;root.appendChild(cur);
           const c=document.createElement('div');c.className='chapter';
-          c.innerHTML='<b>'+RN[sec]+'</b><span class="ch-title">'+sectionNames[sec][0]+'</span><i class="ch-line"></i>'+(sectionNames[sec][1]?'<span class="ch-sub">'+sectionNames[sec][1]+'</span>':'');root.appendChild(c);
+          c.innerHTML='<b>'+RN[sec]+'</b><span class="ch-title">'+sectionNames[sec][0]+'</span><i class="ch-line"></i>'+(sectionNames[sec][1]?'<span class="ch-sub">'+sectionNames[sec][1]+'</span>':'');cur.appendChild(c);
         }
         // day + twilight / staged versions side by side
         if(hasVariant(i)){
@@ -366,7 +411,7 @@
           const p=document.createElement('div');p.className='plate';p.style.maxWidth=pr.style.maxWidth;
           const label=kind[i+1]==='VS'?'Original &nbsp;·&nbsp; Virtually Staged':'Day &nbsp;·&nbsp; Twilight';
           p.innerHTML='<span>No. '+pad(nums[i])+'</span><span>'+label+'</span>';
-          f.appendChild(p);root.appendChild(f);
+          f.appendChild(p);cur.appendChild(f);
           i=j;rowsSinceFeature++;continue;
         }
         // full-bleed feature: a landscape every ~4 rows
@@ -375,7 +420,7 @@
           const fr=row([i],90);f.appendChild(fr);
           const p=document.createElement('div');p.className='plate';p.style.maxWidth=fr.style.maxWidth;
           p.innerHTML='<span>No. '+pad(nums[i])+'</span><span>Sandstone Shores Drive</span>';
-          f.appendChild(p);root.appendChild(f);
+          f.appendChild(p);cur.appendChild(f);
           i++;rowsSinceFeature=0;continue;
         }
         // regular row — never crosses a section or swallows a day/twilight set
@@ -386,9 +431,68 @@
           idx.push(i);sum+=ratios[i];i++;
           if(sum>=target-0.25)break;
         }
-        root.appendChild(row(idx,78));
+        cur.appendChild(row(idx,78));
         n++;rowsSinceFeature++;
       }
+      buildToc(secOf);
+      setupMotion();
+    }
+
+    /* CONTENTS PAGE */
+    function buildToc(secOf){
+      const RN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
+      let html='<div class="toc-label">Contents</div><div class="toc-grid">';
+      sectionNames.forEach((s,k)=>{
+        const members=imgs.map((_,i)=>i).filter(i=>secOf(i)===k);
+        const pick=members.find(i=>kind[i]==='VT')??members[0];
+        html+='<a href="#sec-'+(k+1)+'"><div class="toc-img"><img data-i="'+pick+'" alt="'+s[0]+'"></div>'+
+              '<div class="toc-meta"><b>'+RN[k]+'</b><span>'+s[0]+'</span></div>'+
+              '<span class="toc-count">'+members.length+' photographs</span></a>';
+      });
+      const toc=document.getElementById('toc');
+      toc.innerHTML=html+'</div>';
+      toc.querySelectorAll('img').forEach(im=>{
+        const full=imgs[+im.dataset.i];
+        im.onload=()=>im.classList.add('in');
+        im.onerror=()=>{im.onerror=null;im.src=full;};
+        im.src=thumb(full).replace('=w80','=w900');
+      });
+    }
+
+    /* MOTION: reveal on scroll, section mood + header status, feature parallax, progress */
+    function setupMotion(){
+      const RN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
+      const els=document.querySelectorAll('.spreads .row:not(.pair .row):not(.feature .row), .pair, .feature, .chapter');
+      const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('shown');io.unobserve(e.target);}}),{rootMargin:'0px 0px -8% 0px'});
+      els.forEach(el=>{el.classList.add('reveal');io.observe(el);});
+      const secs=[...document.querySelectorAll('.sec')];
+      const features=[...document.querySelectorAll('.feature .ph')];
+      const hdr=document.getElementById('hdr-sec'),prog=document.getElementById('prog');
+      const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let ticking=false,last=-1;
+      function frame(){
+        ticking=false;
+        const vh=innerHeight,mid=vh*0.5;
+        let active=-1;
+        secs.forEach((s,k)=>{const r=s.getBoundingClientRect();if(r.top<=mid&&r.bottom>mid)active=k;});
+        if(active!==last){
+          last=active;
+          if(active<0){delete document.body.dataset.mood;hdr.classList.remove('on');}
+          else{document.body.dataset.mood=active+1;hdr.innerHTML='<b>'+RN[active]+'</b>'+sectionNames[active][0];hdr.classList.add('on');}
+        }
+        const max=document.documentElement.scrollHeight-vh;
+        prog.style.width=(max>0?scrollY/max*100:0)+'%';
+        if(!calm)features.forEach(f=>{
+          const r=f.getBoundingClientRect();
+          if(r.bottom<0||r.top>vh)return;
+          const off=((r.top+r.height/2)-mid)*-0.06;
+          const lim=r.height*0.055;
+          f.style.setProperty('--py',Math.max(-lim,Math.min(lim,off)).toFixed(1)+'px');
+        });
+      }
+      addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(frame);}},{passive:true});
+      addEventListener('resize',frame);
+      frame();
     }
 
     /* LIGHTBOX + COVER */
