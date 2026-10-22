@@ -24,7 +24,7 @@
     /* HERO */
     .hero{position:relative;height:100svh;min-height:560px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;background:#2a2926}
     .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 0.6s ease;animation:heroZoom 16s ease-out forwards}
-    .hero-night{opacity:0;transition:opacity 3.6s ease-in-out}
+    .hero-night{opacity:0;transition:opacity 2.4s ease-in-out}
     .hero-night.show{opacity:1}
     @keyframes heroZoom{from{transform:scale(1.07)}to{transform:scale(1)}}
     @media (prefers-reduced-motion:reduce){.hero-img{animation:none}.hero-night{transition:none}}
@@ -143,15 +143,18 @@
     .btt.visible{opacity:1;pointer-events:auto;transform:none}
     .btt:hover{color:var(--gold)}
 
-    /* CLOSING */
-    .closing{position:relative;height:88vh;min-height:480px;margin-top:130px;overflow:hidden;background:#141a24;display:flex;align-items:flex-end;justify-content:center}
-    .closing img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s ease}
-    .closing img.in{opacity:1}
-    .closing-vig{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,10,16,0.72) 0%,rgba(8,10,16,0.1) 50%,transparent 100%)}
-    .closing-text{position:relative;padding:0 24px 72px;text-align:center;color:#fff;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(30px,4.4vw,58px);line-height:1.05}
-    .closing-text em{font-style:italic;color:rgba(255,255,255,0.8)}
-    .closing + footer{margin-top:0}
-    @media(max-width:700px){.closing{height:72vh;margin-top:64px}.closing-text{padding-bottom:48px}}
+    /* OUTRO */
+    .outro{max-width:1440px;margin:130px auto 0;padding:0 var(--side)}
+    .outro-inner{border-top:1px solid var(--ink);padding:56px 0 80px;text-align:center}
+    .outro-label{font-size:10px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:28px}
+    .outro-rooms{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 34px;max-width:1100px;margin:0 auto}
+    .outro-rooms a{text-decoration:none;color:var(--ink);font-family:'Cormorant Garamond',serif;font-weight:300;font-size:22px;line-height:1.2;border-bottom:1px solid transparent;transition:color 0.25s,border-color 0.25s}
+    .outro-rooms a b{font-style:italic;font-weight:300;color:var(--gold);margin-right:8px}
+    .outro-rooms a:hover{color:var(--gold);border-color:var(--gold)}
+    .outro-top{display:inline-flex;align-items:center;gap:10px;margin-top:56px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-mid);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:3px;transition:color 0.25s,border-color 0.25s}
+    .outro-top:hover{color:var(--gold);border-color:var(--gold)}
+    .outro + footer{margin-top:0}
+    @media(max-width:700px){.outro{margin-top:64px}.outro-inner{padding:40px 0 56px}.outro-rooms{flex-direction:column;gap:14px}.outro-rooms a{font-size:21px;align-self:center}}
 
     footer{margin-top:96px;padding:32px var(--side);border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
     .footer-logo{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;color:var(--ink-dim)}
@@ -162,8 +165,8 @@
 <body>
 
   <section class="hero">
-    <img class="hero-img" id="hero-day" src="https://lh3.googleusercontent.com/d/1hBa5rd5K4y3Qw9zivqZU0EtTOrm64sXy=w2400" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1hBa5rd5K4y3Qw9zivqZU0EtTOrm64sXy'" alt="Sandstone Shores Drive by day">
-    <img class="hero-img hero-night" id="hero-img" src="https://lh3.googleusercontent.com/d/1xz44Lp7_xhq5vYDZouQZlv7O2P8vJLWc=w2400" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1xz44Lp7_xhq5vYDZouQZlv7O2P8vJLWc'" alt="Sandstone Shores Drive at twilight">
+    <img class="hero-img" id="hero-day" fetchpriority="high" src="https://lh3.googleusercontent.com/d/1hBa5rd5K4y3Qw9zivqZU0EtTOrm64sXy=w2400" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1hBa5rd5K4y3Qw9zivqZU0EtTOrm64sXy'" alt="Sandstone Shores Drive by day">
+    <img class="hero-img hero-night" id="hero-img" fetchpriority="high" src="https://lh3.googleusercontent.com/d/1xz44Lp7_xhq5vYDZouQZlv7O2P8vJLWc=w2400" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1xz44Lp7_xhq5vYDZouQZlv7O2P8vJLWc'" alt="Sandstone Shores Drive at twilight">
     <div class="hero-vignette"></div>
     <div class="hero-content">
       <p class="hero-eyebrow">Private Client Gallery</p>
@@ -209,10 +212,12 @@
 
   <button class="btt" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
 
-  <section class="closing" id="closing">
-    <img id="closing-img" alt="Sandstone Shores Drive at twilight">
-    <div class="closing-vig"></div>
-    <p class="closing-text">Photographed by <em>iCaptureHomes</em></p>
+  <section class="outro" id="outro">
+    <div class="outro-inner">
+      <p class="outro-label">Revisit a room</p>
+      <nav class="outro-rooms" id="outro-rooms"></nav>
+      <a class="outro-top" href="#top" id="outro-top">Back to the beginning <span>↑</span></a>
+    </div>
   </section>
 
   <footer>
@@ -458,10 +463,8 @@
         n++;rowsSinceFeature++;
       }
       buildToc(secOf);
-      const ci120=imgs.findIndex((_,i)=>nums[i]===120&&kind[i]==='VT');
-      const cl=document.getElementById('closing-img');
-      cl.onload=()=>cl.classList.add('in');
-      if(ci120>=0){sized(cl,imgs[ci120],2400);document.getElementById('closing').onclick=()=>openLb(ci120);}
+      const RNo=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
+      document.getElementById('outro-rooms').innerHTML=sectionNames.map((s,k)=>'<a href="#sec-'+(k+1)+'"><b>'+RNo[k]+'</b>'+s[0]+'</a>').join('');
       setupMotion();
     }
 
@@ -538,8 +541,15 @@
       const ready=im=>new Promise(r=>{if(im.complete&&im.naturalWidth)r();else{im.addEventListener('load',r,{once:true});im.addEventListener('error',()=>setTimeout(r,1500),{once:true});}});
       const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
       Promise.race([Promise.all([ready(day),ready(night)]),new Promise(r=>setTimeout(r,7000))])
-        .then(()=>setTimeout(()=>night.classList.add('show'),calm?0:1800));
+        .then(()=>setTimeout(()=>night.classList.add('show'),calm?0:1000));
     })();
+    // "Back to the beginning": scroll up, ease back to the day shot, then replay the dusk fade
+    document.getElementById('outro-top').addEventListener('click',e=>{
+      e.preventDefault();
+      heroImgEl.classList.remove('show');
+      window.scrollTo({top:0,behavior:'smooth'});
+      setTimeout(()=>heroImgEl.classList.add('show'),2200);
+    });
     function setHero(idx){
       heroIdx=idx;heroImgEl.classList.add('show');heroImgEl.style.opacity='0';
       setTimeout(()=>{heroImgEl.src=imgs[idx];heroImgEl.style.opacity='';},300);
