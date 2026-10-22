@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sandstone Shores Drive — iCaptureHomes Photography</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --white:#ffffff;--off:#f7f6f4;--ink:#1c1c1a;
+      --ink-mid:rgba(28,28,26,0.55);--ink-dim:rgba(28,28,26,0.38);
+      --gold:#b8924a;--border:rgba(28,28,26,0.1);
+      --gap:14px;--side:48px;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--off);color:var(--ink);min-height:100vh}
+
+    /* HERO */
+    .hero{position:relative;height:100svh;min-height:560px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;background:#2a2926}
+    .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 0.6s ease}
+    .hero-vignette{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,8,0.7) 0%,rgba(10,10,8,0.15) 55%,transparent 100%)}
+    .hero-content{position:relative;padding:0 var(--side) 52px;color:#fff}
+    .hero-eyebrow{font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:14px}
+    .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(46px,9vw,104px);font-weight:300;line-height:0.92;letter-spacing:-0.01em;margin-bottom:30px}
+    .hero-title em{font-style:italic;color:rgba(255,255,255,0.78)}
+    .hero-scroll{display:inline-flex;gap:10px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:2px}
+    .hero-scroll:hover{color:#fff;border-color:rgba(255,255,255,0.8)}
+    .hero-scroll::after{content:'↓'}
+
+    /* HEADER */
+    .gallery-header{display:flex;align-items:center;padding:22px var(--side);border-bottom:0.5px solid var(--border);background:rgba(247,246,244,0.94);backdrop-filter:blur(8px);position:sticky;top:0;z-index:50}
+    .logo{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;letter-spacing:0.04em;color:var(--ink);text-decoration:none}
+
+    /* INTRO / SPEC SHEET */
+    .intro{max-width:1440px;margin:0 auto;padding:96px var(--side) 80px;display:grid;grid-template-columns:1.6fr 1fr;gap:48px;align-items:end}
+    .intro h2{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(36px,5vw,64px);line-height:1;letter-spacing:-0.01em}
+    .intro h2 em{font-style:italic;color:var(--ink-mid)}
+    .specs{display:grid;grid-template-columns:auto 1fr;gap:12px 28px;font-size:12px;border-top:0.5px solid var(--border);padding-top:20px}
+    .specs dt{letter-spacing:0.16em;text-transform:uppercase;font-size:10px;color:var(--ink-dim);padding-top:2px}
+    .specs dd{color:var(--ink)}
+
+    /* SPREADS */
+    .spreads{max-width:1440px;margin:0 auto;padding:0 var(--side)}
+    .loading{text-align:center;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-dim);padding:80px 0}
+    .row{display:flex;gap:var(--gap);margin:0 auto var(--gap)}
+    .ph{position:relative;overflow:hidden;cursor:zoom-in;background:#e4e2de}
+    .ph img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity 0.6s ease,transform 0.6s ease}
+    .ph img.in{opacity:1}
+    .ph:hover img{transform:scale(1.015)}
+
+    .feature{margin:72px calc(var(--side) * -1) 72px}
+    .feature .row{margin-bottom:0}
+    .plate{display:flex;justify-content:space-between;align-items:baseline;margin:0 auto;padding:14px 0 0;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim)}
+    .plate span:first-child{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:0.02em;text-transform:none;color:var(--ink-mid)}
+
+    .chapter{display:flex;align-items:center;gap:18px;margin:84px 0 28px;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-dim)}
+    .chapter::after{content:'';flex:1;height:0.5px;background:var(--border)}
+    .chapter b{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:22px;letter-spacing:0;text-transform:none;color:var(--ink)}
+
+    @media(max-width:700px){
+      :root{--gap:6px;--side:18px}
+      .plate{max-width:none!important;padding:12px var(--side) 0}
+      .intro{grid-template-columns:1fr;padding:56px var(--side) 48px;gap:28px}
+      .row{flex-direction:column;max-width:none!important}
+      .row .ph{flex:none!important;width:100%}
+      .feature{margin:36px calc(var(--side) * -1)}
+      .chapter{margin:48px 0 18px}
+    }
+
+    /* LIGHTBOX */
+    .lb{display:none;position:fixed;inset:0;z-index:9000;background:rgba(10,10,8,0.97);flex-direction:column;align-items:center;justify-content:center}
+    .lb.open{display:flex}
+    .lb-img-wrap{max-width:92vw;max-height:84vh;display:flex;align-items:center;justify-content:center;position:relative}
+    .lb-img-wrap img{max-width:92vw;max-height:84vh;object-fit:contain;display:block}
+    .lb-star{position:absolute;top:12px;right:12px;width:36px;height:36px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);border-radius:50%;color:rgba(255,255,255,0.7);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:background 0.2s,color 0.2s}
+    .lb-star:hover{background:rgba(184,146,74,0.6);color:#fff}
+    .lb-star.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+    .lb-close{position:fixed;top:20px;right:24px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:26px;cursor:pointer;z-index:9001;line-height:1}
+    .lb-close:hover{color:#fff}
+    .lb-prev,.lb-next{position:fixed;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,0.35);font-size:48px;cursor:pointer;z-index:9001;padding:20px;line-height:1}
+    .lb-prev{left:0}.lb-next{right:0}
+    .lb-prev:hover,.lb-next:hover{color:rgba(255,255,255,0.9)}
+    .lb-meta{margin-top:16px;font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:0.1em;display:flex;align-items:center;gap:16px}
+    .lb-hero-note{font-size:10px;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;opacity:0;transition:opacity 0.3s}
+    .lb-hero-note.show{opacity:1}
+
+    .btt{position:fixed;right:24px;bottom:24px;width:42px;height:42px;border-radius:50%;border:0.5px solid var(--border);background:var(--white);color:var(--ink);font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.08);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity 0.25s,transform 0.25s,color 0.2s;z-index:60}
+    .btt.visible{opacity:1;pointer-events:auto;transform:none}
+    .btt:hover{color:var(--gold)}
+
+    footer{margin-top:96px;padding:32px var(--side);border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .footer-logo{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;color:var(--ink-dim)}
+    .footer-note{font-size:11px;color:var(--ink-dim)}
+    @media(max-width:700px){footer{margin-top:48px;flex-direction:column;gap:10px;text-align:center}}
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <img class="hero-img" id="hero-img" src="https://lh3.googleusercontent.com/d/1pY58BxtnJ13Xb7KXM0KJJtD8X7R433d9" alt="Sandstone Shores Drive">
+    <div class="hero-vignette"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Private Client Gallery</p>
+      <h1 class="hero-title">Sandstone<br><em>Shores Drive</em></h1>
+      <a class="hero-scroll" href="#gallery">View the collection</a>
+    </div>
+  </section>
+
+  <header class="gallery-header">
+    <a href="https://www.icapturehomes.com" class="logo">iCaptureHomes</a>
+  </header>
+
+  <section class="intro" id="gallery">
+    <h2>Sandstone Shores<br><em>Drive</em></h2>
+    <dl class="specs">
+      <dt>Photographs</dt><dd>121</dd>
+      <dt>Captured</dt><dd>October 2026</dd>
+      <dt>By</dt><dd>iCaptureHomes Photography</dd>
+    </dl>
+  </section>
+
+  <main class="spreads" id="spreads">
+    <p class="loading" id="loading">Preparing gallery…</p>
+  </main>
+
+  <div class="lb" id="lb">
+    <button class="lb-close" onclick="closeLb()">&#215;</button>
+    <button class="lb-prev" onclick="navLb(-1)">&#8249;</button>
+    <div class="lb-img-wrap">
+      <img id="lb-img" src="" alt="">
+      <button class="lb-star" id="lb-star" onclick="setHero(ci)" title="Set as cover photo">☆</button>
+    </div>
+    <button class="lb-next" onclick="navLb(1)">&#8250;</button>
+    <div class="lb-meta">
+      <span id="lb-counter"></span>
+      <span class="lb-hero-note" id="lb-hero-note">✦ Cover photo</span>
+    </div>
+  </div>
+
+  <button class="btt" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+  <footer>
+    <span class="footer-logo">iCaptureHomes Photography</span>
+    <span class="footer-note">Private gallery &mdash; not for public distribution</span>
+  </footer>
+
+  <script>
+    const imgs = [
+    "https://lh3.googleusercontent.com/d/1pY58BxtnJ13Xb7KXM0KJJtD8X7R433d9",
+    "https://lh3.googleusercontent.com/d/1H3IytUJCWRZg8l13NLRuwCUsh3b7PUSh",
+    "https://lh3.googleusercontent.com/d/1Juv3kd3kAVJLoe5J06mk9DtjJLLQiYtt",
+    "https://lh3.googleusercontent.com/d/16OnK2A-keuR7fOc9dk3xcNBnYhjGXbIH",
+    "https://lh3.googleusercontent.com/d/1CLgGA23IFm7485G-XtjchGyYtSqGxhR1",
+    "https://lh3.googleusercontent.com/d/1LE8FWMZmN-OEKMZymlKnmyg-tdheC7n5",
+    "https://lh3.googleusercontent.com/d/1w7OJN3mHhuUVRbS8VbY9U9HvYZsz-B1v",
+    "https://lh3.googleusercontent.com/d/18chZNEcqMXdpIa-s31HfdDq3BEyE8AWp",
+    "https://lh3.googleusercontent.com/d/1d7fH7fs5i1Bg-etzVFDlNO6cpyJjYTE4",
+    "https://lh3.googleusercontent.com/d/1KwWoMAwCfSx9zHupBpd0RQtSpAv4onqe",
+    "https://lh3.googleusercontent.com/d/1vpW14kTQdb-t9lwsxO1KcbLqrwnQZI4s",
+    "https://lh3.googleusercontent.com/d/1ldMiq_W6Uxyagz2-TLXk1T9S10yq6rrt",
+    "https://lh3.googleusercontent.com/d/1SGnAZX79ZK_8Q558FeDtzlpkcNZfDx40",
+    "https://lh3.googleusercontent.com/d/1HKaMHllkxiYJJbsR65MCpcNV3zv455TJ",
+    "https://lh3.googleusercontent.com/d/1hvCm6SXe61z6Ttz1n7Y_j6X8vSd-Czse",
+    "https://lh3.googleusercontent.com/d/1d7Vp0kWab0PCH2VCgMz4PKCIxMKwrntL",
+    "https://lh3.googleusercontent.com/d/1r_wq9ehiQhkzh6aSiQiPg29SkRPf2z9I",
+    "https://lh3.googleusercontent.com/d/1QTfM7cU13fHCuU0h11zTKEfp5uKdnb_X",
+    "https://lh3.googleusercontent.com/d/1IFWzEsCKaiMgaTUNUPR_v4x0I6dI0ty9",
+    "https://lh3.googleusercontent.com/d/1VdlSTWliSiXRSHXaIDNZEXVfYz6J8EYP",
+    "https://lh3.googleusercontent.com/d/1pL-VLRJnWwEICsbRpKNtJFdk0zlqRtqY",
+    "https://lh3.googleusercontent.com/d/1oJWaiJyluCmcQktU8kHByUtVToPZ8Rvp",
+    "https://lh3.googleusercontent.com/d/1ceaLhqAMQvhyMGlUuLzkyjgBpXmnQv3f",
+    "https://lh3.googleusercontent.com/d/1XBp2hUum3svMlddxTboXJlRwMzFVaRJu",
+    "https://lh3.googleusercontent.com/d/1QHPbBmPH8wQh6eEcnYm-X-DqdlqJaKk5",
+    "https://lh3.googleusercontent.com/d/1nTXN3v6V6RqN0edbeVsmKm6eihrj3hbn",
+    "https://lh3.googleusercontent.com/d/1QPDjlw-rh8xsdgIShWT1b11wsyRci8Ux",
+    "https://lh3.googleusercontent.com/d/1GG2tgVcihRQLYu0HbEmVQE-p6-d23rMg",
+    "https://lh3.googleusercontent.com/d/1H4SqccUn9wkPTcmNzs4YGsbxYFSStAkj",
+    "https://lh3.googleusercontent.com/d/1hL5q_oNSr_4X12CDBxa4ZvZiA2qeuaac",
+    "https://lh3.googleusercontent.com/d/183YnQcpv5W2NGyQZbnwqS5b-MwCojH26",
+    "https://lh3.googleusercontent.com/d/1mvp4vy-RK-A5qEzBHC9ygt-PciUOh-rh",
+    "https://lh3.googleusercontent.com/d/1-ojVP6DmqpXgGRo_fcqaxgF-0JXUw7dB",
+    "https://lh3.googleusercontent.com/d/182TULNEiP78RioJbYQ3YRH30CV5WiAuU",
+    "https://lh3.googleusercontent.com/d/1g7yd6I9c0ojxdZTOSXn6dN9Al1XdqxsC",
+    "https://lh3.googleusercontent.com/d/1dfASpVbhf6vTxCkm1BKTiZ_0EWluz67Y",
+    "https://lh3.googleusercontent.com/d/1zijnKVoE3ifqPUfVxiieOSDeFIEygjsc",
+    "https://lh3.googleusercontent.com/d/1vKQNvr5PIjabZEbaTc89y_KjvW9LGeWi",
+    "https://lh3.googleusercontent.com/d/1HOnv3orwd3ybZKeN-UhQ28HocxumZ1Mv",
+    "https://lh3.googleusercontent.com/d/1KYAlCkWZUGbx_735O0KsIAuMTdF83Os4",
+    "https://lh3.googleusercontent.com/d/1TsZg-KV8_u9UwtZgJEk7iL4DOAce0iN1",
+    "https://lh3.googleusercontent.com/d/1qmLieoRdWw0QZ3ZREy409lFQBJgwp0ti",
+    "https://lh3.googleusercontent.com/d/1ZlW6A9fQUD2yEML853JjrQ-MkErm46X9",
+    "https://lh3.googleusercontent.com/d/1AKuQBWU5JU3pa0S9GCag2b_RB_nET5CN",
+    "https://lh3.googleusercontent.com/d/1eqM18pJjFpS000jfOCnQrjaJlgRa48qj",
+    "https://lh3.googleusercontent.com/d/1OvWmKISoOMeqTejibiGycFAxaZASh3Ym",
+    "https://lh3.googleusercontent.com/d/1CuHlNDk8dLyqhjd1SP2-HCQ31NXzU4Oj",
+    "https://lh3.googleusercontent.com/d/1V7MScF5mOqJjK6NWviwR1LIgQnaKPc2l",
+    "https://lh3.googleusercontent.com/d/1jZNxZdh8dXDkO-ASSdjkfAKEtlBTmEXA",
+    "https://lh3.googleusercontent.com/d/1-KDUIDyYv0oiffJAD0sbrWxUMIS8Q34-",
+    "https://lh3.googleusercontent.com/d/1hPeDWkL20K4pCj6GUQfQLMHmozqNS0Nr",
+    "https://lh3.googleusercontent.com/d/1ozpQG2k1TZfGdUMscck8P7u0AKdm6cXw",
+    "https://lh3.googleusercontent.com/d/1kq487d5m2kiO3hbLpLk1uxQHOhBdM6Wi",
+    "https://lh3.googleusercontent.com/d/1wMkePA9iN3_bv1tHvKTDyrVkf9Ddb5DH",
+    "https://lh3.googleusercontent.com/d/1xkxU9k39tX2owYU2sLI2ub5QMp3Wk02W",
+    "https://lh3.googleusercontent.com/d/1lTwgxsVIULEZsz2aBY8d-SlNu2NsyqFB",
+    "https://lh3.googleusercontent.com/d/1tj3D6zN1fktWyZnFcxCc5YZ9ybWiH-T5",
+    "https://lh3.googleusercontent.com/d/1MO2gpJlQQfBzmm_5WDimH6CVguMc8nAg",
+    "https://lh3.googleusercontent.com/d/11mbvHfa1TbsuZblFAXbwQQcDr1yQnp2m",
+    "https://lh3.googleusercontent.com/d/1dAW3bchPiWndiQASQt2PbdWb0sTKMkzS",
+    "https://lh3.googleusercontent.com/d/1Axr9Ya909WEypoOnURwhYfgytMS_WvXT",
+    "https://lh3.googleusercontent.com/d/1aQfE-H57P1cLIPSzFBuBLr_hyHo_JTUb",
+    "https://lh3.googleusercontent.com/d/12umFwo4rtaVoGBVxO4MAS8jFJu2xOTfL",
+    "https://lh3.googleusercontent.com/d/1EMVpT1QH6sWtC2Kfl0ocfB-XbjCTQhFJ",
+    "https://lh3.googleusercontent.com/d/1F-AaovvGYchIJeYnF2bRDlbdBXOtaJ6F",
+    "https://lh3.googleusercontent.com/d/1xmimi7p-0e5pUwgbmiSV_2ZMbnURiSYC",
+    "https://lh3.googleusercontent.com/d/1vbIfhoVT-prgvHE3wMdt6Zp-MPmGxw_z",
+    "https://lh3.googleusercontent.com/d/15x4uZUIo1XMSdTE7qpYey8RszmxBrE-G",
+    "https://lh3.googleusercontent.com/d/1wamWG7RKX5V_gAvrQp1_tVQilnj7tF_D",
+    "https://lh3.googleusercontent.com/d/1u9elkIRWfPKcrIiNZbSIOSLJ9kJP_1yg",
+    "https://lh3.googleusercontent.com/d/1y4pyTDd7bA3xLrosbxOpF6XuyPzMalad",
+    "https://lh3.googleusercontent.com/d/1iWWJQF-C3C5SMja12QwjWZdw2AL6mPGV",
+    "https://lh3.googleusercontent.com/d/1wwYOFJvoZoudIVsMQfytS85D3P3DQjoH",
+    "https://lh3.googleusercontent.com/d/1dZed6e8hY1SaTh3V5W9wrxVsaRnkSJf5",
+    "https://lh3.googleusercontent.com/d/1RiLqmBOb-sTQAjxLbILb9kPmfKdR2TBE",
+    "https://lh3.googleusercontent.com/d/15cWfbjZoXAr6u5tmBpyLyXwjTgP-3m8V",
+    "https://lh3.googleusercontent.com/d/1E3YCvAB4qwXKB6cHvkmLKYBCO6b7vNLt",
+    "https://lh3.googleusercontent.com/d/15P2gvYKT1nM14MSYhFWs2MQDuTG65tOJ",
+    "https://lh3.googleusercontent.com/d/1IpE_q5eI5HnzMCzilZLnRNcnKLJh-Vj1",
+    "https://lh3.googleusercontent.com/d/1eECwOEXC66haE1-g4fHBgJpGJLmGLlBk",
+    "https://lh3.googleusercontent.com/d/1a4xZuBmofKJN5w1N1pgS1Gpr1VZogm6i",
+    "https://lh3.googleusercontent.com/d/1Mjo7aPeYPq-d0w4KmXzAbXw2Isw0-I6w",
+    "https://lh3.googleusercontent.com/d/19xll9DewbH9TjMCjzusPn7oTqRuvOWc9",
+    "https://lh3.googleusercontent.com/d/1zO770q5AqaqmCKvfPOCAZMib7p2opse1",
+    "https://lh3.googleusercontent.com/d/15bkGgSk4_SODwNNHim5FU65MusXsivzz",
+    "https://lh3.googleusercontent.com/d/1v6hEwMdzXb-BvikasxrSJiftkJIR8xy0",
+    "https://lh3.googleusercontent.com/d/1dfUPOJ6As5rW-j2sdNJo5QomjTonuQHU",
+    "https://lh3.googleusercontent.com/d/1V8CIWJ3w4XUjjcxv1AZIkdeOGVumSXlp",
+    "https://lh3.googleusercontent.com/d/1XoZGcIdjb3-I44w52WYT57QdpWre1MtC",
+    "https://lh3.googleusercontent.com/d/1jtTIQd6-hwaJbU7KEa7FDwp-n3OiZUQ4",
+    "https://lh3.googleusercontent.com/d/1bmvvgHCpp87Rf5ObvwYI2s4iXVSkrJTC",
+    "https://lh3.googleusercontent.com/d/1Z68o6_9NZsfkQmuzH-FflHpiFUc0Sveu",
+    "https://lh3.googleusercontent.com/d/1XH0kVfMY7R4V3AYgeSnMH0dwBGL9Z0DF",
+    "https://lh3.googleusercontent.com/d/11gPMfzTItkz5V6xCiKSYHKCEDT4JlCiW",
+    "https://lh3.googleusercontent.com/d/1NrAnyqZ56M1msFVk-tiKsZDRuOG8Xd_o",
+    "https://lh3.googleusercontent.com/d/1q4RIlXrF4kglOyaiLoMXZdvWejtWPRPI",
+    "https://lh3.googleusercontent.com/d/1KruDjRPcUBl0jPpXp2KEkbGJiiR9sEhO",
+    "https://lh3.googleusercontent.com/d/1ymBt7TfGa_uOeTARbT2lvCRGwCKlqJ6l",
+    "https://lh3.googleusercontent.com/d/1z5F6ac_wbCSGo5yD4yYuz-hkgcEyrGCL",
+    "https://lh3.googleusercontent.com/d/1TfomBqU23WbOPJxr1QwUtTCEUZozGW_V",
+    "https://lh3.googleusercontent.com/d/1GZfRU-gsk6CxdfRbE9OF5qFnFIQr7z0n",
+    "https://lh3.googleusercontent.com/d/1DI_tjrVwXRkYLxbnHH8BCuXjDCawACST",
+    "https://lh3.googleusercontent.com/d/1XoAkW_qSIWtioliYBP5CjkZ7sRDBqZm7",
+    "https://lh3.googleusercontent.com/d/1QkrN9yYcIy9CFrdx-SSxuv68BNPZU3rh",
+    "https://lh3.googleusercontent.com/d/1uR5NsP-IrKmBsd480MnMd7Jk-ErF8FEI",
+    "https://lh3.googleusercontent.com/d/1_Ejp0VxfOJJCuSHHfweEhKy5-7iBntWm",
+    "https://lh3.googleusercontent.com/d/1v2jrCNX6DMY-MeqeCrZjuqaDhQio2fzH",
+    "https://lh3.googleusercontent.com/d/1TrYPuYJXseTu3eQBS9qgZ-Y_64lmkNMx",
+    "https://lh3.googleusercontent.com/d/1Ywk3f2eokk4YtGYypGKOHQV6JKpg1CQD",
+    "https://lh3.googleusercontent.com/d/1kYfewuCuHcbt2B-y5ubCHa01wJPskCYn",
+    "https://lh3.googleusercontent.com/d/1OfafJ-mDJmg_kPFMGbsuAFK8EClH9jkm",
+    "https://lh3.googleusercontent.com/d/1T_u-ovGV1C9Akj5z_fQ0_aj2_GfAW6S9",
+    "https://lh3.googleusercontent.com/d/1Ltx5uopOaHpNMk_256mplFtZRt4Basps",
+    "https://lh3.googleusercontent.com/d/11_nfVwPfPOxKmHMe7fcLMyRxiRu7HsOt",
+    "https://lh3.googleusercontent.com/d/1lczTy3aCj3q4TRpXnx3aMIu3tsprZNU2",
+    "https://lh3.googleusercontent.com/d/15OjxVttNBGrzBYgbop6KlSE3FN22tdzb",
+    "https://lh3.googleusercontent.com/d/1lSUs7h75dVeqd7YRAO9_461B_gY-AC3T",
+    "https://lh3.googleusercontent.com/d/1cp69RA-gMxAMwF3XP3U50A1-9xX0ggU-",
+    "https://lh3.googleusercontent.com/d/1waSYLI48lCrajQxgOz5-8pwkJm69KNyd",
+    "https://lh3.googleusercontent.com/d/1mKMb4Vipd3mHxxcFfcfD5JzDBCSmcP6_",
+    "https://lh3.googleusercontent.com/d/1dRrLi6WHcp_tbrBmFqncWJCrYPhOMuGS"
+  ];
+    const thumb = u => u + '=w80';
+    let ci = 0, heroIdx = 0;
+    const ratios = new Array(imgs.length).fill(1.5);
+
+    /* 1 — measure every photo's shape from a tiny thumbnail */
+    function measure(i){
+      return new Promise(res=>{
+        const t=new Image();
+        const done=()=>{if(t.naturalWidth)ratios[i]=t.naturalWidth/t.naturalHeight;res();};
+        t.onload=done;t.onerror=()=>res();
+        t.src=thumb(imgs[i]);
+      });
+    }
+    const timeout=new Promise(r=>setTimeout(r,8000));
+    Promise.race([Promise.all(imgs.map((_,i)=>measure(i))),timeout]).then(build);
+
+    /* 2 — compose editorial spreads, keeping file order */
+    const pad=n=>String(n).padStart(3,'0');
+    function tile(i){
+      const d=document.createElement('div');
+      d.className='ph';d.style.flex=ratios[i]+' 1 0';d.style.aspectRatio=ratios[i];
+      d.onclick=()=>openLb(i);
+      const im=document.createElement('img');
+      im.alt='Photo '+(i+1);im.loading='lazy';im.decoding='async';
+      im.onload=()=>im.classList.add('in');
+      im.src=imgs[i];
+      d.appendChild(im);return d;
+    }
+    function row(idx,maxH){
+      const r=document.createElement('div');r.className='row';
+      const sum=idx.reduce((a,i)=>a+ratios[i],0);
+      // cap the row so it never gets taller than maxH (vh)
+      r.style.maxWidth='calc('+(sum*maxH).toFixed(2)+'vh + '+(idx.length-1)+' * var(--gap))';
+      idx.forEach(i=>r.appendChild(tile(i)));
+      return r;
+    }
+    function build(){
+      const root=document.getElementById('spreads');
+      document.getElementById('loading').remove();
+      const targets=[2.6,3.4,2.4,3.2];   // width-to-height budget per row → rhythm of 2s and 3s
+      let i=0,n=0,rowsSinceFeature=0,chapter=1;
+      while(i<imgs.length){
+        // full-bleed feature: a landscape every ~4 rows
+        if(rowsSinceFeature>=4 && ratios[i]>1.2){
+          const f=document.createElement('section');f.className='feature';
+          const fr=row([i],90);f.appendChild(fr);
+          const p=document.createElement('div');p.className='plate';p.style.maxWidth=fr.style.maxWidth;
+          p.innerHTML='<span>No. '+pad(i+1)+'</span><span>Sandstone Shores Drive</span>';
+          f.appendChild(p);root.appendChild(f);
+          i++;rowsSinceFeature=0;
+          continue;
+        }
+        // chapter marker every 12 rows
+        if(n>0 && n%12===0){
+          chapter++;
+          const c=document.createElement('div');c.className='chapter';
+          const rn=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'][chapter-1]||chapter;
+          c.innerHTML='<b>'+rn+'</b>';
+          root.appendChild(c);
+        }
+        const target=targets[n%targets.length];
+        const idx=[];let sum=0;
+        while(i<imgs.length && idx.length<4){
+          idx.push(i);sum+=ratios[i];i++;
+          if(sum>=target-0.25)break;
+        }
+        root.appendChild(row(idx,78));
+        n++;rowsSinceFeature++;
+      }
+    }
+
+    /* LIGHTBOX + COVER */
+    const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+          lbCounter=document.getElementById('lb-counter'),lbStar=document.getElementById('lb-star'),
+          lbHeroNote=document.getElementById('lb-hero-note'),heroImgEl=document.getElementById('hero-img');
+    function updateLbStar(){
+      const on=ci===heroIdx;
+      lbStar.classList.toggle('active',on);lbStar.textContent=on?'★':'☆';
+      lbHeroNote.classList.toggle('show',on);
+    }
+    function setHero(idx){
+      heroIdx=idx;heroImgEl.style.opacity='0';
+      setTimeout(()=>{heroImgEl.src=imgs[idx];heroImgEl.style.opacity='1';},300);
+      updateLbStar();
+    }
+    function show(){lbImg.src=imgs[ci];lbCounter.textContent=(ci+1)+' / '+imgs.length;updateLbStar();}
+    function openLb(i){ci=i;show();lb.classList.add('open');document.body.style.overflow='hidden';}
+    function closeLb(){lb.classList.remove('open');document.body.style.overflow='';}
+    function navLb(d){ci=(ci+d+imgs.length)%imgs.length;show();}
+    document.addEventListener('keydown',e=>{
+      if(!lb.classList.contains('open'))return;
+      if(e.key==='ArrowRight')navLb(1);
+      if(e.key==='ArrowLeft')navLb(-1);
+      if(e.key==='Escape')closeLb();
+    });
+    lb.addEventListener('click',e=>{if(e.target===lb)closeLb();});
+
+    const btt=document.getElementById('btt');
+    window.addEventListener('scroll',()=>{btt.classList.toggle('visible',window.scrollY>window.innerHeight*0.8);},{passive:true});
+  </script>
+</body>
+</html>
