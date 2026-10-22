@@ -58,7 +58,13 @@
     .plate span:first-child{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:0.02em;text-transform:none;color:var(--ink-mid)}
 
     .chapter{display:flex;align-items:center;gap:18px;margin:84px 0 28px;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-dim)}
-    .chapter::after{content:'';flex:1;height:0.5px;background:var(--border)}
+    .chapter{flex-wrap:wrap;row-gap:8px}
+    .ch-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:30px;letter-spacing:0;text-transform:none;color:var(--ink);line-height:1}
+    .ch-line{flex:1;min-width:40px;height:0.5px;background:var(--border)}
+    .ch-sub{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim)}
+    .pair{margin:56px 0}
+    .pair .row{margin-bottom:0}
+    .chapter:first-child{margin-top:0}
     .chapter b{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:22px;letter-spacing:0;text-transform:none;color:var(--ink)}
 
     @media(max-width:700px){
@@ -69,6 +75,10 @@
       .row .ph{flex:none!important;width:100%}
       .feature{margin:36px calc(var(--side) * -1)}
       .chapter{margin:48px 0 18px}
+      .ch-title{font-size:24px}
+      .ch-line{display:none}
+      .ch-sub{flex-basis:100%;line-height:1.7}
+      .pair{margin:28px 0}
     }
 
     /* LIGHTBOX */
@@ -286,7 +296,18 @@
   ];
     const thumb = u => u + '=w80';
     let ci = 0, heroIdx = 9;
-    const solo = new Set([1, 8, 9, 104, 107, 109, 111, 114, 116, 127, 131]);   // VT twilight edits always get their own full frame
+    const nums = [1, 1, 2, 3, 4, 5, 6, 7, 7, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 100, 101, 102, 102, 103, 103, 104, 104, 105, 106, 106, 107, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 117, 118, 119, 120, 120, 121];   // base file number of each photo
+    const kind = ["", "VT", "", "", "", "", "", "", "VT", "VT", "", "", "", "", "", "", "", "", "", "", "VS", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "VT", "", "", "VT", "", "VT", "", "VT", "", "", "VT", "", "VT", "", "", "", "", "", "", "", "", "", "", "VT", "", "", "", "VT", ""];   // 'VT' twilight, 'VS' virtual staging, '' original
+    const sectionStarts = [1,18,31,48,59,71,99];   // rooms / levels kept together
+    const sectionNames = [
+      ['Front Exterior',''],
+      ['Foyer &amp; Dining','Front Foyer · Stairs · Piano Room · Dining Room'],
+      ['Primary Suite','Bedroom · Bathroom'],
+      ['Living &amp; Kitchen','Living Room · Kitchen · Breakfast Area'],
+      ['Upper Level','Bedrooms · Office'],
+      ['Basement','Living Room · Bar · Rec Area · Gym · Music Studio · Half Bath · Theater'],
+      ['Rear Exterior &amp; Aerial','Back Exteriors · Drone']
+    ];
     const ratios = new Array(imgs.length).fill(1.5);
 
     /* 1 — measure every photo's shape from a tiny thumbnail */
@@ -325,29 +346,43 @@
       const root=document.getElementById('spreads');
       document.getElementById('loading').remove();
       const targets=[2.6,3.4,2.4,3.2];   // width-to-height budget per row → rhythm of 2s and 3s
-      let i=0,n=0,rowsSinceFeature=0,chapter=1;
+      const RN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
+      const secOf=i=>{let s=0;sectionStarts.forEach((v,k)=>{if(nums[i]>=v)s=k;});return s;};
+      const hasVariant=i=>kind[i]==='' && i+1<imgs.length && nums[i+1]===nums[i] && kind[i+1]!=='';
+      let i=0,n=0,rowsSinceFeature=0,sec=-1;
       while(i<imgs.length){
+        // section marker
+        if(secOf(i)!==sec){
+          sec=secOf(i);
+          const c=document.createElement('div');c.className='chapter';
+          c.innerHTML='<b>'+RN[sec]+'</b><span class="ch-title">'+sectionNames[sec][0]+'</span><i class="ch-line"></i>'+(sectionNames[sec][1]?'<span class="ch-sub">'+sectionNames[sec][1]+'</span>':'');root.appendChild(c);
+        }
+        // day + twilight / staged versions side by side
+        if(hasVariant(i)){
+          const idx=[i];let j=i+1;
+          while(j<imgs.length && nums[j]===nums[i] && kind[j]!==''){idx.push(j);j++;}
+          const f=document.createElement('section');f.className='pair';
+          const pr=row(idx,70);f.appendChild(pr);
+          const p=document.createElement('div');p.className='plate';p.style.maxWidth=pr.style.maxWidth;
+          const label=kind[i+1]==='VS'?'Original &nbsp;·&nbsp; Virtually Staged':'Day &nbsp;·&nbsp; Twilight';
+          p.innerHTML='<span>No. '+pad(nums[i])+'</span><span>'+label+'</span>';
+          f.appendChild(p);root.appendChild(f);
+          i=j;rowsSinceFeature++;continue;
+        }
         // full-bleed feature: a landscape every ~4 rows
-        if(solo.has(i) || (rowsSinceFeature>=4 && ratios[i]>1.2)){
+        if(rowsSinceFeature>=4 && ratios[i]>1.2){
           const f=document.createElement('section');f.className='feature';
           const fr=row([i],90);f.appendChild(fr);
           const p=document.createElement('div');p.className='plate';p.style.maxWidth=fr.style.maxWidth;
-          p.innerHTML='<span>No. '+pad(i+1)+'</span><span>'+(solo.has(i)?'Twilight':'Sandstone Shores Drive')+'</span>';
+          p.innerHTML='<span>No. '+pad(nums[i])+'</span><span>Sandstone Shores Drive</span>';
           f.appendChild(p);root.appendChild(f);
-          i++;rowsSinceFeature=0;
-          continue;
+          i++;rowsSinceFeature=0;continue;
         }
-        // chapter marker every 12 rows
-        if(n>0 && n%12===0){
-          chapter++;
-          const c=document.createElement('div');c.className='chapter';
-          const rn=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'][chapter-1]||chapter;
-          c.innerHTML='<b>'+rn+'</b>';
-          root.appendChild(c);
-        }
+        // regular row — never crosses a section or swallows a day/twilight set
         const target=targets[n%targets.length];
         const idx=[];let sum=0;
-        while(i<imgs.length && idx.length<4 && !(idx.length && solo.has(i))){
+        while(i<imgs.length && idx.length<4 && secOf(i)===sec && !(idx.length && hasVariant(i))){
+          if(!idx.length && hasVariant(i))break;
           idx.push(i);sum+=ratios[i];i++;
           if(sum>=target-0.25)break;
         }
