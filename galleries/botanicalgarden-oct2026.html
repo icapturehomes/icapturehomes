@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Botanical Garden — iCaptureHomes Photography</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --white:#ffffff;--off:#f7f6f4;--ink:#1c1c1a;
+      --ink-mid:rgba(28,28,26,0.55);--ink-dim:rgba(28,28,26,0.35);
+      --gold:#b8924a;--border:rgba(28,28,26,0.1);
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--ink);min-height:100vh}
+
+    /* HERO */
+    .hero{position:relative;height:100svh;min-height:560px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+    .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transition:opacity 0.6s ease}
+    .hero-vignette{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,8,0.72) 0%,rgba(10,10,8,0.18) 55%,transparent 100%)}
+    .hero-content{position:relative;padding:0 40px 48px;color:#fff}
+    .hero-eyebrow{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:10px;font-weight:300}
+    .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,9vw,88px);font-weight:300;line-height:0.95;letter-spacing:-0.01em;margin-bottom:28px}
+    .hero-title em{font-style:italic;color:rgba(255,255,255,0.75)}
+    .hero-scroll{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:2px;transition:color 0.2s,border-color 0.2s}
+    .hero-scroll:hover{color:#fff;border-color:rgba(255,255,255,0.8)}
+    .hero-scroll::after{content:'↓'}
+    .hero-count{position:absolute;right:40px;bottom:52px;font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:0.08em}
+
+    /* HEADER */
+    .gallery-header{display:flex;align-items:center;justify-content:space-between;padding:24px 40px;border-bottom:0.5px solid var(--border);background:var(--off);position:sticky;top:0;z-index:50}
+    .logo{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;letter-spacing:0.04em;color:var(--ink);text-decoration:none}
+
+    /* GRID */
+    .gallery-section{padding:32px 0 0}
+    .gallery-meta{padding:0 40px 24px;display:flex;align-items:baseline;gap:16px}
+    .gallery-meta-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;font-style:italic;color:var(--ink)}
+    .gallery-meta-count{font-size:11px;color:var(--ink-dim);letter-spacing:0.06em}
+    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:4px;column-gap:10px;row-gap:0;padding:0 10px 10px;align-items:start;--gap:10px}
+    .gallery-grid .gi{grid-row-end:span 50;margin-bottom:var(--gap)}
+    @media(max-width:600px){
+      .gallery-grid{grid-template-columns:1fr;padding:0 6px 6px;column-gap:6px;--gap:6px}
+      .hero-content{padding:0 24px 36px}
+      .hero-count{right:24px;bottom:40px}
+      .gallery-header{padding:20px 24px}
+      .gallery-meta{padding:0 24px 20px}
+    }
+    .gi{position:relative;cursor:zoom-in;background:#e2e1de;overflow:hidden}
+    .gi img{width:100%;height:auto;display:block;transition:transform 0.45s ease}
+    .gi:hover img{transform:scale(1.025)}
+    .star-btn{position:absolute;top:8px;right:8px;width:30px;height:30px;background:rgba(0,0,0,0.45);border:none;border-radius:50%;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.15s,background 0.15s;z-index:2;backdrop-filter:blur(4px)}
+    .gi:hover .star-btn{opacity:1}
+    .star-btn:hover{background:rgba(0,0,0,0.7)}
+    .star-btn.active{opacity:1;background:var(--gold);color:#fff}
+
+    /* LIGHTBOX */
+    .lb{display:none;position:fixed;inset:0;z-index:9000;background:rgba(10,10,8,0.97);flex-direction:column;align-items:center;justify-content:center}
+    .lb.open{display:flex}
+    .lb-img-wrap{max-width:92vw;max-height:84vh;display:flex;align-items:center;justify-content:center;position:relative}
+    .lb-img-wrap img{max-width:92vw;max-height:84vh;object-fit:contain;display:block}
+    .lb-star{position:absolute;top:12px;right:12px;width:36px;height:36px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);border-radius:50%;color:rgba(255,255,255,0.7);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:background 0.2s,color 0.2s}
+    .lb-star:hover{background:rgba(184,146,74,0.6);color:#fff}
+    .lb-star.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+    .lb-close{position:fixed;top:20px;right:24px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:26px;cursor:pointer;z-index:9001;line-height:1;transition:color 0.2s}
+    .lb-close:hover{color:#fff}
+    .lb-prev,.lb-next{position:fixed;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,0.35);font-size:48px;cursor:pointer;z-index:9001;padding:20px;transition:color 0.2s;line-height:1}
+    .lb-prev{left:0}.lb-next{right:0}
+    .lb-prev:hover,.lb-next:hover{color:rgba(255,255,255,0.9)}
+    .lb-meta{margin-top:16px;font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:0.1em;display:flex;align-items:center;gap:16px}
+    .lb-hero-note{font-size:10px;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;opacity:0;transition:opacity 0.3s}
+    .lb-hero-note.show{opacity:1}
+
+    /* BACK TO TOP */
+    .btt{position:fixed;right:24px;bottom:24px;width:42px;height:42px;border-radius:50%;border:0.5px solid var(--border);background:var(--white);color:var(--ink);font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.08);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity 0.25s,transform 0.25s,color 0.2s;z-index:60}
+    .btt.visible{opacity:1;pointer-events:auto;transform:none}
+    .btt:hover{color:var(--gold)}
+
+    footer{padding:32px 40px;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+    .footer-logo{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;color:var(--ink-dim)}
+    .footer-note{font-size:11px;color:var(--ink-dim)}
+    @media(max-width:600px){footer{padding:24px;flex-direction:column;gap:10px;text-align:center}}
+  </style>
+</head>
+<body>
+
+  <section class="hero" id="hero">
+    <img class="hero-img" id="hero-img" src="https://lh3.googleusercontent.com/d/1S7cCFBfqS4SwKRbGokGbCDwSB1Kx_Wvp" alt="Botanical Garden cover">
+    <div class="hero-vignette"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">iCaptureHomes Photography</p>
+      <h1 class="hero-title">Botanical<br><em>Garden</em></h1>
+      <a class="hero-scroll" href="#gallery">View gallery</a>
+    </div>
+    <span class="hero-count">50 images</span>
+  </section>
+
+  <header class="gallery-header">
+    <a href="https://www.icapturehomes.com" class="logo">iCaptureHomes</a>
+  </header>
+
+  <section class="gallery-section" id="gallery">
+    <div class="gallery-meta">
+      <span class="gallery-meta-title">Botanical Garden</span>
+      <span class="gallery-meta-count">50 photographs · October 2026</span>
+    </div>
+    <div class="gallery-grid">
+      <div class="gi" onclick="openLb(0)">
+        <img src="https://lh3.googleusercontent.com/d/1S7cCFBfqS4SwKRbGokGbCDwSB1Kx_Wvp" alt="DSCF7110" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,0)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(1)">
+        <img src="https://lh3.googleusercontent.com/d/1ZVwalrGq0N7sfYkS_UZUZ67pCjbzwbzP" alt="DSCF7111" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,1)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(2)">
+        <img src="https://lh3.googleusercontent.com/d/12s1G3Mc4TbP--npFnj2xVQnIo_vc0Ma5" alt="DSCF7112" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,2)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(3)">
+        <img src="https://lh3.googleusercontent.com/d/1Z_oTVi5RD-Bpg7Nzvo81RyYDD3dWNf2S" alt="DSCF7113" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,3)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(4)">
+        <img src="https://lh3.googleusercontent.com/d/1WyHOWH72VEKa4UD8jLaoyIrDp1VubiU1" alt="DSCF7116" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,4)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(5)">
+        <img src="https://lh3.googleusercontent.com/d/11GXyeEJC7A7Tvak1L9kgPCJCYKoth5is" alt="DSCF7118" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,5)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(6)">
+        <img src="https://lh3.googleusercontent.com/d/1aee62Fc_O_9_HkoFC4U-ZjYHj1qcafWP" alt="DSCF7119" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,6)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(7)">
+        <img src="https://lh3.googleusercontent.com/d/1hpWkrROHSvK7F63xmSH3RcwxPBe3eYyl" alt="DSCF7120" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,7)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(8)">
+        <img src="https://lh3.googleusercontent.com/d/18nPUPJmx6lyTvNAbsYGHq1k2ll-0T5Za" alt="DSCF7123" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,8)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(9)">
+        <img src="https://lh3.googleusercontent.com/d/1JV8vqQ0Dj454kqHKRW9QtVbG7JLDtOM_" alt="DSCF7125" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,9)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(10)">
+        <img src="https://lh3.googleusercontent.com/d/1plguZLqLN8aoribraLalyh8SI0psJXmx" alt="DSCF7129" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,10)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(11)">
+        <img src="https://lh3.googleusercontent.com/d/1eWrcAXw9Ob7HDzPzPP8WO8EILlGWlQV6" alt="DSCF7130" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,11)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(12)">
+        <img src="https://lh3.googleusercontent.com/d/1Z9p7t9iRGuWsABjpEYRltOpcD9smmLRV" alt="DSCF7133" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,12)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(13)">
+        <img src="https://lh3.googleusercontent.com/d/1Vx0NqCVj9MPcyVeICNJQDDV4NfaKwzhH" alt="DSCF7134" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,13)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(14)">
+        <img src="https://lh3.googleusercontent.com/d/10OdXQHKLo_mDQmmXOHl6W1WEvuFcKhTa" alt="DSCF7139" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,14)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(15)">
+        <img src="https://lh3.googleusercontent.com/d/13dY2_BwFA5__orBKWt1S_rgX9t_Qkc2K" alt="DSCF7140" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,15)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(16)">
+        <img src="https://lh3.googleusercontent.com/d/1LkSfCXxtrPGZr5l8JPbw4vbB2tyxMKb4" alt="DSCF7141" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,16)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(17)">
+        <img src="https://lh3.googleusercontent.com/d/1k01SM37f5YYnJ451TPDK-pzGI5t5Cae1" alt="DSCF7142" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,17)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(18)">
+        <img src="https://lh3.googleusercontent.com/d/1X8XUq-LMYPB-4C0ZsBVxoqOVPCGLs5ED" alt="DSCF7143" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,18)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(19)">
+        <img src="https://lh3.googleusercontent.com/d/131Nq21WMX8mpOOCfArPULC8nB3N1kY04" alt="DSCF7145" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,19)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(20)">
+        <img src="https://lh3.googleusercontent.com/d/1nUhHNoZVUlXt7_NMdu_CfisRyUtpP8A7" alt="DSCF7146" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,20)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(21)">
+        <img src="https://lh3.googleusercontent.com/d/1G3fmou21g8Z4ailuCoqrlrRz-U8NibHS" alt="DSCF7149" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,21)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(22)">
+        <img src="https://lh3.googleusercontent.com/d/1SLzzQOOHDodNFv6x4vO9uhAF_oB4tzAW" alt="DSCF7153" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,22)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(23)">
+        <img src="https://lh3.googleusercontent.com/d/1-jfvs6j5nIEA4cpqus0LRyG0as-ZyQKn" alt="DSCF7154" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,23)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(24)">
+        <img src="https://lh3.googleusercontent.com/d/1OXMZiwHQlkiMAi2Vn3bCfr1ECB0B3KGO" alt="DSCF7157" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,24)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(25)">
+        <img src="https://lh3.googleusercontent.com/d/14mo1qAttIL_Sfl7Bg0hGapgbnxPuas87" alt="DSCF7162" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,25)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(26)">
+        <img src="https://lh3.googleusercontent.com/d/1sUcjtEt0iaZu2Mrg_XIczoNsTxryZzQo" alt="DSCF7165" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,26)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(27)">
+        <img src="https://lh3.googleusercontent.com/d/1eecfk50l1bWS5jkC9SIEkFv5lV6q9QPA" alt="DSCF7168" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,27)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(28)">
+        <img src="https://lh3.googleusercontent.com/d/1U5gDyEymy4jIfWl-1yGeCEb2CjXvkR3W" alt="DSCF7171" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,28)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(29)">
+        <img src="https://lh3.googleusercontent.com/d/1HsV6MhMlMpWtFwgz5tiTE-bizV7f92x3" alt="DSCF7172" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,29)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(30)">
+        <img src="https://lh3.googleusercontent.com/d/1V5oddSRDqYwd8nv6x2BHqIeHGIf8_wav" alt="DSCF7175" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,30)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(31)">
+        <img src="https://lh3.googleusercontent.com/d/1HG4BBCLhsSAzE3AaW0IxLvLpRIiE6rin" alt="DSCF7176" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,31)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(32)">
+        <img src="https://lh3.googleusercontent.com/d/130WCjInyTJ7QY68BofSt0qMnU1XBJGL1" alt="DSCF7179" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,32)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(33)">
+        <img src="https://lh3.googleusercontent.com/d/1VdvO1GmP1epcDsJEBckEw3oxaSRVMc54" alt="DSCF7185" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,33)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(34)">
+        <img src="https://lh3.googleusercontent.com/d/1Qz_jPdXa43ofReoo8O891Idhs5Mm06gV" alt="DSCF7186" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,34)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(35)">
+        <img src="https://lh3.googleusercontent.com/d/1QSXzimkEwmAjvbT77xFX0j2ofb7N7cty" alt="DSCF7187" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,35)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(36)">
+        <img src="https://lh3.googleusercontent.com/d/1JAhbYedGuGW_4Ywl_XAvhHag9cqxoZJq" alt="DSCF7188" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,36)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(37)">
+        <img src="https://lh3.googleusercontent.com/d/1rcmdPQqXJH5tKSixrBGes9ei9jbV9iOB" alt="DSCF7189" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,37)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(38)">
+        <img src="https://lh3.googleusercontent.com/d/1K4-6yQn2jkQ07uylUMgbyCyoOCW6-LIf" alt="DSCF7191" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,38)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(39)">
+        <img src="https://lh3.googleusercontent.com/d/1kZkd2czcfFxxisg9b0rGrnEOpGTjyxR6" alt="DSCF7193" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,39)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(40)">
+        <img src="https://lh3.googleusercontent.com/d/1qAXMjJPbAwncZ1xU2X97AEWj7oyCYMjJ" alt="DSCF7195" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,40)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(41)">
+        <img src="https://lh3.googleusercontent.com/d/1ipOP6PPIeWKFf7SBxy_MHLZySnB5UFGY" alt="DSCF7200" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,41)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(42)">
+        <img src="https://lh3.googleusercontent.com/d/1p8KORkqX7wV5-_igqdjtKexBtpCURR7z" alt="DSCF7202" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,42)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(43)">
+        <img src="https://lh3.googleusercontent.com/d/1PzXGpZRKv4YnkzN-SUAqtRhBdkwWNCFF" alt="DSCF7208" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,43)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(44)">
+        <img src="https://lh3.googleusercontent.com/d/11cD_6QH28Bu-WHwUgwsiYyGQrA3e7Pzt" alt="DSCF7209" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,44)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(45)">
+        <img src="https://lh3.googleusercontent.com/d/1CCJpnO2MCBpbGMo7Mx60MoCB3KIFS6r2" alt="DSCF7210" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,45)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(46)">
+        <img src="https://lh3.googleusercontent.com/d/1LErVMF_eJaQas3NvijjH_cGhSvT5sTZP" alt="DSCF7211" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,46)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(47)">
+        <img src="https://lh3.googleusercontent.com/d/1vsUdjNERQMahEnPBdUJHp8DAlEePS_Ex" alt="DSCF7213" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,47)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(48)">
+        <img src="https://lh3.googleusercontent.com/d/1SBgKVMiwUMhr2oPO8MBiBfIfDpoQ0wuG" alt="DSCF7217" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,48)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(49)">
+        <img src="https://lh3.googleusercontent.com/d/15j4Y2OQ_-85vqPXpH5Px8xREcQ21UMTy" alt="DSCF7222" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,49)" title="Set as cover">☆</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="lb" id="lb">
+    <button class="lb-close" onclick="closeLb()">&#215;</button>
+    <button class="lb-prev" onclick="navLb(-1)">&#8249;</button>
+    <div class="lb-img-wrap">
+      <img id="lb-img" src="" alt="">
+      <button class="lb-star" id="lb-star" onclick="toggleHeroFromLb()" title="Set as cover photo">☆</button>
+    </div>
+    <button class="lb-next" onclick="navLb(1)">&#8250;</button>
+    <div class="lb-meta">
+      <span id="lb-counter"></span>
+      <span class="lb-hero-note" id="lb-hero-note">✦ Cover photo</span>
+    </div>
+  </div>
+
+  <button class="btt" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+  <footer>
+    <span class="footer-logo">iCaptureHomes Photography</span>
+    <span class="footer-note">Private gallery &mdash; not for public distribution</span>
+  </footer>
+
+  <script>
+    const imgs = [
+    "https://lh3.googleusercontent.com/d/1S7cCFBfqS4SwKRbGokGbCDwSB1Kx_Wvp",
+    "https://lh3.googleusercontent.com/d/1ZVwalrGq0N7sfYkS_UZUZ67pCjbzwbzP",
+    "https://lh3.googleusercontent.com/d/12s1G3Mc4TbP--npFnj2xVQnIo_vc0Ma5",
+    "https://lh3.googleusercontent.com/d/1Z_oTVi5RD-Bpg7Nzvo81RyYDD3dWNf2S",
+    "https://lh3.googleusercontent.com/d/1WyHOWH72VEKa4UD8jLaoyIrDp1VubiU1",
+    "https://lh3.googleusercontent.com/d/11GXyeEJC7A7Tvak1L9kgPCJCYKoth5is",
+    "https://lh3.googleusercontent.com/d/1aee62Fc_O_9_HkoFC4U-ZjYHj1qcafWP",
+    "https://lh3.googleusercontent.com/d/1hpWkrROHSvK7F63xmSH3RcwxPBe3eYyl",
+    "https://lh3.googleusercontent.com/d/18nPUPJmx6lyTvNAbsYGHq1k2ll-0T5Za",
+    "https://lh3.googleusercontent.com/d/1JV8vqQ0Dj454kqHKRW9QtVbG7JLDtOM_",
+    "https://lh3.googleusercontent.com/d/1plguZLqLN8aoribraLalyh8SI0psJXmx",
+    "https://lh3.googleusercontent.com/d/1eWrcAXw9Ob7HDzPzPP8WO8EILlGWlQV6",
+    "https://lh3.googleusercontent.com/d/1Z9p7t9iRGuWsABjpEYRltOpcD9smmLRV",
+    "https://lh3.googleusercontent.com/d/1Vx0NqCVj9MPcyVeICNJQDDV4NfaKwzhH",
+    "https://lh3.googleusercontent.com/d/10OdXQHKLo_mDQmmXOHl6W1WEvuFcKhTa",
+    "https://lh3.googleusercontent.com/d/13dY2_BwFA5__orBKWt1S_rgX9t_Qkc2K",
+    "https://lh3.googleusercontent.com/d/1LkSfCXxtrPGZr5l8JPbw4vbB2tyxMKb4",
+    "https://lh3.googleusercontent.com/d/1k01SM37f5YYnJ451TPDK-pzGI5t5Cae1",
+    "https://lh3.googleusercontent.com/d/1X8XUq-LMYPB-4C0ZsBVxoqOVPCGLs5ED",
+    "https://lh3.googleusercontent.com/d/131Nq21WMX8mpOOCfArPULC8nB3N1kY04",
+    "https://lh3.googleusercontent.com/d/1nUhHNoZVUlXt7_NMdu_CfisRyUtpP8A7",
+    "https://lh3.googleusercontent.com/d/1G3fmou21g8Z4ailuCoqrlrRz-U8NibHS",
+    "https://lh3.googleusercontent.com/d/1SLzzQOOHDodNFv6x4vO9uhAF_oB4tzAW",
+    "https://lh3.googleusercontent.com/d/1-jfvs6j5nIEA4cpqus0LRyG0as-ZyQKn",
+    "https://lh3.googleusercontent.com/d/1OXMZiwHQlkiMAi2Vn3bCfr1ECB0B3KGO",
+    "https://lh3.googleusercontent.com/d/14mo1qAttIL_Sfl7Bg0hGapgbnxPuas87",
+    "https://lh3.googleusercontent.com/d/1sUcjtEt0iaZu2Mrg_XIczoNsTxryZzQo",
+    "https://lh3.googleusercontent.com/d/1eecfk50l1bWS5jkC9SIEkFv5lV6q9QPA",
+    "https://lh3.googleusercontent.com/d/1U5gDyEymy4jIfWl-1yGeCEb2CjXvkR3W",
+    "https://lh3.googleusercontent.com/d/1HsV6MhMlMpWtFwgz5tiTE-bizV7f92x3",
+    "https://lh3.googleusercontent.com/d/1V5oddSRDqYwd8nv6x2BHqIeHGIf8_wav",
+    "https://lh3.googleusercontent.com/d/1HG4BBCLhsSAzE3AaW0IxLvLpRIiE6rin",
+    "https://lh3.googleusercontent.com/d/130WCjInyTJ7QY68BofSt0qMnU1XBJGL1",
+    "https://lh3.googleusercontent.com/d/1VdvO1GmP1epcDsJEBckEw3oxaSRVMc54",
+    "https://lh3.googleusercontent.com/d/1Qz_jPdXa43ofReoo8O891Idhs5Mm06gV",
+    "https://lh3.googleusercontent.com/d/1QSXzimkEwmAjvbT77xFX0j2ofb7N7cty",
+    "https://lh3.googleusercontent.com/d/1JAhbYedGuGW_4Ywl_XAvhHag9cqxoZJq",
+    "https://lh3.googleusercontent.com/d/1rcmdPQqXJH5tKSixrBGes9ei9jbV9iOB",
+    "https://lh3.googleusercontent.com/d/1K4-6yQn2jkQ07uylUMgbyCyoOCW6-LIf",
+    "https://lh3.googleusercontent.com/d/1kZkd2czcfFxxisg9b0rGrnEOpGTjyxR6",
+    "https://lh3.googleusercontent.com/d/1qAXMjJPbAwncZ1xU2X97AEWj7oyCYMjJ",
+    "https://lh3.googleusercontent.com/d/1ipOP6PPIeWKFf7SBxy_MHLZySnB5UFGY",
+    "https://lh3.googleusercontent.com/d/1p8KORkqX7wV5-_igqdjtKexBtpCURR7z",
+    "https://lh3.googleusercontent.com/d/1PzXGpZRKv4YnkzN-SUAqtRhBdkwWNCFF",
+    "https://lh3.googleusercontent.com/d/11cD_6QH28Bu-WHwUgwsiYyGQrA3e7Pzt",
+    "https://lh3.googleusercontent.com/d/1CCJpnO2MCBpbGMo7Mx60MoCB3KIFS6r2",
+    "https://lh3.googleusercontent.com/d/1LErVMF_eJaQas3NvijjH_cGhSvT5sTZP",
+    "https://lh3.googleusercontent.com/d/1vsUdjNERQMahEnPBdUJHp8DAlEePS_Ex",
+    "https://lh3.googleusercontent.com/d/1SBgKVMiwUMhr2oPO8MBiBfIfDpoQ0wuG",
+    "https://lh3.googleusercontent.com/d/15j4Y2OQ_-85vqPXpH5Px8xREcQ21UMTy"
+  ];
+    let ci = 0, heroIdx = 0;
+    const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+          lbCounter=document.getElementById('lb-counter'),lbStar=document.getElementById('lb-star'),
+          lbHeroNote=document.getElementById('lb-hero-note'),heroImgEl=document.getElementById('hero-img');
+
+    function updateStars(){
+      document.querySelectorAll('.star-btn').forEach((btn,i)=>{
+        btn.classList.toggle('active',i===heroIdx);
+        btn.textContent=i===heroIdx?'★':'☆';
+        btn.title=i===heroIdx?'Current cover photo':'Set as cover photo';
+      });
+    }
+    function updateLbStar(){
+      const isHero=ci===heroIdx;
+      lbStar.classList.toggle('active',isHero);
+      lbStar.textContent=isHero?'★':'☆';
+      lbHeroNote.classList.toggle('show',isHero);
+    }
+    function setHero(e,idx){
+      e.stopPropagation();heroIdx=idx;
+      heroImgEl.style.opacity='0';
+      setTimeout(()=>{heroImgEl.src=imgs[idx];heroImgEl.style.opacity='1';},300);
+      updateStars();
+      if(lb.classList.contains('open'))updateLbStar();
+    }
+    function toggleHeroFromLb(){setHero({stopPropagation:()=>{}},ci);}
+    function openLb(i){
+      ci=i;lbImg.src=imgs[i];
+      lbCounter.textContent=(i+1)+' / '+imgs.length;
+      lb.classList.add('open');document.body.style.overflow='hidden';
+      updateLbStar();
+    }
+    function closeLb(){lb.classList.remove('open');document.body.style.overflow='';}
+    function navLb(d){
+      ci=(ci+d+imgs.length)%imgs.length;
+      lbImg.src=imgs[ci];
+      lbCounter.textContent=(ci+1)+' / '+imgs.length;
+      updateLbStar();
+    }
+    document.addEventListener('keydown',e=>{
+      if(!lb.classList.contains('open'))return;
+      if(e.key==='ArrowRight')navLb(1);
+      if(e.key==='ArrowLeft')navLb(-1);
+      if(e.key==='Escape')closeLb();
+    });
+    lb.addEventListener('click',e=>{if(e.target===lb)closeLb();});
+    updateStars();
+
+    // Masonry: size each tile's row span to its photo so there are no gaps
+    const grid=document.querySelector('.gallery-grid');
+    function sizeTile(gi){
+      const img=gi.querySelector('img');
+      if(!img.naturalWidth)return;
+      const gap=parseFloat(getComputedStyle(grid).getPropertyValue('--gap'))||10;
+      const h=gi.clientWidth*img.naturalHeight/img.naturalWidth;
+      gi.style.gridRowEnd='span '+Math.ceil((h+gap)/4);
+    }
+    function sizeAll(){grid.querySelectorAll('.gi').forEach(sizeTile);}
+    grid.querySelectorAll('.gi').forEach(gi=>{
+      const img=gi.querySelector('img');
+      if(img.complete)sizeTile(gi);else img.addEventListener('load',()=>sizeTile(gi));
+    });
+    let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(sizeAll,120);});
+
+    const btt=document.getElementById('btt');
+    window.addEventListener('scroll',()=>{
+      btt.classList.toggle('visible',window.scrollY>window.innerHeight*0.8);
+    },{passive:true});
+  </script>
+  <!-- Swipe between photos on phones -->
+  <script>
+    (function(){let sx=0,sy=0;
+      lb.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+      lb.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+        if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.3)navLb(dx<0?1:-1);
+        else if(dy>90&&Math.abs(dy)>Math.abs(dx)*1.3)closeLb();},{passive:true});
+    })();
+  </script>
+  <!-- Discourage saving photos -->
+  <style>img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}</style>
+  <script>
+    document.addEventListener('contextmenu',e=>{if(e.target.tagName==='IMG')e.preventDefault();});
+    document.addEventListener('dragstart',e=>{if(e.target.tagName==='IMG')e.preventDefault();});
+  </script>
+</body>
+</html>
