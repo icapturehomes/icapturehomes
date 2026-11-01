@@ -40,6 +40,13 @@
     .gallery-meta{padding:0 40px 24px;display:flex;align-items:baseline;gap:16px}
     .gallery-meta-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;font-style:italic;color:var(--ink)}
     .gallery-meta-count{font-size:11px;color:var(--ink-dim);letter-spacing:0.06em}
+    /* grid / single-column toggle */
+    .view-toggle{margin-left:auto;align-self:center;display:inline-flex;gap:2px;border:0.5px solid var(--border);border-radius:999px;padding:3px}
+    .view-toggle button{display:flex;align-items:center;gap:7px;background:none;border:none;border-radius:999px;padding:7px 14px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-dim);cursor:pointer;transition:background 0.2s,color 0.2s}
+    .view-toggle button svg{width:12px;height:12px;fill:currentColor}
+    .view-toggle button.on{background:var(--ink);color:#fff}
+    body.view-single .gallery-grid{grid-template-columns:1fr;max-width:1000px;margin:0 auto}
+    body.view-grid .gallery-grid{grid-template-columns:repeat(3,1fr)}
     .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:4px;column-gap:10px;row-gap:0;padding:0 10px 10px;align-items:start;--gap:10px}
     .gallery-grid .gi{grid-row-end:span 50;margin-bottom:var(--gap)}
     @media(max-width:600px){
@@ -47,7 +54,9 @@
       .hero-content{padding:0 24px 36px}
       .hero-count{right:24px;bottom:40px}
       .gallery-header{padding:20px 24px}
-      .gallery-meta{padding:0 24px 20px}
+      .gallery-meta{padding:0 24px 20px;flex-wrap:wrap;row-gap:14px}
+      .view-toggle{margin-left:0}
+      body.view-grid .gallery-grid{grid-template-columns:repeat(2,1fr)}
     }
     .gi{position:relative;cursor:zoom-in;background:#e2e1de;overflow:hidden}
     .gi img{width:100%;height:auto;display:block;transition:transform 0.45s ease}
@@ -106,6 +115,10 @@
     <div class="gallery-meta">
       <span class="gallery-meta-title">Halloween</span>
       <span class="gallery-meta-count">161 photographs · October 2026</span>
+      <div class="view-toggle" role="group" aria-label="Layout">
+        <button type="button" data-view="grid"><svg viewBox="0 0 12 12"><rect x="0" y="0" width="5" height="5"/><rect x="7" y="0" width="5" height="5"/><rect x="0" y="7" width="5" height="5"/><rect x="7" y="7" width="5" height="5"/></svg>Grid</button>
+        <button type="button" data-view="single"><svg viewBox="0 0 12 12"><rect x="1" y="0" width="10" height="5"/><rect x="1" y="7" width="10" height="5"/></svg>Single</button>
+      </div>
     </div>
     <div class="gallery-grid">
       <div class="gi" onclick="openLb(0)">
@@ -1023,6 +1036,38 @@
   <script>
     document.addEventListener('contextmenu',e=>{if(e.target.tagName==='IMG')e.preventDefault();});
     document.addEventListener('dragstart',e=>{if(e.target.tagName==='IMG')e.preventDefault();});
+  </script>
+  <!-- Grid / single-column toggle -->
+  <script>
+    (function(){
+      const btns=document.querySelectorAll('.view-toggle button');
+      const phone=()=>matchMedia('(max-width:600px)').matches;
+      function current(){return document.body.classList.contains('view-single')?'single':document.body.classList.contains('view-grid')?'grid':(phone()?'single':'grid');}
+      function mark(){const v=current();btns.forEach(b=>b.classList.toggle('on',b.dataset.view===v));}
+      // in single view, keep tall photos to about one screen high instead of full width
+      function fit(gi){
+        const im=gi.querySelector('img');
+        if(current()==='single'&&im.naturalWidth){gi.style.width='100%';gi.style.maxWidth=Math.round(innerHeight*0.88*im.naturalWidth/im.naturalHeight)+'px';gi.style.justifySelf='center';}
+        else{gi.style.width='';gi.style.maxWidth='';gi.style.justifySelf='';}
+      }
+      function fitAll(){grid.querySelectorAll('.gi').forEach(fit);}
+      grid.querySelectorAll('.gi img').forEach(im=>im.addEventListener('load',()=>{const gi=im.closest('.gi');fit(gi);sizeTile(gi);}));
+      function setView(v,keepPlace){
+        // remember which photo is at the top of the screen so we land on it again
+        let anchor=null;
+        if(keepPlace){for(const gi of grid.querySelectorAll('.gi')){if(gi.getBoundingClientRect().bottom>90){anchor=gi;break;}}}
+        document.body.classList.toggle('view-single',v==='single');
+        document.body.classList.toggle('view-grid',v==='grid');
+        fitAll();sizeAll();mark();
+        if(anchor)anchor.scrollIntoView({block:'start'});
+        if(keepPlace)window.scrollBy(0,-90);
+        try{localStorage.setItem('galleryView',v);}catch(e){}
+      }
+      btns.forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view,window.scrollY>innerHeight*0.6)));
+      let saved=null;try{saved=localStorage.getItem('galleryView');}catch(e){}
+      if(saved==='grid'||saved==='single')setView(saved,false);else mark();
+      addEventListener('resize',()=>{mark();fitAll();sizeAll();});
+    })();
   </script>
 </body>
 </html>
