@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Halloween 2026 — iCaptureHomes Photography</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --white:#ffffff;--off:#f7f6f4;--ink:#1c1c1a;
+      --ink-mid:rgba(28,28,26,0.55);--ink-dim:rgba(28,28,26,0.35);
+      --gold:#b8924a;--border:rgba(28,28,26,0.1);
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--ink);min-height:100vh}
+
+    /* HERO */
+    .hero{position:relative;height:100svh;min-height:560px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+    .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transition:opacity 0.6s ease}
+    .hero-vignette{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,8,0.72) 0%,rgba(10,10,8,0.18) 55%,transparent 100%)}
+    .hero-content{position:relative;padding:0 40px 48px;color:#fff}
+    .hero-eyebrow{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:10px;font-weight:300}
+    .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,9vw,88px);font-weight:300;line-height:0.95;letter-spacing:-0.01em;margin-bottom:28px}
+    .hero-title em{font-style:italic;color:rgba(255,255,255,0.75)}
+    .hero-scroll{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:2px;transition:color 0.2s,border-color 0.2s}
+    .hero-scroll:hover{color:#fff;border-color:rgba(255,255,255,0.8)}
+    .hero-scroll::after{content:'↓'}
+    .hero-count{position:absolute;right:40px;bottom:52px;font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:0.08em}
+
+    /* HEADER */
+    .gallery-header{display:flex;align-items:center;justify-content:space-between;padding:24px 40px;border-bottom:0.5px solid var(--border);background:var(--off);position:sticky;top:0;z-index:50}
+    .logo{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;letter-spacing:0.04em;color:var(--ink);text-decoration:none}
+
+    /* GRID */
+    .gallery-section{padding:32px 0 0}
+    .gallery-meta{padding:0 40px 24px;display:flex;align-items:baseline;gap:16px}
+    .gallery-meta-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;font-style:italic;color:var(--ink)}
+    .gallery-meta-count{font-size:11px;color:var(--ink-dim);letter-spacing:0.06em}
+    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:4px;column-gap:10px;row-gap:0;padding:0 10px 10px;align-items:start;--gap:10px}
+    .gallery-grid .gi{grid-row-end:span 50;margin-bottom:var(--gap)}
+    @media(max-width:600px){
+      .gallery-grid{grid-template-columns:1fr;padding:0 6px 6px;column-gap:6px;--gap:6px}
+      .hero-content{padding:0 24px 36px}
+      .hero-count{right:24px;bottom:40px}
+      .gallery-header{padding:20px 24px}
+      .gallery-meta{padding:0 24px 20px}
+    }
+    .gi{position:relative;cursor:zoom-in;background:#e2e1de;overflow:hidden}
+    .gi img{width:100%;height:auto;display:block;transition:transform 0.45s ease}
+    .gi:hover img{transform:scale(1.025)}
+    .star-btn{position:absolute;top:8px;right:8px;width:30px;height:30px;background:rgba(0,0,0,0.45);border:none;border-radius:50%;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.15s,background 0.15s;z-index:2;backdrop-filter:blur(4px)}
+    .gi:hover .star-btn{opacity:1}
+    .star-btn:hover{background:rgba(0,0,0,0.7)}
+    .star-btn.active{opacity:1;background:var(--gold);color:#fff}
+
+    /* LIGHTBOX */
+    .lb{display:none;position:fixed;inset:0;z-index:9000;background:rgba(10,10,8,0.97);flex-direction:column;align-items:center;justify-content:center}
+    .lb.open{display:flex}
+    .lb-img-wrap{max-width:92vw;max-height:84vh;display:flex;align-items:center;justify-content:center;position:relative}
+    .lb-img-wrap img{max-width:92vw;max-height:84vh;object-fit:contain;display:block}
+    .lb-star{position:absolute;top:12px;right:12px;width:36px;height:36px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);border-radius:50%;color:rgba(255,255,255,0.7);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:background 0.2s,color 0.2s}
+    .lb-star:hover{background:rgba(184,146,74,0.6);color:#fff}
+    .lb-star.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+    .lb-close{position:fixed;top:20px;right:24px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:26px;cursor:pointer;z-index:9001;line-height:1;transition:color 0.2s}
+    .lb-close:hover{color:#fff}
+    .lb-prev,.lb-next{position:fixed;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,0.35);font-size:48px;cursor:pointer;z-index:9001;padding:20px;transition:color 0.2s;line-height:1}
+    .lb-prev{left:0}.lb-next{right:0}
+    .lb-prev:hover,.lb-next:hover{color:rgba(255,255,255,0.9)}
+    .lb-meta{margin-top:16px;font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:0.1em;display:flex;align-items:center;gap:16px}
+    .lb-hero-note{font-size:10px;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;opacity:0;transition:opacity 0.3s}
+    .lb-hero-note.show{opacity:1}
+
+    /* BACK TO TOP */
+    .btt{position:fixed;right:24px;bottom:24px;width:42px;height:42px;border-radius:50%;border:0.5px solid var(--border);background:var(--white);color:var(--ink);font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.08);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity 0.25s,transform 0.25s,color 0.2s;z-index:60}
+    .btt.visible{opacity:1;pointer-events:auto;transform:none}
+    .btt:hover{color:var(--gold)}
+
+    footer{padding:32px 40px;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+    .footer-logo{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;color:var(--ink-dim)}
+    .footer-note{font-size:11px;color:var(--ink-dim)}
+    @media(max-width:600px){footer{padding:24px;flex-direction:column;gap:10px;text-align:center}}
+  </style>
+</head>
+<body>
+
+  <section class="hero" id="hero">
+    <img class="hero-img" id="hero-img" src="https://lh3.googleusercontent.com/d/1fVp9Uu41TVdfKAhFegx0khwhtH2V7l3S" alt="Halloween 2026 cover">
+    <div class="hero-vignette"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">iCaptureHomes Photography</p>
+      <h1 class="hero-title">Halloween<br><em>2026</em></h1>
+      <a class="hero-scroll" href="#gallery">View gallery</a>
+    </div>
+    <span class="hero-count">161 images</span>
+  </section>
+
+  <header class="gallery-header">
+    <a href="https://www.icapturehomes.com" class="logo">iCaptureHomes</a>
+  </header>
+
+  <section class="gallery-section" id="gallery">
+    <div class="gallery-meta">
+      <span class="gallery-meta-title">Halloween</span>
+      <span class="gallery-meta-count">161 photographs · October 2026</span>
+    </div>
+    <div class="gallery-grid">
+      <div class="gi" onclick="openLb(0)">
+        <img src="https://lh3.googleusercontent.com/d/1XqmQwVinaXfW4IScghbuQvO74f3mZDSV" alt="DSCF7638" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,0)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(1)">
+        <img src="https://lh3.googleusercontent.com/d/1y6wA19Yvd0QnfQQmsuzhj8uVzzj43e-R" alt="DSCF7645" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,1)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(2)">
+        <img src="https://lh3.googleusercontent.com/d/1MfIW3FuISuw-_sklC5-CNa8Eolr_hNAQ" alt="DSCF7646" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,2)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(3)">
+        <img src="https://lh3.googleusercontent.com/d/1psFYVjcSuK5jLWlwsDuUEDExiMQc8xxc" alt="DSCF7651" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,3)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(4)">
+        <img src="https://lh3.googleusercontent.com/d/1AUVVOsIVlcoMzPh2I1_AjKzq88xxRp2C" alt="DSCF7652" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,4)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(5)">
+        <img src="https://lh3.googleusercontent.com/d/1Qy_kGU_BIaC83Icvb8UOVj9rfVnjISTw" alt="DSCF7656" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,5)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(6)">
+        <img src="https://lh3.googleusercontent.com/d/14xoeGcYaSvMd4mXDU6u3VI18IaM0O6jz" alt="DSCF7658" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,6)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(7)">
+        <img src="https://lh3.googleusercontent.com/d/18DpGz3YZ0ErYx_Gy7SL1ftbCD0D7qO9E" alt="DSCF7660" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,7)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(8)">
+        <img src="https://lh3.googleusercontent.com/d/1bf9DnniCQhQjX03RNfLSIPE0cg91s6KO" alt="DSCF7662" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,8)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(9)">
+        <img src="https://lh3.googleusercontent.com/d/1KNFB3zYT7QK5MHIlm7w0OpCG1mcxicle" alt="DSCF7664" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,9)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(10)">
+        <img src="https://lh3.googleusercontent.com/d/1WVd06kIk66RZr_sD5xfIvdE_bJOZatYU" alt="DSCF7669" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,10)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(11)">
+        <img src="https://lh3.googleusercontent.com/d/1uVAkjStLz2itELnyjkAQ0fbHYX5Pk6i_" alt="DSCF7671" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,11)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(12)">
+        <img src="https://lh3.googleusercontent.com/d/1QcmV1Z5y_dBq_d5A_v7FxKaHC3xRJQ7g" alt="DSCF7680" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,12)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(13)">
+        <img src="https://lh3.googleusercontent.com/d/1fVaE52FEEWQAD-6lya8DlrrNPRU_L3NS" alt="DSCF7682" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,13)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(14)">
+        <img src="https://lh3.googleusercontent.com/d/161KX5oDPA_Gv85ERt9W0n3TFIVDkOjYh" alt="DSCF7684" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,14)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(15)">
+        <img src="https://lh3.googleusercontent.com/d/1fmOZ4w_OLwCoWQXDIQ1AiXRzPrWtGMvC" alt="DSCF7688" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,15)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(16)">
+        <img src="https://lh3.googleusercontent.com/d/1q5SZ28VWeYY-S480_mQwseXgp_NDcSuP" alt="DSCF7694" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,16)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(17)">
+        <img src="https://lh3.googleusercontent.com/d/13EJcsCzP6a1oY86zURmG9YBcdXMx29y8" alt="DSCF7695" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,17)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(18)">
+        <img src="https://lh3.googleusercontent.com/d/1XeXcPqv-SHWBTKvv6pyLh4o0qRuLy9RC" alt="DSCF7697" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,18)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(19)">
+        <img src="https://lh3.googleusercontent.com/d/1KsE313jOXaoLbdr4OmSyo-s0fzC2jxid" alt="DSCF7698" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,19)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(20)">
+        <img src="https://lh3.googleusercontent.com/d/1zcki5tpNBTAsDUsIVRSDutQILm5laUax" alt="DSCF7699" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,20)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(21)">
+        <img src="https://lh3.googleusercontent.com/d/191FdgCmEietZkaBOftd92534hptD_hCS" alt="DSCF7700" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,21)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(22)">
+        <img src="https://lh3.googleusercontent.com/d/18cvkopgtlTS--RUTWbW1Vn8NNv1hOdQ2" alt="DSCF7702" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,22)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(23)">
+        <img src="https://lh3.googleusercontent.com/d/1_S7nH4ZFSOhV_UGREKMldptwjzRzFt3d" alt="DSCF7703" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,23)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(24)">
+        <img src="https://lh3.googleusercontent.com/d/1LyUNYFoZ3_QkeJPErllzTWmRUKYbNcI3" alt="DSCF7704" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,24)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(25)">
+        <img src="https://lh3.googleusercontent.com/d/1ibNb1ybSOHo_2ou8tgV12xpsSc6r3iJj" alt="DSCF7707" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,25)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(26)">
+        <img src="https://lh3.googleusercontent.com/d/1ifY0nsRIq6QS9Cmc6bam6wRDKdu95a98" alt="DSCF7708" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,26)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(27)">
+        <img src="https://lh3.googleusercontent.com/d/1UZMdcS3lc1f9YF4WlWJvoyWHBgbFS2_b" alt="DSCF7710" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,27)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(28)">
+        <img src="https://lh3.googleusercontent.com/d/1Uj5Gn-MhbHVAbmn29_HShXe1V0g5tsIS" alt="DSCF7711" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,28)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(29)">
+        <img src="https://lh3.googleusercontent.com/d/17D9p8Qpp2lMfcD6xWTQWDbS5feUg1MZ8" alt="DSCF7712" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,29)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(30)">
+        <img src="https://lh3.googleusercontent.com/d/1A4X1PVJKTF46VfAF1TgfDfdGCPQ-nu9k" alt="DSCF7714" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,30)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(31)">
+        <img src="https://lh3.googleusercontent.com/d/1bz66TK1JVZKc11lpGyjkXhH86s1Ta6mP" alt="DSCF7715" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,31)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(32)">
+        <img src="https://lh3.googleusercontent.com/d/1DhZ2b-2OgjQO5Y5MeSrhEff_HO0bhoKY" alt="DSCF7717" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,32)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(33)">
+        <img src="https://lh3.googleusercontent.com/d/1Ar6w-jBoi7rakXNpegnf1ALZPSQriA2u" alt="DSCF7718" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,33)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(34)">
+        <img src="https://lh3.googleusercontent.com/d/1daHVhaRfRi_ERaYQ7HLv6CJwSvLCMYVM" alt="DSCF7719" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,34)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(35)">
+        <img src="https://lh3.googleusercontent.com/d/1NbMwqCGutdSJg2nt9SWP-WoHMj398vZq" alt="DSCF7721" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,35)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(36)">
+        <img src="https://lh3.googleusercontent.com/d/16WRwkxS1nO56M3QcXltf42BzCT3nfM49" alt="DSCF7722" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,36)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(37)">
+        <img src="https://lh3.googleusercontent.com/d/1-qO_KdGbnTqVSCsREMMpvUYo4Mcm-HR6" alt="DSCF7724" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,37)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(38)">
+        <img src="https://lh3.googleusercontent.com/d/1-ne2nBafdBHwolF1QOn6LR000m3msIQo" alt="DSCF7727" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,38)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(39)">
+        <img src="https://lh3.googleusercontent.com/d/1N1ZqtNQ9Yh0MsHSPuGTjZnywz1-sSlH_" alt="DSCF7728" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,39)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(40)">
+        <img src="https://lh3.googleusercontent.com/d/1xd7i0YicSqVwMg636OxJP0YNsEa9LV8S" alt="DSCF7729" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,40)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(41)">
+        <img src="https://lh3.googleusercontent.com/d/14vIJLxj0_CK9pn_2S7Okwow9raMalW53" alt="DSCF7731" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,41)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(42)">
+        <img src="https://lh3.googleusercontent.com/d/1XbUb-EM864HGgEIcnpW7DDaL1iTdlw77" alt="DSCF7732" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,42)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(43)">
+        <img src="https://lh3.googleusercontent.com/d/1A7ZU8gA4rC3w7TOUPS4spD7TZBtRkbqH" alt="DSCF7733" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,43)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(44)">
+        <img src="https://lh3.googleusercontent.com/d/1oYlb0RZt4g0L7MO6vcBLV8g1c0vexRh5" alt="DSCF7734" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,44)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(45)">
+        <img src="https://lh3.googleusercontent.com/d/1_KJyHVszsW45rW1-0wHaP3VRXGyJ7XvX" alt="DSCF7735" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,45)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(46)">
+        <img src="https://lh3.googleusercontent.com/d/1CwTI_OWYrhSQG6NArotySE7FuetqPaHd" alt="DSCF7737" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,46)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(47)">
+        <img src="https://lh3.googleusercontent.com/d/1I6Rh4pO3T9bYnG1xrVjDyJqtPIYJ5R_p" alt="DSCF7739" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,47)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(48)">
+        <img src="https://lh3.googleusercontent.com/d/1CqWK0YA856K4nUB8e8p5mQfg0LBNWid1" alt="DSCF7741" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,48)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(49)">
+        <img src="https://lh3.googleusercontent.com/d/1nJq0W6u5D0_3tdOpp1O2WH7a_t2R2P-0" alt="DSCF7745" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,49)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(50)">
+        <img src="https://lh3.googleusercontent.com/d/135uRuDoLeDnvOEJanPMPC_GbbYSOMA8X" alt="DSCF7746" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,50)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(51)">
+        <img src="https://lh3.googleusercontent.com/d/1JzRR3eVr0TGXjrUKBldJu4LzarbhpUFB" alt="DSCF7747" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,51)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(52)">
+        <img src="https://lh3.googleusercontent.com/d/1QKCktmKBdObtxJb7ZYZj3AR4cJzv2DKk" alt="DSCF7748" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,52)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(53)">
+        <img src="https://lh3.googleusercontent.com/d/1Jm5IobTd7QtwGRVzMgrV7RGJY14pFDfu" alt="DSCF7749" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,53)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(54)">
+        <img src="https://lh3.googleusercontent.com/d/1jJO0WgcfgMf7KtLzV2gJRpExHfuU7jFr" alt="DSCF7750" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,54)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(55)">
+        <img src="https://lh3.googleusercontent.com/d/1f26_T6tI3McsEOXO7zvL8f-7JiWsaYFx" alt="DSCF7751" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,55)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(56)">
+        <img src="https://lh3.googleusercontent.com/d/1Vt2dYpEIakpb9JcxGhfNnZeNIq-lfRGN" alt="DSCF7752" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,56)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(57)">
+        <img src="https://lh3.googleusercontent.com/d/1l2rzjLEImki4XHoPnwlnMWghqI---rwF" alt="DSCF7755" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,57)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(58)">
+        <img src="https://lh3.googleusercontent.com/d/1iBfaah-eL62IeVl-Nwx0k_6Ho8zZzaeC" alt="DSCF7758" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,58)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(59)">
+        <img src="https://lh3.googleusercontent.com/d/1xSYPg5NVJiI3Q1yfw8dntV5ZLxjU00cF" alt="DSCF7761" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,59)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(60)">
+        <img src="https://lh3.googleusercontent.com/d/1YVY_W6BkZcZ8qCMuzLPEZu0CktuFTvez" alt="DSCF7762" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,60)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(61)">
+        <img src="https://lh3.googleusercontent.com/d/16fxjKvZQqt6exMCMkgun6Urju7yP-S7U" alt="DSCF7763" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,61)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(62)">
+        <img src="https://lh3.googleusercontent.com/d/1fnPCd4lulxw6ntxY1FZeZfCG4Rehd2zL" alt="DSCF7765" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,62)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(63)">
+        <img src="https://lh3.googleusercontent.com/d/1n6kz0qgH_REcln5M-cq1KROZvQQOEw2y" alt="DSCF7770" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,63)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(64)">
+        <img src="https://lh3.googleusercontent.com/d/1BwmruON610yhsIxT_o4yyV-JEYuRtJv0" alt="DSCF7772" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,64)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(65)">
+        <img src="https://lh3.googleusercontent.com/d/10fqSdCs-15nxHe_YQySrcjHAXBpQ19bt" alt="DSCF7775" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,65)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(66)">
+        <img src="https://lh3.googleusercontent.com/d/1aiHXQSnNOyG1T4G2tNi6GQazcdYb-Ao4" alt="DSCF7777" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,66)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(67)">
+        <img src="https://lh3.googleusercontent.com/d/1YAEhRNH_zRa5LDoQLC4rXc_uUaFmztlU" alt="DSCF7778" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,67)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(68)">
+        <img src="https://lh3.googleusercontent.com/d/1EaWHYTc_gXIY-T4QwJrlozPV_oSQwE2Y" alt="DSCF7780" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,68)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(69)">
+        <img src="https://lh3.googleusercontent.com/d/1khCjw7QXmnIbkSWFHw1-YO2vIWVTvnav" alt="DSCF7786" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,69)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(70)">
+        <img src="https://lh3.googleusercontent.com/d/1yfGtsyf3gvQEOmctvAdSIrC2Wsc-HekQ" alt="DSCF7787" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,70)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(71)">
+        <img src="https://lh3.googleusercontent.com/d/1Y6hcMIpxGRr2_I67xxUBLJTQ00wjklIh" alt="DSCF7790" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,71)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(72)">
+        <img src="https://lh3.googleusercontent.com/d/1R8ehwAWRI9TUZzS3XbOGLhLE5_vkCv9W" alt="DSCF7794" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,72)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(73)">
+        <img src="https://lh3.googleusercontent.com/d/1Uu_vGo5dXtcaLZO-cJrRbzFvFGP4b557" alt="DSCF7797" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,73)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(74)">
+        <img src="https://lh3.googleusercontent.com/d/1eZvhWYj3IrJrLydE__rB4gNMjqxyEVjn" alt="DSCF7798" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,74)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(75)">
+        <img src="https://lh3.googleusercontent.com/d/1JXckULQha0AEwQ5sA9ylOwzNGdMY13pG" alt="DSCF7799" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,75)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(76)">
+        <img src="https://lh3.googleusercontent.com/d/1Deofr2AML2kpX5RvPMvWZUEZsENq33BR" alt="DSCF7800" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,76)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(77)">
+        <img src="https://lh3.googleusercontent.com/d/1FZ-6MiaS4tKy-9Jy8eN7LGsU5NdDafhw" alt="DSCF7802" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,77)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(78)">
+        <img src="https://lh3.googleusercontent.com/d/1r1R9qRLaYXxBJqWmwOVlxXCCIdYjODPE" alt="DSCF7804" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,78)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(79)">
+        <img src="https://lh3.googleusercontent.com/d/1N1liZqQZXAJjqGq-8ny5SfogMvwLRl-K" alt="DSCF7806" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,79)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(80)">
+        <img src="https://lh3.googleusercontent.com/d/1-QxG_g7D00MH0j8eHZIjeeqX6f400Nu0" alt="DSCF7808" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,80)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(81)">
+        <img src="https://lh3.googleusercontent.com/d/17pfrLH5c4ypguywk5jMxjmuF30_M7gWA" alt="DSCF7809" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,81)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(82)">
+        <img src="https://lh3.googleusercontent.com/d/18QexDmguuAJoRyaICWttYhVp3pu2mFRM" alt="DSCF7810" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,82)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(83)">
+        <img src="https://lh3.googleusercontent.com/d/1AYvxcbMri9WSJggmtGTCZPuxdMqDEcSL" alt="DSCF7811" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,83)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(84)">
+        <img src="https://lh3.googleusercontent.com/d/1ZI6-8XCRcJ7UEEl-nj6O7Jr8INjRpQb8" alt="DSCF7812" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,84)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(85)">
+        <img src="https://lh3.googleusercontent.com/d/1KMthh-v5VVwK7QouzxXV9S6fyjAnK7_A" alt="DSCF7813" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,85)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(86)">
+        <img src="https://lh3.googleusercontent.com/d/1QbfXK4Y-HJ_mMbeMhuzZrg3olrAzgOlC" alt="DSCF7814" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,86)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(87)">
+        <img src="https://lh3.googleusercontent.com/d/1OO_j9uIwFnMpzhRyIDfjAaOBPcS3iKLW" alt="DSCF7816" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,87)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(88)">
+        <img src="https://lh3.googleusercontent.com/d/1AOwFGuEt-OG59jkvOtFdY5jX0YIVRnpu" alt="DSCF7817" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,88)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(89)">
+        <img src="https://lh3.googleusercontent.com/d/1C5CSr-7DYab1ZRBXBYk36VbbvT7mABI6" alt="DSCF7819" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,89)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(90)">
+        <img src="https://lh3.googleusercontent.com/d/1-0ddz5EV5cTLQuTcDGLoQea--ay-Tsq3" alt="DSCF7820" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,90)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(91)">
+        <img src="https://lh3.googleusercontent.com/d/12yl8Az5BBmKAyYEz2cdP7ab4H7Bf9MZG" alt="DSCF7821" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,91)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(92)">
+        <img src="https://lh3.googleusercontent.com/d/13by6OwnPxFmD0xLFmNn-91kLNy0gdTpp" alt="DSCF7822" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,92)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(93)">
+        <img src="https://lh3.googleusercontent.com/d/1hKFlo1YGer4VygUDzoexoPaFpoFnrFMD" alt="DSCF7823" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,93)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(94)">
+        <img src="https://lh3.googleusercontent.com/d/1e5ssQcdS9BJkJrleSrzkoc5CvzdBs9Mw" alt="DSCF7824" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,94)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(95)">
+        <img src="https://lh3.googleusercontent.com/d/1H9XpW40svE1qaOvNv_U1KaHTP6eeIV5Z" alt="DSCF7825" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,95)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(96)">
+        <img src="https://lh3.googleusercontent.com/d/1GZxfnrmw73Vf5eAHdZm2Q566SHrfI-Xu" alt="DSCF7826" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,96)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(97)">
+        <img src="https://lh3.googleusercontent.com/d/1L0_LrVZ2htv7W64nTFsNdD3LewbrBg7x" alt="DSCF7827" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,97)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(98)">
+        <img src="https://lh3.googleusercontent.com/d/1gWQ-_s06mgj9IJj5iZJ6nBDvFyCmLTUB" alt="DSCF7829" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,98)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(99)">
+        <img src="https://lh3.googleusercontent.com/d/1c-aDwnB6RvRCgPgkE0L8_BuXZJnx8gW9" alt="DSCF7830" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,99)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(100)">
+        <img src="https://lh3.googleusercontent.com/d/1xvT77BqK8krvYJM7YSbSLLS9DGJQXtSJ" alt="DSCF7833" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,100)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(101)">
+        <img src="https://lh3.googleusercontent.com/d/1w4fWSbCWP4i8R6uoPRwUrlSML9S7rYJ_" alt="DSCF7835" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,101)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(102)">
+        <img src="https://lh3.googleusercontent.com/d/1Y8S0L9gLTQrl6fAGvdni84xNM9f-yLfz" alt="DSCF7836" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,102)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(103)">
+        <img src="https://lh3.googleusercontent.com/d/1H1yyFU5Z-uTj0XdM7ZsFOfrEZhPYTQPF" alt="DSCF7838" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,103)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(104)">
+        <img src="https://lh3.googleusercontent.com/d/1h4d1vkrlI6El15Qz_Umjs4FrEybgchub" alt="DSCF7839" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,104)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(105)">
+        <img src="https://lh3.googleusercontent.com/d/1dQXLg_G76wUYdyvH-8aoB2x4MUsbStPr" alt="DSCF7840" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,105)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(106)">
+        <img src="https://lh3.googleusercontent.com/d/1pXtGWrdg88-MVl6nLcSODk1yONx4vGAR" alt="DSCF7841" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,106)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(107)">
+        <img src="https://lh3.googleusercontent.com/d/15XuibeSgboqFlNloGiXxuTbK-y3bhfNp" alt="DSCF7845" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,107)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(108)">
+        <img src="https://lh3.googleusercontent.com/d/1Smr0574WYd_i2VfDd4SK5tzIOq2XQRO8" alt="DSCF7846" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,108)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(109)">
+        <img src="https://lh3.googleusercontent.com/d/1K5-Ury3du4dgECGVKik73RLYwXhx7XdN" alt="DSCF7847" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,109)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(110)">
+        <img src="https://lh3.googleusercontent.com/d/1X2Bx6TCfdptarrXa093dQDy8_pGarRZ1" alt="DSCF7849" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,110)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(111)">
+        <img src="https://lh3.googleusercontent.com/d/1gIBGKNppauajOPqbzZSszRoXABulsl_W" alt="DSCF7850" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,111)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(112)">
+        <img src="https://lh3.googleusercontent.com/d/1Dp9JZxosaqAYpWN7zKD4L2YRrzXAnNEQ" alt="DSCF7851" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,112)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(113)">
+        <img src="https://lh3.googleusercontent.com/d/1RsznT1t3MRRYPKzm31zDYA1uNDbAa3l3" alt="DSCF7852" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,113)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(114)">
+        <img src="https://lh3.googleusercontent.com/d/1OEx8O6GkfbqoTan3dDfrpLmsEOvcN4m5" alt="DSCF7853" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,114)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(115)">
+        <img src="https://lh3.googleusercontent.com/d/1mfTjVx8EFW-CuZbotOo2_CxPEeWxgbvS" alt="DSCF7854" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,115)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(116)">
+        <img src="https://lh3.googleusercontent.com/d/10Y8sjbayu-VDqIArFxbTq6hEC5nBX5hn" alt="DSCF7855" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,116)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(117)">
+        <img src="https://lh3.googleusercontent.com/d/11JHyX7-jq9_fqwD6VVwfRg2TGp7mHwMD" alt="DSCF7858" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,117)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(118)">
+        <img src="https://lh3.googleusercontent.com/d/17BBtP3oJrRKIhGTMCiFBgTrZPxgpxTMc" alt="DSCF7861" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,118)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(119)">
+        <img src="https://lh3.googleusercontent.com/d/1K4EcVxoK4n-_VzVeWQbyZzZBewPjsRV0" alt="DSCF7863" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,119)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(120)">
+        <img src="https://lh3.googleusercontent.com/d/1uZRLeyZ9AYVywg2QET2r2nZV00mCfKQu" alt="DSCF7867" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,120)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(121)">
+        <img src="https://lh3.googleusercontent.com/d/1HZ0Lk3En7RHtZm_n-W8GFZ68BrYGff7v" alt="DSCF7868" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,121)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(122)">
+        <img src="https://lh3.googleusercontent.com/d/1U2p2ZLshgm23lH5-AJHyMh4tyVBq2YsX" alt="DSCF7869" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,122)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(123)">
+        <img src="https://lh3.googleusercontent.com/d/14EbufzYzMcFjlE-3-5d4YGsq8X6W_WKz" alt="DSCF7870" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,123)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(124)">
+        <img src="https://lh3.googleusercontent.com/d/1FR6uTyQtjm0cRnIlC4Z5rmbkaw1kZQL5" alt="DSCF7871" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,124)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(125)">
+        <img src="https://lh3.googleusercontent.com/d/1Gx3lHOXJ0B_pnraeDGh35xFHiqK8McFp" alt="DSCF7872" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,125)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(126)">
+        <img src="https://lh3.googleusercontent.com/d/1WWC7Et58jlsh_Za8kQhkcnauvRReirsv" alt="DSCF7873" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,126)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(127)">
+        <img src="https://lh3.googleusercontent.com/d/11eIFpBLuAorj1WqrjzY4NnPSfhZjiMB0" alt="DSCF7874" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,127)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(128)">
+        <img src="https://lh3.googleusercontent.com/d/1_-N_MFezGQfm2Z68uN5USLjbiXTKzRNJ" alt="DSCF7875" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,128)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(129)">
+        <img src="https://lh3.googleusercontent.com/d/1c1aBowcvrL8CU6LEfQffH956zixGQCDe" alt="DSCF7882" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,129)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(130)">
+        <img src="https://lh3.googleusercontent.com/d/1giZ7rd23V9S9MF4BErbKctJgSsyLixKe" alt="DSCF7883" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,130)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(131)">
+        <img src="https://lh3.googleusercontent.com/d/1abunO9NGrmqfSBFOYIKrsZozUyMpxVDn" alt="DSCF7884" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,131)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(132)">
+        <img src="https://lh3.googleusercontent.com/d/12ZvL58Qfdf0WtBB6mxnYIR5B3vWfrm3R" alt="DSCF7886" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,132)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(133)">
+        <img src="https://lh3.googleusercontent.com/d/1NYAPE0IDl1LbKWZhkuy5b2VPF73x-JNL" alt="DSCF7887" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,133)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(134)">
+        <img src="https://lh3.googleusercontent.com/d/1GThMvHaYgGNxNLuhVvOPN3aWGvN9fWeN" alt="DSCF7889" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,134)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(135)">
+        <img src="https://lh3.googleusercontent.com/d/1J_JtZQzKR6zir0Mpp_u9yGzP7RVn_M8s" alt="DSCF7890" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,135)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(136)">
+        <img src="https://lh3.googleusercontent.com/d/1ZMMDQzP3kVt-CwN5aABQTXsg7i9yOmVi" alt="DSCF7891" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,136)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(137)">
+        <img src="https://lh3.googleusercontent.com/d/10kvNq30Df4WWPQodz-1KWBaiVNQnLJkA" alt="DSCF7892" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,137)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(138)">
+        <img src="https://lh3.googleusercontent.com/d/1mLCy4A29VCxTACoqf2Jml0xZ5xn85oq7" alt="DSCF7895" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,138)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(139)">
+        <img src="https://lh3.googleusercontent.com/d/1EWpRwQgR-IGUQn8pEzyvx9zbOOVZnjr_" alt="DSCF7896" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,139)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(140)">
+        <img src="https://lh3.googleusercontent.com/d/1XAgPHaliapP693YzhsDg7mc_nYeypUft" alt="DSCF7897" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,140)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(141)">
+        <img src="https://lh3.googleusercontent.com/d/1DSv2b1BPuNJFnuPiq6-5y9D6KujyeKpE" alt="DSCF7898" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,141)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(142)">
+        <img src="https://lh3.googleusercontent.com/d/14HUxxjRg4uoasuZlCVcYfvhfOPArFYCN" alt="DSCF7899" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,142)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(143)">
+        <img src="https://lh3.googleusercontent.com/d/1tJoBe4wXo_u42Q6zerqkTY_Cs1Sp3VLo" alt="DSCF7900" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,143)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(144)">
+        <img src="https://lh3.googleusercontent.com/d/1QXWusITPLNc3dO3z6mf78xWstUj8eDXQ" alt="DSCF7903" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,144)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(145)">
+        <img src="https://lh3.googleusercontent.com/d/1tRYn2Z0hdJLvgsNFcdprykpFm9ZMJG5J" alt="DSCF7906" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,145)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(146)">
+        <img src="https://lh3.googleusercontent.com/d/1J18zGMFaDHFe2dkWPLD0eIlT5LHN_SGv" alt="DSCF7908" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,146)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(147)">
+        <img src="https://lh3.googleusercontent.com/d/1rjZigIo-dqd_LgbHvT1xHwYdoixYwldb" alt="DSCF7909" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,147)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(148)">
+        <img src="https://lh3.googleusercontent.com/d/1d2yHwk72NXmn3haLK9DVe-16OUN_QR_7" alt="DSCF7910" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,148)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(149)">
+        <img src="https://lh3.googleusercontent.com/d/1RLxnMmMYnWc-MJiUyOMvdK3ostFEkIqZ" alt="DSCF7911" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,149)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(150)">
+        <img src="https://lh3.googleusercontent.com/d/1-8NRowELkVReKQbO8ZNSUUPDcQESSJCL" alt="DSCF7912" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,150)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(151)">
+        <img src="https://lh3.googleusercontent.com/d/1IiRJoJSFB-50ULdjajoOxGH5BPpsjBMT" alt="DSCF7913" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,151)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(152)">
+        <img src="https://lh3.googleusercontent.com/d/1M4j-LcJ1pL4XzuHzjBCBxKJJx5rjF90d" alt="DSCF7919" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,152)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(153)">
+        <img src="https://lh3.googleusercontent.com/d/1B7MO-42wGwd7Hwwuw0DKQ4aW3fS2qaN2" alt="DSCF7924" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,153)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(154)">
+        <img src="https://lh3.googleusercontent.com/d/1_7JyZ2FsKQet3aojc7y0OmrLDa_hFENR" alt="DSCF7925" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,154)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(155)">
+        <img src="https://lh3.googleusercontent.com/d/1XvHOdlZSsbwHBRptb9TvXATD3Kvfolz7" alt="DSCF7927" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,155)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(156)">
+        <img src="https://lh3.googleusercontent.com/d/1pGogzl-o9OP2k5RmLMw25mQ--e0PQecT" alt="DSCF7928" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,156)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(157)">
+        <img src="https://lh3.googleusercontent.com/d/1n8VBX6fPhfyLPBA2Qa4W2S4ZTT4FKTa6" alt="DSCF7932" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,157)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(158)">
+        <img src="https://lh3.googleusercontent.com/d/1fVp9Uu41TVdfKAhFegx0khwhtH2V7l3S" alt="DSCF7934" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,158)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(159)">
+        <img src="https://lh3.googleusercontent.com/d/1zwIHwlhulEgz9dVGLyrS3g_MyG0iGA_X" alt="DSCF7936" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,159)" title="Set as cover">☆</button>
+      </div>
+      <div class="gi" onclick="openLb(160)">
+        <img src="https://lh3.googleusercontent.com/d/1N_r0htOinjtWVRrxuko-RzNBFUUTZt_D" alt="DSCF7937" loading="lazy">
+        <button class="star-btn" onclick="setHero(event,160)" title="Set as cover">☆</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="lb" id="lb">
+    <button class="lb-close" onclick="closeLb()">&#215;</button>
+    <button class="lb-prev" onclick="navLb(-1)">&#8249;</button>
+    <div class="lb-img-wrap">
+      <img id="lb-img" src="" alt="">
+      <button class="lb-star" id="lb-star" onclick="toggleHeroFromLb()" title="Set as cover photo">☆</button>
+    </div>
+    <button class="lb-next" onclick="navLb(1)">&#8250;</button>
+    <div class="lb-meta">
+      <span id="lb-counter"></span>
+      <span class="lb-hero-note" id="lb-hero-note">✦ Cover photo</span>
+    </div>
+  </div>
+
+  <button class="btt" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+  <footer>
+    <span class="footer-logo">iCaptureHomes Photography</span>
+    <span class="footer-note">Private gallery &mdash; not for public distribution</span>
+  </footer>
+
+  <script>
+    const imgs = [
+    "https://lh3.googleusercontent.com/d/1XqmQwVinaXfW4IScghbuQvO74f3mZDSV",
+    "https://lh3.googleusercontent.com/d/1y6wA19Yvd0QnfQQmsuzhj8uVzzj43e-R",
+    "https://lh3.googleusercontent.com/d/1MfIW3FuISuw-_sklC5-CNa8Eolr_hNAQ",
+    "https://lh3.googleusercontent.com/d/1psFYVjcSuK5jLWlwsDuUEDExiMQc8xxc",
+    "https://lh3.googleusercontent.com/d/1AUVVOsIVlcoMzPh2I1_AjKzq88xxRp2C",
+    "https://lh3.googleusercontent.com/d/1Qy_kGU_BIaC83Icvb8UOVj9rfVnjISTw",
+    "https://lh3.googleusercontent.com/d/14xoeGcYaSvMd4mXDU6u3VI18IaM0O6jz",
+    "https://lh3.googleusercontent.com/d/18DpGz3YZ0ErYx_Gy7SL1ftbCD0D7qO9E",
+    "https://lh3.googleusercontent.com/d/1bf9DnniCQhQjX03RNfLSIPE0cg91s6KO",
+    "https://lh3.googleusercontent.com/d/1KNFB3zYT7QK5MHIlm7w0OpCG1mcxicle",
+    "https://lh3.googleusercontent.com/d/1WVd06kIk66RZr_sD5xfIvdE_bJOZatYU",
+    "https://lh3.googleusercontent.com/d/1uVAkjStLz2itELnyjkAQ0fbHYX5Pk6i_",
+    "https://lh3.googleusercontent.com/d/1QcmV1Z5y_dBq_d5A_v7FxKaHC3xRJQ7g",
+    "https://lh3.googleusercontent.com/d/1fVaE52FEEWQAD-6lya8DlrrNPRU_L3NS",
+    "https://lh3.googleusercontent.com/d/161KX5oDPA_Gv85ERt9W0n3TFIVDkOjYh",
+    "https://lh3.googleusercontent.com/d/1fmOZ4w_OLwCoWQXDIQ1AiXRzPrWtGMvC",
+    "https://lh3.googleusercontent.com/d/1q5SZ28VWeYY-S480_mQwseXgp_NDcSuP",
+    "https://lh3.googleusercontent.com/d/13EJcsCzP6a1oY86zURmG9YBcdXMx29y8",
+    "https://lh3.googleusercontent.com/d/1XeXcPqv-SHWBTKvv6pyLh4o0qRuLy9RC",
+    "https://lh3.googleusercontent.com/d/1KsE313jOXaoLbdr4OmSyo-s0fzC2jxid",
+    "https://lh3.googleusercontent.com/d/1zcki5tpNBTAsDUsIVRSDutQILm5laUax",
+    "https://lh3.googleusercontent.com/d/191FdgCmEietZkaBOftd92534hptD_hCS",
+    "https://lh3.googleusercontent.com/d/18cvkopgtlTS--RUTWbW1Vn8NNv1hOdQ2",
+    "https://lh3.googleusercontent.com/d/1_S7nH4ZFSOhV_UGREKMldptwjzRzFt3d",
+    "https://lh3.googleusercontent.com/d/1LyUNYFoZ3_QkeJPErllzTWmRUKYbNcI3",
+    "https://lh3.googleusercontent.com/d/1ibNb1ybSOHo_2ou8tgV12xpsSc6r3iJj",
+    "https://lh3.googleusercontent.com/d/1ifY0nsRIq6QS9Cmc6bam6wRDKdu95a98",
+    "https://lh3.googleusercontent.com/d/1UZMdcS3lc1f9YF4WlWJvoyWHBgbFS2_b",
+    "https://lh3.googleusercontent.com/d/1Uj5Gn-MhbHVAbmn29_HShXe1V0g5tsIS",
+    "https://lh3.googleusercontent.com/d/17D9p8Qpp2lMfcD6xWTQWDbS5feUg1MZ8",
+    "https://lh3.googleusercontent.com/d/1A4X1PVJKTF46VfAF1TgfDfdGCPQ-nu9k",
+    "https://lh3.googleusercontent.com/d/1bz66TK1JVZKc11lpGyjkXhH86s1Ta6mP",
+    "https://lh3.googleusercontent.com/d/1DhZ2b-2OgjQO5Y5MeSrhEff_HO0bhoKY",
+    "https://lh3.googleusercontent.com/d/1Ar6w-jBoi7rakXNpegnf1ALZPSQriA2u",
+    "https://lh3.googleusercontent.com/d/1daHVhaRfRi_ERaYQ7HLv6CJwSvLCMYVM",
+    "https://lh3.googleusercontent.com/d/1NbMwqCGutdSJg2nt9SWP-WoHMj398vZq",
+    "https://lh3.googleusercontent.com/d/16WRwkxS1nO56M3QcXltf42BzCT3nfM49",
+    "https://lh3.googleusercontent.com/d/1-qO_KdGbnTqVSCsREMMpvUYo4Mcm-HR6",
+    "https://lh3.googleusercontent.com/d/1-ne2nBafdBHwolF1QOn6LR000m3msIQo",
+    "https://lh3.googleusercontent.com/d/1N1ZqtNQ9Yh0MsHSPuGTjZnywz1-sSlH_",
+    "https://lh3.googleusercontent.com/d/1xd7i0YicSqVwMg636OxJP0YNsEa9LV8S",
+    "https://lh3.googleusercontent.com/d/14vIJLxj0_CK9pn_2S7Okwow9raMalW53",
+    "https://lh3.googleusercontent.com/d/1XbUb-EM864HGgEIcnpW7DDaL1iTdlw77",
+    "https://lh3.googleusercontent.com/d/1A7ZU8gA4rC3w7TOUPS4spD7TZBtRkbqH",
+    "https://lh3.googleusercontent.com/d/1oYlb0RZt4g0L7MO6vcBLV8g1c0vexRh5",
+    "https://lh3.googleusercontent.com/d/1_KJyHVszsW45rW1-0wHaP3VRXGyJ7XvX",
+    "https://lh3.googleusercontent.com/d/1CwTI_OWYrhSQG6NArotySE7FuetqPaHd",
+    "https://lh3.googleusercontent.com/d/1I6Rh4pO3T9bYnG1xrVjDyJqtPIYJ5R_p",
+    "https://lh3.googleusercontent.com/d/1CqWK0YA856K4nUB8e8p5mQfg0LBNWid1",
+    "https://lh3.googleusercontent.com/d/1nJq0W6u5D0_3tdOpp1O2WH7a_t2R2P-0",
+    "https://lh3.googleusercontent.com/d/135uRuDoLeDnvOEJanPMPC_GbbYSOMA8X",
+    "https://lh3.googleusercontent.com/d/1JzRR3eVr0TGXjrUKBldJu4LzarbhpUFB",
+    "https://lh3.googleusercontent.com/d/1QKCktmKBdObtxJb7ZYZj3AR4cJzv2DKk",
+    "https://lh3.googleusercontent.com/d/1Jm5IobTd7QtwGRVzMgrV7RGJY14pFDfu",
+    "https://lh3.googleusercontent.com/d/1jJO0WgcfgMf7KtLzV2gJRpExHfuU7jFr",
+    "https://lh3.googleusercontent.com/d/1f26_T6tI3McsEOXO7zvL8f-7JiWsaYFx",
+    "https://lh3.googleusercontent.com/d/1Vt2dYpEIakpb9JcxGhfNnZeNIq-lfRGN",
+    "https://lh3.googleusercontent.com/d/1l2rzjLEImki4XHoPnwlnMWghqI---rwF",
+    "https://lh3.googleusercontent.com/d/1iBfaah-eL62IeVl-Nwx0k_6Ho8zZzaeC",
+    "https://lh3.googleusercontent.com/d/1xSYPg5NVJiI3Q1yfw8dntV5ZLxjU00cF",
+    "https://lh3.googleusercontent.com/d/1YVY_W6BkZcZ8qCMuzLPEZu0CktuFTvez",
+    "https://lh3.googleusercontent.com/d/16fxjKvZQqt6exMCMkgun6Urju7yP-S7U",
+    "https://lh3.googleusercontent.com/d/1fnPCd4lulxw6ntxY1FZeZfCG4Rehd2zL",
+    "https://lh3.googleusercontent.com/d/1n6kz0qgH_REcln5M-cq1KROZvQQOEw2y",
+    "https://lh3.googleusercontent.com/d/1BwmruON610yhsIxT_o4yyV-JEYuRtJv0",
+    "https://lh3.googleusercontent.com/d/10fqSdCs-15nxHe_YQySrcjHAXBpQ19bt",
+    "https://lh3.googleusercontent.com/d/1aiHXQSnNOyG1T4G2tNi6GQazcdYb-Ao4",
+    "https://lh3.googleusercontent.com/d/1YAEhRNH_zRa5LDoQLC4rXc_uUaFmztlU",
+    "https://lh3.googleusercontent.com/d/1EaWHYTc_gXIY-T4QwJrlozPV_oSQwE2Y",
+    "https://lh3.googleusercontent.com/d/1khCjw7QXmnIbkSWFHw1-YO2vIWVTvnav",
+    "https://lh3.googleusercontent.com/d/1yfGtsyf3gvQEOmctvAdSIrC2Wsc-HekQ",
+    "https://lh3.googleusercontent.com/d/1Y6hcMIpxGRr2_I67xxUBLJTQ00wjklIh",
+    "https://lh3.googleusercontent.com/d/1R8ehwAWRI9TUZzS3XbOGLhLE5_vkCv9W",
+    "https://lh3.googleusercontent.com/d/1Uu_vGo5dXtcaLZO-cJrRbzFvFGP4b557",
+    "https://lh3.googleusercontent.com/d/1eZvhWYj3IrJrLydE__rB4gNMjqxyEVjn",
+    "https://lh3.googleusercontent.com/d/1JXckULQha0AEwQ5sA9ylOwzNGdMY13pG",
+    "https://lh3.googleusercontent.com/d/1Deofr2AML2kpX5RvPMvWZUEZsENq33BR",
+    "https://lh3.googleusercontent.com/d/1FZ-6MiaS4tKy-9Jy8eN7LGsU5NdDafhw",
+    "https://lh3.googleusercontent.com/d/1r1R9qRLaYXxBJqWmwOVlxXCCIdYjODPE",
+    "https://lh3.googleusercontent.com/d/1N1liZqQZXAJjqGq-8ny5SfogMvwLRl-K",
+    "https://lh3.googleusercontent.com/d/1-QxG_g7D00MH0j8eHZIjeeqX6f400Nu0",
+    "https://lh3.googleusercontent.com/d/17pfrLH5c4ypguywk5jMxjmuF30_M7gWA",
+    "https://lh3.googleusercontent.com/d/18QexDmguuAJoRyaICWttYhVp3pu2mFRM",
+    "https://lh3.googleusercontent.com/d/1AYvxcbMri9WSJggmtGTCZPuxdMqDEcSL",
+    "https://lh3.googleusercontent.com/d/1ZI6-8XCRcJ7UEEl-nj6O7Jr8INjRpQb8",
+    "https://lh3.googleusercontent.com/d/1KMthh-v5VVwK7QouzxXV9S6fyjAnK7_A",
+    "https://lh3.googleusercontent.com/d/1QbfXK4Y-HJ_mMbeMhuzZrg3olrAzgOlC",
+    "https://lh3.googleusercontent.com/d/1OO_j9uIwFnMpzhRyIDfjAaOBPcS3iKLW",
+    "https://lh3.googleusercontent.com/d/1AOwFGuEt-OG59jkvOtFdY5jX0YIVRnpu",
+    "https://lh3.googleusercontent.com/d/1C5CSr-7DYab1ZRBXBYk36VbbvT7mABI6",
+    "https://lh3.googleusercontent.com/d/1-0ddz5EV5cTLQuTcDGLoQea--ay-Tsq3",
+    "https://lh3.googleusercontent.com/d/12yl8Az5BBmKAyYEz2cdP7ab4H7Bf9MZG",
+    "https://lh3.googleusercontent.com/d/13by6OwnPxFmD0xLFmNn-91kLNy0gdTpp",
+    "https://lh3.googleusercontent.com/d/1hKFlo1YGer4VygUDzoexoPaFpoFnrFMD",
+    "https://lh3.googleusercontent.com/d/1e5ssQcdS9BJkJrleSrzkoc5CvzdBs9Mw",
+    "https://lh3.googleusercontent.com/d/1H9XpW40svE1qaOvNv_U1KaHTP6eeIV5Z",
+    "https://lh3.googleusercontent.com/d/1GZxfnrmw73Vf5eAHdZm2Q566SHrfI-Xu",
+    "https://lh3.googleusercontent.com/d/1L0_LrVZ2htv7W64nTFsNdD3LewbrBg7x",
+    "https://lh3.googleusercontent.com/d/1gWQ-_s06mgj9IJj5iZJ6nBDvFyCmLTUB",
+    "https://lh3.googleusercontent.com/d/1c-aDwnB6RvRCgPgkE0L8_BuXZJnx8gW9",
+    "https://lh3.googleusercontent.com/d/1xvT77BqK8krvYJM7YSbSLLS9DGJQXtSJ",
+    "https://lh3.googleusercontent.com/d/1w4fWSbCWP4i8R6uoPRwUrlSML9S7rYJ_",
+    "https://lh3.googleusercontent.com/d/1Y8S0L9gLTQrl6fAGvdni84xNM9f-yLfz",
+    "https://lh3.googleusercontent.com/d/1H1yyFU5Z-uTj0XdM7ZsFOfrEZhPYTQPF",
+    "https://lh3.googleusercontent.com/d/1h4d1vkrlI6El15Qz_Umjs4FrEybgchub",
+    "https://lh3.googleusercontent.com/d/1dQXLg_G76wUYdyvH-8aoB2x4MUsbStPr",
+    "https://lh3.googleusercontent.com/d/1pXtGWrdg88-MVl6nLcSODk1yONx4vGAR",
+    "https://lh3.googleusercontent.com/d/15XuibeSgboqFlNloGiXxuTbK-y3bhfNp",
+    "https://lh3.googleusercontent.com/d/1Smr0574WYd_i2VfDd4SK5tzIOq2XQRO8",
+    "https://lh3.googleusercontent.com/d/1K5-Ury3du4dgECGVKik73RLYwXhx7XdN",
+    "https://lh3.googleusercontent.com/d/1X2Bx6TCfdptarrXa093dQDy8_pGarRZ1",
+    "https://lh3.googleusercontent.com/d/1gIBGKNppauajOPqbzZSszRoXABulsl_W",
+    "https://lh3.googleusercontent.com/d/1Dp9JZxosaqAYpWN7zKD4L2YRrzXAnNEQ",
+    "https://lh3.googleusercontent.com/d/1RsznT1t3MRRYPKzm31zDYA1uNDbAa3l3",
+    "https://lh3.googleusercontent.com/d/1OEx8O6GkfbqoTan3dDfrpLmsEOvcN4m5",
+    "https://lh3.googleusercontent.com/d/1mfTjVx8EFW-CuZbotOo2_CxPEeWxgbvS",
+    "https://lh3.googleusercontent.com/d/10Y8sjbayu-VDqIArFxbTq6hEC5nBX5hn",
+    "https://lh3.googleusercontent.com/d/11JHyX7-jq9_fqwD6VVwfRg2TGp7mHwMD",
+    "https://lh3.googleusercontent.com/d/17BBtP3oJrRKIhGTMCiFBgTrZPxgpxTMc",
+    "https://lh3.googleusercontent.com/d/1K4EcVxoK4n-_VzVeWQbyZzZBewPjsRV0",
+    "https://lh3.googleusercontent.com/d/1uZRLeyZ9AYVywg2QET2r2nZV00mCfKQu",
+    "https://lh3.googleusercontent.com/d/1HZ0Lk3En7RHtZm_n-W8GFZ68BrYGff7v",
+    "https://lh3.googleusercontent.com/d/1U2p2ZLshgm23lH5-AJHyMh4tyVBq2YsX",
+    "https://lh3.googleusercontent.com/d/14EbufzYzMcFjlE-3-5d4YGsq8X6W_WKz",
+    "https://lh3.googleusercontent.com/d/1FR6uTyQtjm0cRnIlC4Z5rmbkaw1kZQL5",
+    "https://lh3.googleusercontent.com/d/1Gx3lHOXJ0B_pnraeDGh35xFHiqK8McFp",
+    "https://lh3.googleusercontent.com/d/1WWC7Et58jlsh_Za8kQhkcnauvRReirsv",
+    "https://lh3.googleusercontent.com/d/11eIFpBLuAorj1WqrjzY4NnPSfhZjiMB0",
+    "https://lh3.googleusercontent.com/d/1_-N_MFezGQfm2Z68uN5USLjbiXTKzRNJ",
+    "https://lh3.googleusercontent.com/d/1c1aBowcvrL8CU6LEfQffH956zixGQCDe",
+    "https://lh3.googleusercontent.com/d/1giZ7rd23V9S9MF4BErbKctJgSsyLixKe",
+    "https://lh3.googleusercontent.com/d/1abunO9NGrmqfSBFOYIKrsZozUyMpxVDn",
+    "https://lh3.googleusercontent.com/d/12ZvL58Qfdf0WtBB6mxnYIR5B3vWfrm3R",
+    "https://lh3.googleusercontent.com/d/1NYAPE0IDl1LbKWZhkuy5b2VPF73x-JNL",
+    "https://lh3.googleusercontent.com/d/1GThMvHaYgGNxNLuhVvOPN3aWGvN9fWeN",
+    "https://lh3.googleusercontent.com/d/1J_JtZQzKR6zir0Mpp_u9yGzP7RVn_M8s",
+    "https://lh3.googleusercontent.com/d/1ZMMDQzP3kVt-CwN5aABQTXsg7i9yOmVi",
+    "https://lh3.googleusercontent.com/d/10kvNq30Df4WWPQodz-1KWBaiVNQnLJkA",
+    "https://lh3.googleusercontent.com/d/1mLCy4A29VCxTACoqf2Jml0xZ5xn85oq7",
+    "https://lh3.googleusercontent.com/d/1EWpRwQgR-IGUQn8pEzyvx9zbOOVZnjr_",
+    "https://lh3.googleusercontent.com/d/1XAgPHaliapP693YzhsDg7mc_nYeypUft",
+    "https://lh3.googleusercontent.com/d/1DSv2b1BPuNJFnuPiq6-5y9D6KujyeKpE",
+    "https://lh3.googleusercontent.com/d/14HUxxjRg4uoasuZlCVcYfvhfOPArFYCN",
+    "https://lh3.googleusercontent.com/d/1tJoBe4wXo_u42Q6zerqkTY_Cs1Sp3VLo",
+    "https://lh3.googleusercontent.com/d/1QXWusITPLNc3dO3z6mf78xWstUj8eDXQ",
+    "https://lh3.googleusercontent.com/d/1tRYn2Z0hdJLvgsNFcdprykpFm9ZMJG5J",
+    "https://lh3.googleusercontent.com/d/1J18zGMFaDHFe2dkWPLD0eIlT5LHN_SGv",
+    "https://lh3.googleusercontent.com/d/1rjZigIo-dqd_LgbHvT1xHwYdoixYwldb",
+    "https://lh3.googleusercontent.com/d/1d2yHwk72NXmn3haLK9DVe-16OUN_QR_7",
+    "https://lh3.googleusercontent.com/d/1RLxnMmMYnWc-MJiUyOMvdK3ostFEkIqZ",
+    "https://lh3.googleusercontent.com/d/1-8NRowELkVReKQbO8ZNSUUPDcQESSJCL",
+    "https://lh3.googleusercontent.com/d/1IiRJoJSFB-50ULdjajoOxGH5BPpsjBMT",
+    "https://lh3.googleusercontent.com/d/1M4j-LcJ1pL4XzuHzjBCBxKJJx5rjF90d",
+    "https://lh3.googleusercontent.com/d/1B7MO-42wGwd7Hwwuw0DKQ4aW3fS2qaN2",
+    "https://lh3.googleusercontent.com/d/1_7JyZ2FsKQet3aojc7y0OmrLDa_hFENR",
+    "https://lh3.googleusercontent.com/d/1XvHOdlZSsbwHBRptb9TvXATD3Kvfolz7",
+    "https://lh3.googleusercontent.com/d/1pGogzl-o9OP2k5RmLMw25mQ--e0PQecT",
+    "https://lh3.googleusercontent.com/d/1n8VBX6fPhfyLPBA2Qa4W2S4ZTT4FKTa6",
+    "https://lh3.googleusercontent.com/d/1fVp9Uu41TVdfKAhFegx0khwhtH2V7l3S",
+    "https://lh3.googleusercontent.com/d/1zwIHwlhulEgz9dVGLyrS3g_MyG0iGA_X",
+    "https://lh3.googleusercontent.com/d/1N_r0htOinjtWVRrxuko-RzNBFUUTZt_D"
+  ];
+    let ci = 0, heroIdx = 158;
+    const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+          lbCounter=document.getElementById('lb-counter'),lbStar=document.getElementById('lb-star'),
+          lbHeroNote=document.getElementById('lb-hero-note'),heroImgEl=document.getElementById('hero-img');
+
+    function updateStars(){
+      document.querySelectorAll('.star-btn').forEach((btn,i)=>{
+        btn.classList.toggle('active',i===heroIdx);
+        btn.textContent=i===heroIdx?'★':'☆';
+        btn.title=i===heroIdx?'Current cover photo':'Set as cover photo';
+      });
+    }
+    function updateLbStar(){
+      const isHero=ci===heroIdx;
+      lbStar.classList.toggle('active',isHero);
+      lbStar.textContent=isHero?'★':'☆';
+      lbHeroNote.classList.toggle('show',isHero);
+    }
+    function setHero(e,idx){
+      e.stopPropagation();heroIdx=idx;
+      heroImgEl.style.opacity='0';
+      setTimeout(()=>{heroImgEl.src=imgs[idx];heroImgEl.style.opacity='1';},300);
+      updateStars();
+      if(lb.classList.contains('open'))updateLbStar();
+    }
+    function toggleHeroFromLb(){setHero({stopPropagation:()=>{}},ci);}
+    function openLb(i){
+      ci=i;lbImg.src=imgs[i];
+      lbCounter.textContent=(i+1)+' / '+imgs.length;
+      lb.classList.add('open');document.body.style.overflow='hidden';
+      updateLbStar();
+    }
+    function closeLb(){lb.classList.remove('open');document.body.style.overflow='';}
+    function navLb(d){
+      ci=(ci+d+imgs.length)%imgs.length;
+      lbImg.src=imgs[ci];
+      lbCounter.textContent=(ci+1)+' / '+imgs.length;
+      updateLbStar();
+    }
+    document.addEventListener('keydown',e=>{
+      if(!lb.classList.contains('open'))return;
+      if(e.key==='ArrowRight')navLb(1);
+      if(e.key==='ArrowLeft')navLb(-1);
+      if(e.key==='Escape')closeLb();
+    });
+    lb.addEventListener('click',e=>{if(e.target===lb)closeLb();});
+    updateStars();
+
+    // Masonry: size each tile's row span to its photo so there are no gaps
+    const grid=document.querySelector('.gallery-grid');
+    function sizeTile(gi){
+      const img=gi.querySelector('img');
+      if(!img.naturalWidth)return;
+      const gap=parseFloat(getComputedStyle(grid).getPropertyValue('--gap'))||10;
+      const h=gi.clientWidth*img.naturalHeight/img.naturalWidth;
+      gi.style.gridRowEnd='span '+Math.ceil((h+gap)/4);
+    }
+    function sizeAll(){grid.querySelectorAll('.gi').forEach(sizeTile);}
+    grid.querySelectorAll('.gi').forEach(gi=>{
+      const img=gi.querySelector('img');
+      if(img.complete)sizeTile(gi);else img.addEventListener('load',()=>sizeTile(gi));
+    });
+    let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(sizeAll,120);});
+
+    const btt=document.getElementById('btt');
+    window.addEventListener('scroll',()=>{
+      btt.classList.toggle('visible',window.scrollY>window.innerHeight*0.8);
+    },{passive:true});
+  </script>
+  <!-- Swipe between photos on phones -->
+  <script>
+    (function(){let sx=0,sy=0;
+      lb.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+      lb.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+        if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.3)navLb(dx<0?1:-1);
+        else if(dy>90&&Math.abs(dy)>Math.abs(dx)*1.3)closeLb();},{passive:true});
+    })();
+  </script>
+  <!-- Discourage saving photos -->
+  <style>img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}</style>
+  <script>
+    document.addEventListener('contextmenu',e=>{if(e.target.tagName==='IMG')e.preventDefault();});
+    document.addEventListener('dragstart',e=>{if(e.target.tagName==='IMG')e.preventDefault();});
+  </script>
+</body>
+</html>
